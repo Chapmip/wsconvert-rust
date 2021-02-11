@@ -1,0 +1,1065 @@
+.LH 12
+.SR 10
+.HEI.D.CHAPMAN       E1 PROJECT - THE IEEE-488 BUS
+.PN 1
+                    I. INTRODUCTION AND AIMS
+                        ("Investigate!")
+
+     Thió projecô tooë shapå froí á challenging¬ opeî assignmentº 
+whaô  coulä É discoveò iî siø weeks¬  giveî á logiã  analyser¬  á 
+computeò witè á GPIÂ interface¬ anä somå measurinç instruments¿ 
+
+     Likå manù engineerinç projects¬ noô alì oæ thå possibilitieó 
+werå obviouó aô first®   Whilå mù aimó werå originallù centreä oî 
+analysió  oæ  thå  IEEE-48¸  buó usinç  thå  logiã  analyser¬  mù 
+attentioî turneä towardó thå fielä oæ automatiã datá logging¬ anä 
+iô sooî becamå cleaò thaô thå accuracy¬  speeä anä valuå oæ  sucè 
+measurementó werå worthù oæ furtheò investigation®  É alsï becamå 
+interesteä iî interfacå electronicó foò thå IEEE-48¸ bus.
+
+     Thå abovå activitieó tooë siø weekó tï complete® Afterwards¬ 
+somå oæ thå IEEÅ buó equipmenô waó requireä bù anotheò group¬  sï 
+É  spenô thå nexô twï weekó devisinç á "Quizboard"¬  whicè  woulä 
+producå á predefineä sequencå foò thå logiã analyseò tï examine.
+
+     Aó  thå abovå descriptioî suggests¬  mù projecô "evolved¢ aó 
+iô  wenô along®   É waó giveî thå freedoí tï looë intï thå  areaó 
+thaô  É  founä particularlù interesting®   Foò thió  reason¬  thå 
+projecô proveä verù stimulating.
+
+     Thå chapteò headingó in thió reporô seô ouô thå "aims¢ oæ mù 
+projecô  aô eacè stage®   É hopå thaô É havå openeä uğ somå areaó 
+oæ  interesô  foò lateò  students®   Whereveò  possible¬  É  havå 
+suggesteä somå furtheò investigationó whicè coulä bå made.
+.PAŠ               II. GETTING TO GRIPS WITH THE SYSTEM
+
+     Thå aií oæ thió chapteò ió tï describå thå equipmenô useä iî 
+thió  project¬  pointinç ouô thå shorô cutó anä difficultieó thaô 
+aroså alonç thå way®  Thió sectioî maù bå oæ time-savinç valuå tï 
+futurå studentó whï intenä tï investigatå thå IEEÅ-488 bus.
+
+(1) LOGIC ANALYSER
+
+     Á Thurlbù LA-16° Logiã Analyseò waó useä tï examinå datá  oî 
+thå IEEÅ bus®  Thió waó connecteä tï thå buó usinç thå specially-
+designeä LC-0³ Buó Analysió Unit¬  whicè connectó tï thå fronô oæ 
+thå  LA-16°  viá threå 15-waù cables¬  anä tï thå IEEÅ buó viá  á 
+standarä 24-waù GPIÂ cable®
+
+     Whilå  thå threå cableó betweeî thå LC-0³ anä thå LA-16° arå 
+identicaì  anä unmarked¬  nï damagå caî occuò tï eitheò  uniô  bù 
+connectinç theí iî thå wronç order®   Iî anù case¬ thå cableó arå 
+connecteä  iî  thå  "obvious¢ order¬  runninç bacë froí  thå  buó 
+interfacå tï thå logiã analyseò fronô panel.
+
+     Thå  IEEÅ buó useó NEGATIVÅ LOGIC¬  sï thå LA-16° shoulä  bå 
+seô foò thió (seå Tablå 1)®   Sincå therå arå 1¶ activå buó lineó 
+tï  bå  examined¬  thå "(Don'ô Care© Scopå 8/16¢  keù  shoulä  bå 
+presseä untiì "Alì 16¢ ió displayed.
+
+     Thå  followinç  featureó oæ thå LA-16° arå normallù lefô  aô 
+theiò 'set-up§ stateó.
+
+          Clock enables:           Both '1' (unconnected)
+          Trigger enables:         Both '1' (unconnected)
+          Trigger hold-off:        Off
+          Trigger arm:             '1'
+          Trigger arm delay:       Off
+
+Š     Aî oscilloscopå displaù caî bå seô uğ aó detaileä iî thå LA-
+16° manuaì - therå shoulä bå nï probleí here®   Thå 1¶ datá lineó 
+on the display correspond to the following IEEE-488 signals:
+
+.UJ 0
+          TOP       15   ATN       ATtentioN                       
+                    14   SRQ       Serial ReQuest
+                    13   IFC       InterFace Clear
+                    12   DAC___       Data ACknowledge
+                    11   RFD___       Ready For Data
+                    10   DAV       Data AVailable
+                     9   EOI       End Or Identify 
+                     8   REN       Remote ENable
+                     7   DIO8      Data In/Out  MSB
+                     6   DIO7      Data In/Out
+                     5   DIO6      Data In/Out
+                     4   DIO5      Data In/Out
+                     3   DIO4      Data In/Out
+                     2   DIO3      Data In/Out
+                     1   DIO2      Data In/Out
+          BOTTOM     0   DIO1      Data In/Out  LSB
+.UJ 1
+
+     Botè  binarù anä hexadecimaì displaù formató arå usefuì  foò 
+IEEE-48¸ analysió º  thå formeò allowó thå statuó oæ eacè controì 
+linå  tï  bå  individuallù monitored¬  whilå thå latteò  ió  morå 
+convenienô foò readinç ofæ thå ASCIÉ codeó oæ thå datá presenô oî 
+thå DIÏ lines.
+
+     Eitheò  internaì oò externaì clockinç oæ thå LA-16°  caî  bå 
+used¬ dependinç oî thå typå oæ buó analysió thaô ió tï bå carrieä 
+out®   Iæ onå wisheó tï monitoò thå timinç oæ DAC___¬ RFD___” anä DAÖ aó 
+individuaì byteó arå transferred¬  theî INTERNAÌ clocë ió needed® 
+Iæ thå timinç ió oæ nï concern¬ anä thå aií ió jusô tï recorä thå 
+datá  byteó  thaô arå senô (onå entrù peò  byte)¬  theî  EXTERNAÌ 
+clockinç ofæ thå POSITIVÅ edgå oæ DAÖ (aó preseô bù á linë oî thå 
+LC-0³ board© ió preferable®  Seå Tablås 2a/2â foò theså settings.
+ŠInsert Tables 1-3 here ..
+.PAŠ     Onå limitatioî oæ thå LA-16° ió thå maximuí perioä oæ  400uó 
+foò  itó internaì clock®  Iî somå cases¬  thió caî bå overcomå bù 
+connectinç thå clocë enablå inputó appropriately®   Wheî thió  ió 
+noô possible¬  thå linë oî thå LC-0³ whicè connectó thå  externaì 
+clocë  inpuô  tï DAÖ caî bå broken¬  anä aî  externaì  oscillatoò 
+(sucè aó thaô suggesteä iî Figurå 1© addeä tï increaså thå  rangå 
+oæ availablå periods.
+
+     Thå  triggeò worä shoulä bå seô iî "binary¢ mode¬  accordinç 
+tï  thå  evenô  thaô  ió  tï  bå  trapped®   Tï  capturå  generaì 
+address/controì information¬ triggeò oî ATÎ higè anä "don'ô care¢ 
+oî thå remaininç lines®  Tï capturå á giveî bytå oæ data¬ triggeò 
+witè ATÎ lo÷ anä thå requireä bytå oî thå DIÏ lines.
+
+     Iô ió perfectlù possible¬  thougè tedious¬  tï recorä eventó 
+captureä bù thå logiã analyseò usinç á penciì anä piecå oæ  grapè 
+paper®  However¬  bù  usinç aî LA-16° thaô haó beeî equippeä witè 
+thå  LR-6´ extendeä facilitieó ROM¬  iô ió possiblå tï  reproducå 
+thå oscilloscopå displaù oî aî EPSOÎ FX-8° printer.
+
+     Thå EPSOÎ FX-8° printeò iî thå Oatleù Laboratorù is¬  aô thå 
+timå oæ writing¬ operateä witè á serieó oæ IBÍ microcomputeró viá 
+á seriaì linë operatinç aô 240° baud®   Unfortunately¬ thå LA-16° 
+ió onlù capablå oæ sendinç datá aô 960° baud¬ sï thaô thå printeò 
+musô bå re-configureä tï ruî aô 960° bauä beforå iô caî bå used.
+
+     Thå  FX-8° seriaì carä caî bå accesseä bù openinç á flağ  oî 
+thå  right-hanä  sidå oæ thå printeò (havinç removeä  thå  singlå 
+screw© revealinç twï setó oæ DIĞ switches®   Tï ruî aô 960° baud¬ 
+S×  1(2© shoulä bå changeä froí OÎ tï OFÆ (seå  Figurå  2)®   Thå 
+printeò   shoulä  bå  restoreä  tï  240°  bauä  operatioî  beforå 
+replacinç thå flap®  Thå otheò DIĞ switcheó seô uğ detailó oæ thå 
+seriaì  linë sucè aó parity¬  stoğ bitó anä automatiã linå feeä - 
+buô  theså werå alì seô correctlù foò thå LA-16° aô thå  timå  oæ 
+writing®   Seå  thå  FX-8°  manuaì iî thå Oatleù  Laboratorù  foò 
+furtheò details.ŠInsert Figures 1 and 2 here ..
+.paŠ     Oî  connectinç thå FX-8° tï thå seriaì interfacå cablå  froí 
+thå  LA-16°   anä switchinç thå printeò on¬  á harä copù  oæ  thå 
+oscilloscopå displaù ió obtaineä bù usinç prinô modå ² (seå Tablå 
+3© bù depressinç "SHIFT¢ "(Compress© PRINT"®  Thå printouô coveró 
+5±  memorù locationó centereä oî thå cursoò position¬  sï thaô iô 
+ió  normallù  possiblå tï 'fit§ thå eventó oæ interesô  ontï  thå 
+copù bù positioninç thå cursoò appropriately.
+
+     Á  singlå printouô takeó abouô twï minuteó tï  produce¬  anä 
+includeó  waveforms¬  binary¬  ASCIÉ anä hexadecimaì dumpó oæ thå 
+enclosed data.
+
+(2) DIGITAL MULTIMETER
+
+     Á  Premá 500° Integratinç Digitaì Multimeteò waó onå oæ  twï 
+testeä IEEÅ buó devices®  Oncå thå meteò ió connecteä tï thå GPIÂ 
+usinç á standarä cable¬ thå onlù setting-uğ needeä ió tï selecô á 
+devicå addresó anä á terminatoò strinç foò IEEÅ buó transactions.
+
+     Foò  thå purposeó oæ thió project¬  á devicå addresó oæ '18§ 
+anä  terminatinç strinç '4§ ¨ CÒ « LÆ « EOÉ © werå  satisfactory® 
+Seå sectioî 11.± oæ thå Premá DMÍ manuaì (includeä iî Appendiø C© 
+iæ theså settingó arå tï bå changed.
+
+(3) VOLTAGE CALIBRATOR
+
+     Á  Datá Precisioî 820° Voltagå Calibratoò waó thå otheò IEEÅ 
+buó devicå useä iî thió project®   Devicå addresó ió selecteä  bù 
+fivå  DIĞ  switcheó oî thå optioî assemblù boarä - aî addresó  oæ 
+'20§  waó retained®   Seå specificatioî 2.1.µ (iî Appendiø D© foò 
+detailó oæ thå datá format.
+
+(4) BBC COMPUTER
+
+     Á BBÃ Masteò computeò witè thå Acorî IEEE-48¸ interfacå uniô 
+was used tï communicatå witè deviceó oî thå GPIB.Š     Tï obtaiî harä copù oæ programó anä data¬ thå BBÃ Masteò waó 
+connecteä tï thå FX-8° printeò usinç á standarä leadº  thió haó á 
+5-piî  DIÎ pluç (foò thå RS-42³ porô oî thå BBÃ computer© aô  onå 
+end¬  anä á 25-piî 'D§ pluç (foò thå printer© aô thå other®   Thå 
+followinç  instructionó configurå thå BBÃ computeò tï operatå  aô 
+240° oò 960° baud:
+
+     2400 BAUD:     *FX 5,2        9600 BAUD:     *FX 5,2
+                    *FX 7,5                       *FX 7,7
+                    *FX 8,5                       *FX 8,7
+                    *FX 6,0                       *FX 6,0
+
+     Foò  easå oæ use¬  á prograí 'PRINT§ waó deviseä  sucè  thaô 
+'CHAIÎ  "PRINT"§  woulä configurå thå BBÃ computeò foò 240°  bauä 
+operatioî anä seô thå printeò tï enhanceä texô mode¬  foò greateò 
+legibilitù oæ texô (seå prograí listinç iî Appendiø B).
+
+     Followinç thå abovå initialisation¬  CONTROL-Â anä CONTROL-Ã 
+caî  bå useä tï respectivelù starô anä stoğ thå echoinç oæ screeî 
+outpuô tï thå printer.
+
+(5) IEEE INTERFACE BOX AND FIRMWARE
+
+     Beforå  usinç thå IEEE-48¸ interfacå box¬  ensurå thaô iô ió 
+switcheä on®   Thå Acorî firmwarå provideä giveó aî obscurå erroò 
+messagå (whicè keepó onå guessing!© iæ thå boø ió unpowered.
+
+     Thå manuaì provideä witè thå Acorî IEEÅ interfacå ió harä tï 
+reaä anä failó tï makå twï importanô points:
+
+     (a© Thå IEEÅ anä Disã filinç systemó arå independenô oæ eacè 
+otheò - onlù thå nameó oæ thå commandó (e.g® OPENIN¬ PRINÔ #© arå 
+common®  Thus¬ iæ onå wisheó tï makå disã accesseó whilå thå IEEÅ 
+filinç  systeí  ió active¬  onå musô issuå á *DISÃ  commanä  (anä 
+vice-versa)®   Iô ió NOÔ necessarù tï closå fileó wheî  switchinç 
+betweeî filinç systemó - thió ió onlù needeä aô thå enä oæ á run.Š     (b© LISTEÎ commandó requirå aî "EXECUTE¢ keyworä afterwards¬ 
+aó  morå thaî onå devicå caî bå LISTENinç aô onå  time®  However¬ 
+onlù  onå  devicå caî TALË oî thå buó aô á  time¬  sï  thaô  thió 
+instructioî  doeó  noô requirå thå trailinç  keyword®   Thå  samå 
+argumenô followó foò otheò multiplå anä singlå devicå commands.
+
+     Thå besô waù tï becomå familiaò witè thå controì oæ thå GPIÂ 
+froí thå BBÃ computeò ió tï reaä througè mù examplå programó (seå 
+listingó iî Appendiø B© usinç thå manuaì foò reference.
+.PAŠ.SR 3
+               III. SIMPLE PROGRAMS ON THE IEEE BUS
+
+     Tï  provå thaô thå BBÃ Masteò waó ablå tï accesó  thå  Premá 
+DMÍ oveò thå IEEÅ bus¬  thå simplå prograí suggesteä iî thå Acorî 
+IEEE-48¸ interfacå guidå (seå Appendiø Å pagå 10© waó entereä anä 
+modifieä  tï suiô thå DMÍ devicå addresó (18)®  Thió prograí  waó 
+saveä aó 'IEEE01A§ anä 'IEEE01B'®   Twï bugó iî thå originaì werå 
+fixeä º  "voltage$¢ haó tï bå dimensioneä (linå 10)¬  anä á *DISÃ 
+instructioî  shoulä  bå giveî aô thå enä (linå 250© oò  elså  thå 
+systeí wilì refuså tï perforí subsequenô disã accesses.
+
+     Thå  prograí  carrieó  ouô á simplå tasë º  iô  demandó  anä 
+printó  ouô threå datá stringó froí thå DMM®   Theså contaiî  thå 
+meteò reading corresponding to the range selected.
+
+     Notå  thaô thå "V5¢ issueä tï thå DMÍ iî linå 13° serveó  nï 
+functionaì  purposå (thå Premá 500° ignoreó it© anä ió lefô  oveò 
+froí thå originaì program®   However¬ wheî analysinç thå IEEÅ buó 
+transactionó oî thå logiã analyser¬  iô ió usefuì tï observå datá 
+flowinç  botè  tï  anä  froí thå Masteò  computer¬  anä  sï  thió 
+instructioî waó retained.
+
+     'IEEE01A/B§  ió noô á verù usefuì program¬  foò á numbeò  oæ 
+reasons®   First¬  therå ió nï guaranteå thaô thå useò wilì  havå 
+seô uğ thå DMÍ tï thå correcô rangå º  iô woulä bå preferablå foò 
+thå  computeò tï dï thió viá thå IEEÅ bus®   Secondly¬  whilå thå 
+prograí  ió reasonablù readablå foò á useò whï ió  familiaò  witè 
+thå  IEEÅ  bus¬  iô  lookó toï confusinç foò á useò whï  ió  onlù 
+interesteä iî takinç readingó froí thå DMM®   Thirdly¬  datá  arå 
+demandeä  froí  thå meteò whetheò oò noô á ne÷ readinç  haó  beeî 
+taken®   Ideally¬  tï  savå  buó time¬  thå computeò shoulä  onlù 
+requesô  datá oncå thå meteò haó takeî á ne÷ reading®   Thå  nexô 
+program¬ saveä aó 'IEEE02A§ anä 'IEEE02B'¬ solveó theså problems.
+
+
+Š     Tï assisô iî readability¬  anä tï makå thå programmer'ó tasë 
+easier¬  'IEEE02A/B§  (seå Appendiø B© consistó oæ twï partó º  á 
+maiî prograí (froí lineó 40-140© anä á commoî corå oæ  procedureó 
+anä  functionó (froí lineó 180-510)®   Eacè procedurå oò functioî 
+haó   á  namå  thaô  representó  itó  functioî   (e.g®   'start'¬ 
+'await_dvm'¬  'read_dvm'©  anä sï thå maiî prograí  becomeó  mucè 
+simpleò anä morå readable.
+
+     "PROCstart¢  anä "PROCfinish¢ contaiî thå headeò anä traileò 
+codå froí 'IEEE01A/B'®  "PROCsend_dvm()¢ sendó á strinç oæ outpuô 
+tï thå DMM¬  tï seô itó rangå anä operatinç parameters®   Iî thió 
+case¬  thå  commanä  strinç senô iî linå 6° instructó thå DMÍ  tï 
+reaä resistancå witè auto-ranging¬  sendinç shorô messageó  everù 
+seconä  usinç  seriaì pollinç (seå Premá manuaì iî  Appendiø  C)® 
+"FNread_dvm¢ ió mucè thå samå aó beforå - demandinç á strinç froí 
+thå  DMM®   Thå  innovatioî iî thió prograí  ió  "PROCawait_dvm"¬ 
+whicè  causeó thå computeò tï waiô untiì á fresè readinç haó beeî 
+takeî bù thå meter.
+ 
+     "PROCawait_dvm¢ onlù workó witè thå DMÍ iî seriaì polì  modå 
+(seô bù thå 'Q1§ iî thå DMÍ commanä string)®   Iî thió case¬  thå 
+Premá  500° flagó uğ á seriaì requesô oî thå IEEÅ buó wheneveò  á 
+ne÷ readinç haó beeî made®   "PROCawait_dvm¢ inspectó thå  STATUÓ 
+worä  froí  thå IEEÅ interfacå anä loopó arounä untiì thå  seriaì 
+requesô flaç ió raised®  Wheî thió happens¬ thå flaç ió reseô anä 
+thå procedurå ió ended.
+
+     Testinç oæ 'IEEE02A/B§ revealeä á defecô iî thå operatioî oæ 
+thå Premá 5000®  Wheî thå DMÍ ió instructeä tï changå rangå then¬ 
+althougè thå meteò acknowledgeó thå ne÷ range¬  thå nexô  readinç 
+ió takeî oî thå previouó range¬  givinç aî erroneouó result®   Tï 
+combaô this¬ afteò changinç rangå (linå 60© thå prograí waitó foò 
+onå dummù readinç (linå 70© whicè iô ignores¬  beforå waitinç foò 
+anä receivinç thå truå datá (lineó 8° ¦ 90)®   Á serieó oæ  testó 
+showeä thió methoä tï bå aî adequatå precaution.
+Š     Thå  datá strinç froí thå Premá 500° ió transmitteä  iî  'E§ 
+formaô  (e.g®  '003.34625E+4'© anä sï ió translateä intï á numbeò 
+bù thå VAL(© functioî (linå 100)®   Notå that¬  oncå thå DMÍ  haó 
+beeî  accesseä  froí thå IEEÅ bus¬  thå fronô paneì  buttonó  arå 
+inhibiteä  untiì  thå DMÍ ió returneä tï "local¢ mode®  Foò  thió 
+reason¬ á "GÏ TÏ LOCAL¢ commanä ió executeä iî linå 110¬ allowinç 
+manuaì operatioî again.
+
+     Tï  tesô thå variabilitù oæ resistancå measurementó froí thå 
+DMM¬  á  variablå resistancå boø waó placeä acrosó thå  terminaló 
+oæ  thå meter¬  anä severaì successivå readingó werå taken®   Thå 
+results¬ oî severaì resistancå ranges¬ werå aó stablå aó expecteä 
+froí thå 612 digiô accuracù oæ thå meter.
+
+     Thå Premá 500° operateó bù integratinç aî inpuô voltagå oveò 
+á  timå intervaì T®   Aî interestinç possibilitù waó tï  uså  thå 
+computeò  tï  integratå thå resultó oveò á longeò timå  interval¬ 
+saù  20T¬  bù takinç thå meaî oæ 2° readings®   Iî  principle¬  á 
+higheò resolutioî wilì bå obtained¬ aó thå lasô digiô uncertaintù 
+wilì tenä tï eveî out.
+
+     Tï demonstratå thió effect¬ 'IEEE02A/B§ waó modifieä tï takå 
+thå  meaî  oæ 2° resistancå readingó - thió prograí waó saveä  aó 
+'MEAN§ (seå Appendiø B)®   Measurementó werå madå oî á 1°  kilohí 
+standarä resistance¬ witè thå DMÍ lefô oî foò twï houró tï ensurå 
+thermaì stability®  Tï removå anù offseô duå tï resistancå oæ thå 
+meteò  leads¬  thå  DMÍ  waó  zeroeä (seå Premá  500°  manuaì  iî 
+Appendiø C© witè thå leadó iî placå buô witè thå terminaló oæ thå 
+standarä shorteä together.
+
+     Foò á laboratorù temperaturå oæ 22o” Celsius¬  anä takinç alì 
+measureä correctionó intï account¬ thå expecteä resistancå oæ thå 
+standarä waó 10000.1· ohms®   Randoí singlå measurementó recordeä 
+10000.77¬  10000.41¬  anä 10000.5¶ ohms®   Takinç thå meaî oæ 10° 
+readingó usinç 'MEAN§ gavå aî overalì resulô oæ 10000.48² ohms®  
+Š     Thå measureä resistancå ió +0.0032¥ higheò thaî thå expecteä 
+value®  Thió erroò ió withiî thå DMÍ accuracù quoteä iî thå Premá 
+500° manuaì aó +/- 0.005¥ oî thå 2° kilohí range®   However¬  onå 
+oæ thå randomly-takeî singlå values¬  1° 000.7· ohms¬  ió +0.006¥ 
+higheò thaî expected¬ whicè ió outsidå thå meteò tolerance.
+
+     Theså  resultó suggesô thaô thå meteò shoulä onlù bå trusteä 
+tï  itó  rateä accuracù iæ thå meaî oæ á serieó  oæ  readingó  ió 
+taken®   Thå extremå singlå readinç oæ 10000.7· ohmó waó showî bù 
+observatioî  tï bå á freaë value¬  anä sï á samplå oæ onlù  threå 
+valueó  shoulä  bå  suffucienô tï greatlù reducå thió  sourcå  oæ 
+measuremenô error.
+
+     Sincå iô ió gooä experimentaì practicå tï takå thå meaî (anä 
+deviation© oæ severaì values¬  ratheò thaî onå samplå value¬ thió 
+approacè waó adopteä iî thå datá logginç experimentó (chapteò  V© 
+withiî thió project¬  whicè attempô tï obtaiî morå informatioî oî 
+thå reliabilitù oæ measurementó takeî froí thå DMM.
+
+     Aó  welì  aó  obtaininç readingó froí  thå  DMM¬  theså  twï 
+programó  provideä IEEÅ buó activitù suitablå foò capturå oî  thå 
+logiã  analyser®   Thus¬  thå GPIÂ protocoì coulä bå inspecteä iî 
+depth¬  anä checkó madå tï ensurå thaô thå controì lineó  conforí 
+tï thå IEEE-48¸ standard®  Chapteò IÖ describeó theså results.
+.PAŠ.SR 10
+              IV. ANALYSIS OF IEEE BUS TRANSACTIONS
+
+     Onå  pitfalì iî discussinç signaló oî thå IEEÅ buó  ió  thaô 
+thå lineó operatå iî negativå logic®   Tï minimizå confusioî oveò 
+thió point¬  É shalì avoiä usinç thå termó 'high§ anä 'low'¬  anä 
+insteaä  uså 'true§ anä 'false'¬  wherå 'true'=OÖ anä 'false'=+5Ö 
+oî  thå  bus®   Sincå thå LA-16° waó seô tï operatå  iî  negativå 
+logic¬ theså definitionó wilì accorä witè itó owî protocol.
+
+     Aî IEEÅ buó systeí wilì compriså onå 'controller§ anä onå oò 
+morå remotå 'devices'¬  whicè maù bå 'talkers§ oò 'listeners'®  Á 
+'listener§ acceptó commandó oò data¬ whilsô á 'talker§ sendó datá 
+bacë tï thå controller®   Thå BBÃ computeò ió thå 'controller§ iî 
+thió system®  Thå digitaì multimeteò ió á 'talkeò ¯ listener'¬ aó 
+iô  botè  acceptó  commandó  froí anä  returnó  readingó  tï  thå 
+computer®   Thå voltagå calibratoò ió onlù á 'listener§ º iô jusô 
+respondó tï commandó froí thå computer.
+
+     Thå majoò probleí iî operatinç aî asynchronouó communicatioî 
+buó ió thaô oæ timinç datá transferó - ho÷ doeó the controller:
+
+          (a) tell a device that data is to be transferred?
+          (b) establish that the device is ready for transfer?
+          (c) confirm that the data has been received?
+
+     Oî thå IEEÅ bus¬  thå probleí ió compounded¬ aó therå maù bå 
+morå thaî onå activå remotå device¬ anä sï thå systeí haó tï copå 
+witè thå slowesô one®  Threå transfeò controì lineó (DAV¬ RFD___” anä 
+DAC___©  arå used®   Theså buó wireó arå driveî bù  'open-collector§ 
+deviceó  (seå  Figurå 3)¬  whicè arå 'wire-ORed§ togetheò  º  onå 
+devicå alonå caî forcå á linå tï 0Ö (i.e®  'true')¬  buô thå linå 
+caî onlù reacè +5Ö (i.e®  'false'© iæ alì oæ thå driveró agreå oî 
+it®   Thió  methoä  oæ handshakinç automaticallù copeó  witè  thå 
+presencå oæ multiplå talkeró ¯ listeners.
+
+ŠInsert Figures 3-5 here ..
+.PAŠ     É founä thaô thå logicaì significancå oæ thå threå handshakå 
+lineó  waó  noô  cleaò  froí theiò  names¬  sï  thå  tablå  belo÷ 
+clarifieó these:
+
+   DAV true => data available     DAV false => no data present
+   RFD___ true => device not ready   RFD___ false => device is ready
+   DAC___ true => not acknowledged   DAC___ false => data acknowledged
+
+     Notå  thaô  RFD___” wilì remaiî truå (noô ready© untiì  alì  thå 
+addresseä buó deviceó arå ready®   Similarly¬ DAC___” wilì bå clampeä 
+truå  (noô acknowledged© untiì thå slowesô devicå ió thå onlù onå 
+holdinç  iô º  thå acknowledgå pulså froí THIÓ devicå ió thå  onå 
+thaô thå computeò wilì finallù receive®  Iî thió waù thå buó goeó 
+aô thå speeä oæ thå slowesô device.
+
+     Thå  followinç handshakå descriptionó arå deriveä botè  froí 
+thå  Commodorå  PEÔ manuaì (relevanô extracô iî Appendiø  F©  anä  
+froí  thå resultó oæ manù experimentó oî thå IEEÅ buó  usinç  thå 
+logiã analyser®  Iî alì tests¬  thå Acorî interfacå boø waó founä 
+tï  adherå tï thå IEEE-48¸ standard¬  anä sï theså protocoló  arå 
+presenteä aó proveî foò thió system®  Mù experimentaì resultó arå 
+noô reproduceä here¬ buô arå includeä iî Appendiø A.
+
+(1) HANDSHAKE (a): COMPUTER TALKING TO REMOTE LISTENER
+
+     Seå Figurå ´ foò thå expecteä timinç diagram¬ anä printouô ± 
+(seå Appendiø A© foò thå resultó recordeä bù thå logiã analyser.
+  
+     Thå controlleò putó á datá bytå ontï thå IEEÅ buó anä checkó 
+thaô RFD___” ió false®   Iô theî assertó DAÖ true¬  tï indicatå  thaô 
+valiä datá ió present®  Thå remotå devicå respondó bù settinç RFD___” 
+true¬ anä subsequentlù pulseó DAC___” falså oncå iô haó reaä thå datá 
+byte®  Oî receipô oæ thå DAC___” pulse¬ thå controlleò returnó DAÖ tï 
+false¬ anä removeó itó datá froí thå bus®  Thå listeneò holdó RFD___” 
+truå untiì iô ió readù foò thå nexô datá byte¬  anä thå operatioî 
+is repeated.Š(2) HANDSHAKE (b): COMPUTER LISTENING TO REMOTE TALKER
+
+     See Figure 5 for the timing diagram.
+
+     Thå  controlleò  waitó foò thå remotå devicå tï puô  á  datá 
+bytå  oî thå buó anä drivå DAÖ true®   Iô theî assertó RFD___”  true¬ 
+readó  thå datá froí thå bus¬  anä pulseó DAC___” false®   Thå remotå 
+devicå respondó bù resettinç DAÖ false®   Wheî thå controlleò  ió 
+readù  foò  thå  nexô  datá byte¬  iô putó  RFD___”  false¬  anä  thå 
+operation is repeated.
+
+     Tablå  4.±  giveó thå ASCIÉ codeó foò thå representatioî  oæ 
+alphanumeriã informatioî withiî · oò ¸ bits®   Typically¬ datá ió 
+sent over the IEEE bus in this format.
+
+(3) PASSING ADDRESS AND CONTROL INFORMATION
+
+     Aparô froí sendinç anä receivinç datá bytes¬  iô ió  clearlù 
+necessarù  foò thå controlleò tï senä informatioî tï buó devices¬ 
+tï indicate¬ foò example¬ whicè arå beinç talkeä oò listeneä to.
+
+     Wheî true¬  thå ATÎ linå indicateó thaô thå bytå oî thå  DIÏ 
+buó ió noô data¬ buô á controì message®  Alì deviceó takå parô iî 
+handshakinç durinç thió transaction¬ aó iô ió essentiaì thaô theù 
+alì receivå thå controì byte.
+
+     Tablå 4.² showó thå IEEE-48¸ controì bytes¬ alì oæ whicè arå 
+senô  witè ATÎ (ATtentioN© asserteä true®  Onlù thoså codeó  thaô 
+arå relevanô tï thió projecô arå no÷ discussed.
+
+     Wheî thå controlleò requireó á devicå tï talk¬  iô sendó thå 
+controì  bytå correspondinç tï thaô devicå addresó froí thå  Talë 
+Addresó Grouğ - e.g®  tï makå devicå 1¸ (thå Premá DMM© talk¬ thå 
+controlleò  sendó $5² hexadecimal®   Wheî thå devicå haó finisheä 
+sendinç data¬ thå controlleò issueó aî 'UNTALK§ codå ($5Æ hex).
+ŠInsert Tables 4.1 and 4.2 here ..
+.paŠ     Whilsô onlù onå devicå caî talë oî thå buó aô thå samå time¬ 
+iô  ió clearlù possiblå foò morå thaî onå devicå tï bå  listeninç 
+tï  thå controlleò aô anù onå time®  Thå controlleò issueó onå oò 
+morå  addresseó  froí thå Listeî Addresó  Grouğ  - e.g®  tï  makå 
+devicå  2° (thå Voltagå Calibrator© listen¬  thå controlleò sendó 
+$3´  hex®   Wheî  thå controlleò haó finisheä  sendinç  data¬  iô 
+issueó aî 'UNLISTEN§ codå ($3F hex).
+
+     Seå printouô ² (iî Appendiø A© foò exampleó oæ datá transfeò 
+captureä froí á ruî oæ 'IEEE01A/B'®  First¬ thå controlleò forceó 
+IFÃ (InterFacå Clear© truå tï initialiså thå buó anä REÎ  (Remotå 
+ENable©  truå  tï forcå buó deviceó tï accepô commandó  froí  thå 
+IEEÅ  bus®   Then¬  wheî  thå channeì tï thå DMÍ ió  opened¬  thå 
+controlleò  issueó á talë commanä tï addresó  18®  Thå  remaininç 
+transactionó  arå self-explanatorù - seå 'IEEE01A/B§ listinç  foò 
+details.
+
+(4) SERIAL REQUESTS
+
+     Seå  printouô ³ (Appendiø A© foò datá captureä froí á ruî oæ 
+'IEEE02A/B'®  Here¬  thå SRÑ (Seriaì ReQuest© linå becomeó activå 
+aó thå DMÍ makeó á ne÷ reading¬  anä á SERIAÌ POLÌ transactioî ió 
+carrieä ouô bù thå computer®   Thå seriaì polì ió carrieä ouô  bù 
+sendinç á SPÅ (Seriaì Polì Enable© command¬ followeä bù á TALË 1¸ 
+command®  Á statuó bytå ió theî placeä oî thå datá buó bù thå DMÍ 
+º  iî thió case¬  'A§ correspondó tï á successfuì reading®  Á SPÄ 
+(Seriaì  Polì  Disable© command¬  followeä bù aî  UNTALË  commanä 
+terminateó thå seriaì polì operation®  Printouô ´ showó á furtheò 
+tesô carrieä ouô oî thå SRÑ operation.
+
+     Iî  additioî tï thå abovå protocols¬  therå arå somå  timinç 
+constraintó tï bå met¬  aó defineä bù thå IEEE-48¸ standard®  Thå 
+documenô iî Appendiø Æ giveó á detaileä descriptioî oæ these¬ buô 
+foò  thå  purposeó oæ thió projecô iô ió sufficienô tï kno÷  thaô 
+thå standarä ió met.
+.PAŠ                   V. DATA LOGGING EXPERIMENTS
+
+     Thå  aií oæ thå datá logginç experimentó iî thió sectioî  oæ 
+thå  projecô  waó foò thå BBÃ Masteò computeò tï collecô aó  manù 
+resultó  aó possiblå froí thå Premá DMÍ oveò á perioä oæ  severaì 
+houró withouô humaî intervention.
+
+     É designeä thå systeí tï meeô thå followinç standards:
+
+        (a)  Alì datá fileó musô includå timå anä datå stamps¬ 
+             sï  thaô informatioî abouô wheî thå readingó werå 
+             takeî ió noô lost.
+
+        (b)  Thå softwarå shoulä bå toleranô oæ systeí crasheó. 
+             If thå poweò fails¬  theî onlù thå currenô  datá 
+             shoulä bå losô - prioò readingó shoulä bå safe.
+
+        (c)  Thå  readingó oî disë shoulä bå saveä  iî  ASCII¬ 
+             ratheò thaî aó BASIÃ datá variables¬  sï thaô thå 
+             BBÃ Editoò (*EDIT© caî bå useä oî it.
+
+        (d)  Readingó  shoulä bå takeî iî "batches¢ oæ severaì 
+             minutes®  Aô thå enä oæ eacè interval¬ theså datá 
+             shoulä bå writteî tï disk.
+
+     Timå anä datå informatioî caî bå obtaineä froí TIME$¬  baseä 
+oî thå real-timå clocë within thå BBÃ Master:
+
+        RIGHT$( TIME$, 8 )      gives just the TIME
+        LEFT$ ( TIME$, 15 )     gives the full DATE
+        MID$  ( TIME$, 5, 11 )  gives the DATE w/o WEEKDAY
+
+     Thå BBÃ Masteò alsï haó aî evenô counter¬ TIME¬ whicè clockó 
+uğ  hundredthó oæ á second®   Thå followinç sequencå carrieó  ouô 
+PROCactivity for ten seconds:
+Š        TIME = 0                 ; reset and start counter
+        REPEAT                   ; marks top of loop
+           PROCactivity          ; do activity
+        UNTIL TIME >= 1000       ; until 10 seconds is up
+
+     Tï senä outpuô tï á disë filå iî ASCIÉ format¬  thå  "SPOOL¢ 
+commanä musô bå used¬ whicè "captures¢ screeî outpuô tï disk®  Iæ 
+F¤ holds thå outpuô filename¬ then:
+
+        OSCLI( "SPOOL "+F$ )    creates F$ and starts "spooling"
+        OSCLI( "SPOOL" )        closes F$ and stops "spooling"
+
+        OSCLI( "SPOOLON "+F$ )  appends "spooled" output to an 
+                                existing file F$
+        OSCLI( "SPOOLON" )      closes F$ and stops "spooling"
+
+     Onå obviouó approacè tï datá logginç ió tï starô bù  openinç 
+thå outpuô file¬  writå readingó tï iô foò á fe÷ hours¬  anä onlù 
+closå thå filå aô thå enä oæ thå experiment®   However¬ wheî datá 
+ió senô tï á disë filå froí BASIÃ oî thå BBÃ Computer¬  iô ió noô 
+writteî straighô tï disk¬  buô goeó intï á buffeò whicè continueó 
+tï takå iî datá untiì iô ió full¬ aô whicè poinô iô ió flusheä tï 
+disk®   Iæ thå computeò werå tï crash¬ theî alì oæ thoså readingó 
+helä  iî thå buffeò woulä bå lost®  Morå disastrously¬  thå  disë 
+filå woulä bå lefô open¬  anä aî attempô tï deletå thió opeî filå 
+coulä resulô iî thå disë beinç corrupted.
+
+     Bù  usinç thå "SPOOLON¢ commanä tï writå successivå readingó 
+tï disk¬ thå outpuô filå caî bå lefô closeä foò almosô alì oæ thå 
+time¬  anä  thå buffeò ió flusheä afteò eacè reading®   Alì oæ mù 
+datá logginç programó uså thió techniquå º  á headeò ió "SPOOLed¢ 
+tï disë anä thå filå ió closed¬ theî aî open/spool/closå sequencå 
+writeó eacè "batch¢ oæ datá tï thå file.
+
+     NOTE: Contrary to Murphy's Law, the system never crashed !
+Š     Iî  ordeò thaô outpuô fileó froí thå datá  logginç  programó 
+arå compatiblå witè thå BBÃ Editoò (*EDIT)¬ eacè end-of-linå musô 
+bå  markeä bù á CHR$(13© (carriagå return© only¬  ratheò thaî thå 
+morå conventionaì CHR$(13);CHR$(10© (carriagå return/linå feed).
+
+     Tï prevenô "SPOOLed¢ outpuô froí reachinç thå VDÕ screen¬  á 
+"*FØ 3,6¢ commanä ió executeä tï disablå VDÕ output®   Thå VDÕ ió 
+re-enableä bù á "*FØ 3,4¢ instruction.
+
+     Iæ iô werå necessarù tï reaä datá bacë froí thå outpuô file¬ 
+theî thå BASIÃ instructioî "BGEÔ #file,A$¢ shoulä bå used¬ aó thå 
+*EDIÔ formaô ió noô compatiblå witè thå "INPUÔ #file,A$¢ command®  
+However¬  thió  waó  neveò needeä durinç mù experimentsº  iô  waó 
+sufficienô tï bå ablå tï prinô ouô thå recordeä data.
+
+     Three data logging programs were developed:
+
+     "LOGRESA/B¢  collectó resistancå readingó froí thå DMM.
+     "LOGVOLA/B¢  collectó voltagå readingó froí thå DMM.
+     "LOGSWPA/B¢  sweepó acrosó thå rangå oæ thå voltagå 
+                  calibrator¬ comparinç thå seô valuå with
+                  thå voltagå readingó froí thå DMM.
+
+     Eacè  outpuô filå consistó oæ á headeò (givinç thå  filenamå 
+anä  thå  date© anä á traileò (holdinç thå  maximuí  anä  minimuí 
+measureä values)®  Betweeî these¬  thå datá consistó oæ á timå oæ 
+measuremenô (typically¬  thå starô timå oæ á fivå minutå batcè oæ 
+readings)¬  thå  meaî reading¬  anä á "wobble¢ valuå (whicè giveó 
+thå peaë variatioî iî batcè readings¬ iî partó peò millioî oæ thå 
+mean).
+
+     Tï prevenô outsideró froí tamperinç witè thå computeò durinç 
+á datá logginç run¬  thå BBÃ Masteò ESCAPÅ keù ió disableä witè á 
+"*FØ 220,0¢ command®  Û TOĞ SECRETº Aî escapå caî stilì bå causeä 
+bù CONTROL-À in an emergency... ]
+Š     Iî "LOGRESA/B¢ anä "LOGVOLA/B"¬ datá logginç continueó untiì 
+interrupteä bù á CONTROL-Ã froí thå user®  Aô thió point¬ thå BBÃ 
+computeò acknowledgeó thaô á BREAË ió tï occur¬  anä finisheó itó 
+currenô  batcè  beforå writinç á traileò tï thå outpuô  filå  anä 
+endinç thå program.
+
+     "LOGRESA/B¢ waó useä iî thå firsô experiment¬ whicè aimeä tï 
+measurå thå "drift¢ oæ thå Premá DMÍ froí poweò up®   Thå DMÍ waó 
+lefô switcheä ofæ witè á 1° kilohí standarä resistoò connecteä tï 
+itó terminals®   Thå DMÍ anä thå resistoò werå lefô foò onå  houò 
+tï reacè thermaì equilibriuí witè thå laboratory¬ anä thå prograí 
+waó starteä aó thå DMÍ waó switcheä on®   Readingó werå takeî foò 
+twï  hours¬  witè periodiã checkó oæ thå laboratorù  temperature®  
+Thå resultó werå recordeä iî á filå calleä "MONDAY".
+
+     Seå  Appendiø  Á foò á printouô oæ "MONDAY"¬  alonç  witè  á 
+grapè anä analysió oæ thå results®  Thå maiî conclusioî froí thió 
+experimenô  ió  thaô  thå Premá DMÍ needó aô leasô  onå  houò  tï 
+"warm-up¢ beforå itó resistancå measurementó caî bå relieä upon.
+
+     "LOGVOLA/B¢ waó useä iî thå nexô twï experiments¬ whicè werå 
+designeä  tï  measurå thå "drifts¢ oæ thå Voltagå Calibratoò  anä 
+thå Premá DMÍ (oî Voltagå range© separately®   Iî eacè case¬  thå 
+Voltagå  Calibratoò waó seô tï deliveò á preciså µ  volô  output¬ 
+witè  thå Premá DMÍ makinç voltagå measurementó foò á fe÷  hours®  
+Seå Appendiø Á foò printoutó anä graphó froí theså experiments.
+
+     Firstly¬  (datá  filå "COLDPSU")¬  thå DMÍ waó lefô tï "warí 
+up¢  foò twï houró (aó suggesteä bù "MONDAY")¬  buô  thå  Voltagå 
+Calibratoò  waó noô switcheä oî untiì logginç waó started®   Froí 
+thå  "COLDPSU¢ graph¬  iô ió cleaò thaô alì buô thå firsô readinç 
+arå  consistenô  anä  withiî ² ppí oæ á meaî  valuå  oæ  4.99998µ 
+volts®   Surprisingly¬ thió indicateó thaô thå Voltagå Calibratoò 
+outpuô ió stablå afteò aó littlå aó fivå minutes®   Iî  practice¬ 
+onå mighô allo÷ 3° minuteó "warm-up¢ beforå usinç it.
+Š     Secondly¬  (datá filå "COLDDVM")¬ thå Voltagå Calibratoò waó 
+lefô tï warí uğ foò halæ aî houò (aó suggesteä bù "COLDPSU")¬ anä 
+thå  DMÍ waó onlù switcheä oî aô thå starô oæ datá logging®   Thå 
+"COLDDVM¢ results¬  likå thoså oæ "MONDAY"¬  suggesô thaô thå DMÍ 
+needó somå timå tï "warí up"®   Froí thå graph¬  wå seå thaô  thå 
+DMÍ  readingó  arå withiî 2° ppí oæ theiò finaì valuå  afteò  onå 
+hour¬  anä withiî ´ ppí afteò twï hours®   Thå conclusioî ió thaô 
+thå  Premá DMÍ shoulä bå lefô tï "warí up¢ foò aô leasô onå  houò 
+beforå itó readingó caî bå trusted.
+
+     Thå nexô experiment¬ usinç "LOGSWPA/B"¬ waó designeä tï sho÷ 
+whetheò oò noô thå Voltagå Calibratoò outpuô varieó smoothlù oveò 
+itó range®   Iô ió likelù thaô thå uniô operateó bù adjustinç itó 
+outpuô leveì untiì aî appropriatå fractioî oæ thió outpuô voltagå 
+matcheó  aî  internaì voltagå standard®  Thió "fraction¢  oæ  thå 
+outpuô maù bå formeä bù á switcheä resistoò networë configureä aó 
+á  potentiaì dividerº  iæ thió ió thå case¬  theî "jumps¢ iî  thå 
+outpuô voltagå maù occuò foò certaiî rangå changes¬  aó differenô 
+setó oæ resistoró arå switcheä in.
+
+     "LOGSWPA/B¢  sweepó acrosó thå 10° volô rangå oæ thå Voltagå 
+Calibrator¬  steppinç iî fivå volô incrementó tï comparå thå  DMÍ 
+readinç witè thå programmeä outpuô voltage®   Sincå thå Premá DMÍ 
+ió aî integratinç voltmeter¬  iô ió reasonablå tï expecô á lineaò 
+characteristiã froí it¬  sï thaô suddeî changeó iî thå fractionaì 
+offseô  betweeî thå readingó caî bå attributeä tï thå Calibrator®  
+Seå Appendiø Á foò á printouô oæ outpuô filå "SWEEP1¢ anä á grapè 
+oæ offseô againsô programmeä voltage.
+
+     Thå  "SWEEP1¢ grapè showó twï suddeî "jumps¢ oæ 4° ppmº  onå 
+betweeî µ anä 1° volts¬  thå otheò betweeî 2° anä 2µ voltó (abouô 
+fouò timeó higher)®  Iæ á binarù resistoò networë ió iî use¬ theî 
+wå woulä expecô á "jump¢ from¬ say¬ 001111± tï 0100000¬  followeä 
+bù  anotheò froí 011111± tï 100000° (aô  fouò timeó thå  previouó 
+value¬ aó observed).
+Š     Followinç  thå abovå logic¬  wå expecô anotheò outpuô "jump¢ 
+betweeî 8° anä 10° volts®   Nï largå changå ió seeî oî thå graph¬ 
+thougè  therå ió á smalì "hop¢ betweeî 9µ anä 10°  volts®   Giveî 
+thaô  thå discontinuitieó caî bå smalì iæ thå resistoró arå  welì 
+matched¬  theî wå coulä havå á jumğ at¬  say¬  9¶ volts®  Iæ thió 
+werå  thå case¬  theî thå previouó twï jumpó coulä havå beeî aô ¶ 
+volts and at 24 volts.
+
+     Chapteò  VIIÉ describeó aî additionaì tesô whicè waó carrieä 
+ouô oî thå Voltagå Calibratoò tï follo÷ uğ thå abovå hypothesis.
+
+     Timå  diä  noô permiô anù furtheò testó tï  bå  carrieä  ouô 
+usinç thå datá logginç software®  Therå arå manù otheò testó thaô 
+coulä bå performed¬ aó welì aó manù experimentaì applications®  É 
+leave these to the imagination of later students !
+.PAŠ            VI. SPEED LIMITATIONS ON THE IEEE-488 BUS
+
+     Thå IEEE-48¸ specificatioî setó á maximuí datá ratå oveò thå 
+GPIÂ oæ ± megabytå peò second®  Already¬ mù resultó sho÷ thaô thå 
+buó ió runninç mucè morå slowlù thaî this®   Thå obviouó questioî 
+to ask is, what limits the operating speed in this case?
+
+     Beforå  startinç mù investigation¬  É madå á beô witè myselæ 
+thaô  thå DMÍ anä thå Voltagå Calibratoò werå holdinç uğ thå bus®  
+Tï provå thå point¬  É monitoreä RFD___” oî thå logiã analyseò  whilå 
+sendinç messageó tï thå Voltagå Calibrator®   Tï mù surprise¬ RFD___” 
+appeareä tï bå alwayó falså (i.e®  devicå ready)®   Iî fact¬ thió 
+ió  noô strictlù trueº  thå correcô interpretatioî ió thaô RFD___” ió 
+pulsinç truå oî á timescalå thaô ió verù smalì compareä witè  thå 
+clocë  ratå  oæ thå logiã analyser¬  sï thaô thå pulseó  arå  noô 
+observed.
+
+     Sincå DAV¬  RFD___¬ DAC___” dï noô limiô thå datá rate¬ iô ió cleaò 
+thaô thå peripheraì deviceó cannoô bå holdinç thå bus®  Thå blamå 
+foò thå slownesó oæ thå buó thereforå restó witè thå BBÃ computeò 
+anä itó interfacå box.
+
+     Measuremenô  oæ thå effectivå datá ratå ió madå difficulô bù 
+thå limiô oæ 400uó oî thå clocë perioä oæ thå logiã analyser®  Tï 
+overcomå  thå problem¬  á speciaì prograí "WAVEA/B¢ waó  written¬ 
+whicè produceó á squarå wavå (betweeî +2Ö anä +7V© oî thå Voltagå 
+Calibrator®  Bù measurinç thå perioä oî aî oscilloscope¬ thå ratå 
+aô whicè commandó arå reachinç thå Calibratoò caî bå determined.
+
+     First¬ thå "LISTEN¢ anä "UNLISTEN¢ commandó (lineó 100¬ 130© 
+werå takeî outsidå thå REPEAÔ looğ (lineó 90¬ 140© tï balancå thå 
+mark/spacå ratio® Surå enough¬ á 1:± squarå wavå witè á perioä oæ 
+48mó waó observed®  Interestingly¬  thå waveforí waó "clean¢ witè 
+negligiblå riså anä falì times®  Hence¬ witè nï externaì loading¬ 
+thå  Voltagå Calibratoò recoveró froí á changå oæ outpuô  voltagå 
+quicklù anä withouô oveò- oò under-shooô®Š     Eacè  commanä tï thå Voltagå Calibratoò consistó oæ 1°  datá 
+bytes¬ pluó twï "enä oæ string¢ bytes®  Sincå á halæ cyclå oæ thå 
+squarå wavå correspondó tï onå command¬  wå havå 1² byteó senô iî 
+24ms, giving a transfer rate of 2ms/byte => 500 bytes/second.
+
+     Secondly¬ "WAVEA/B¢ waó executeä iî itó unmodifieä form®  Aî 
+asymmetriã  wavå waó observeä thió time¬  witè aî unchangeä  MARË 
+timå oæ 24ms¬  buô aî increaseä SPACÅ timå oæ 42ms¬ implyinç thaô 
+thå extrá "LISTEN"/"UNLISTEN¢ cyclå ió takinç aî additionaì 18ms.
+
+     Iî thå caså oæ thå Commodorå PEÔ (seå manuaì iî Appendiø F)¬ 
+wå woulä expecô thå followinç timings:
+
+            LISTEN (primary address)      :     84us
+            UNLISTEN                      :     88us
+            Send Data Byte                :    210us  
+
+     Sincå thå Voltagå Calibratoò ió noô holdinç uğ thå transfer¬ 
+therå ió clearlù  á largå percentagå oæ "deaä time¢ witè thå  BBÃ 
+computer as bus controller.
+
+     Iô ió possiblå thaô thå BBÃ BASIÃ interpeteò ió limitinç thå 
+operatinç speed®   Tï determinå whetheò thió ió thå case¬ "MCA/B¢ 
+waó  written¬  whicè  placeó thå time-sensitivå portionó  oæ  thå 
+prograí intï machinå code¬ whicè shoulä ruî oveò 10° timeó fasteò 
+thaî  BASIC®
+
+     Tï writå thió software¬ iô waó necessarù tï calì somå oæ thå 
+subroutineó  provideä iî thå IEEÅ Eprom®   Sectioî · oæ thå Acorî 
+IEEE-48¸  Interfacå Useò Guidå ió extremelù unhelpfuì  here¬  anä 
+manù houró oæ blood¬  sweaô anä tearó werå needeä tï decipheò thå 
+instructions®  Thå listinç oæ "MCA/B¢ containó thå culminatioî oæ 
+theså effortó anä shoulä bå self-documenting®   Thå keù poinô  ió 
+thaô  datá musô bå entereä BACKWARDS¬  eveî wheî thå singlå  bytå 
+transfeò subroutinå (OSBPUT© ió useä (perverse!).
+Š     First¬ aó witè "WAVEA/B"¬ thå "LISTEN"/"UNLISTEN¢ operationó 
+werå  moveä outsidå thå maiî looğ (bù swappinç linå 11° witè  12° 
+anä linå 14° witè 150)®  Thå MARË timå becamå 11ms¬ anä thå SPACÅ 
+timå waó 28mó - hardlù thå reductionó thaô onå mighô expect.
+
+     Secondly¬  runninç  thå unmodifeä "WAVEA/B"¬  thå MARË  timå 
+changeä  tï  1± mó (aó above© whilsô thå SPACÅ timå becamå  46ms®  
+Thå resultó arå tabulateä below:
+
+                                 MARK        SPACE
+     "WAVEA/B" w/o  L/U :        24 ms       24 ms
+     "WAVEA/B" with L/U :        24 ms       42 ms
+     "MCA/B"   w/o  L/U :        11 ms       28 ms
+     "MCA/B"   with L/U :        11 ms       46 ms  
+
+     [ L/U denotes "LISTEN/UNLISTEN" cycle within loop ] 
+
+     Iî "MCA/B"¬  aó compareä witè "WAVEA/B"¬ thå 1³ mó reductioî 
+iî  MARË timeó occuró becauså thå controì messageó tï seô +7Ö anä 
++2Ö arå senô together¬  ratheò thaî aó twï separatå strings®  Thå 
+´  mó increaså iî SPACÅ timeó arå duå tï thå overheaä iî enterinç 
+anä leavinç thå machinå codå routinå "PULSE¢ oî eacè pasó througè 
+thå loop®   Iî botè "WAVEA/B¢ anä "MCA/B"¬  thå "LISTEN/UNLISTEN¢ 
+cyclå  addó aî extrá 1¸ mó tï SPACÅ timeó º  thió musô bå duå  tï 
+the extra control messages that need to be sent.
+
+     Usinç thå logiã analyser¬  detaileä timingó werå madå oî buó 
+transactions with each remote device (data timings overleaf).
+
+     Theså testó iî machinå codå sho÷ conclusivelù thaô thå BASIÃ 
+interpreteò doeó NOÔ limiô thå buó speed®   Twï possibilitieó arå 
+lefô  º  thaô thå hardwarå withiî thå IEEÅ interfacå boø  imposeó 
+thå constrainô »  oò thaô thå Acorî subroutineó (whicè residå  iî 
+EPROM© arå slow®  Tï determinå thå cause¬ iô ió necessarù tï opeî 
+thå Acorî boø anä investigatå thå contents.
+.PAŠInsert Data Timings I here ..
+.paŠInsert Data Timings II and III here ..
+.paŠ        VII. CONTENTS OF THE ACORN IEEE-488 INTERFACE BOX
+
+     Thå Acorî IEEE-48¸ interfacå uniô connectó tï thå ± MHú  buó 
+oæ  thå BBÃ Computeò viá á shorô lengtè oæ ribboî  cable®   Whilå 
+thå uniô enclosurå ió abouô 10¢ ø 8¢ ø 4"¬ thå electronicó withiî 
+thå boø occupieó onlù one-quarteò oæ thå availablå space®   Therå 
+arå twï printeä circuiô boardó withiî thå uniô º  onå compriseó á 
++5Ö  poweò supply¬  whilå thå otheò carrieó alì oæ thå integrateä 
+circuits.
+
+     Thå ± MHú buó ió aî extensioî oæ thå internaì data¬  addresó 
+anä controì buseó oæ thå BBÃ Computeò whicè exiô througè á 34-waù 
+connector®   Froí  thå  "BBÃ Masteò  Advanceä  Useò  Guide"¬  thå 
+allocationó oî thió connectoò arå giveî iî Figurå 6.
+
+     Variouó areaó oæ memorù withiî thå BBÃ Computeò arå reserveä 
+foò  specifiã uses®  Pagå &FÃ (nameä "FRED"© ió oæ interesô  witè 
+thå ± MHú bus¬ aó iô containó thå memory-mappeä peripherals®  Thå 
+Acorî  IEEE-48¸ expansioî boø ió assigneä addresó locationó  froí 
+&FC2¸ tï &FC2Æ (hex© foò itó owî use.
+
+     Thå importanô poinô thuó faò ió thaô thå architecturå oæ thå 
+± MHú buó doeó noô limiô thå datá transfeò rate®    Aó iô extendó 
+thå  internaì  buó oæ thå computer¬  iô wilì operatå aô  thå  CPÕ 
+rate¬  witè cycleó takinç á fe÷ microsecondó aô worst®  Notå thaô 
+thå  CPÕ  clocë ratå ió normallù ² MHú - buô thió ió sloweä tï  ± 
+MHú wheî operationó arå carrieä ouô oveò thå ± MHú bus.
+
+     Withiî thå Acorî unit¬  thå controlleò chiğ foò thå GPIÂ  ió 
+thå  Texaó Instrumentó TMS9914A¬  whicè ió speciallù designeä foò 
+thió  purpose®   Therå ió nï indicatioî thaô thió  devicå  limitó 
+GPIÂ cycleó tï á maximuí perioä oæ ± ms®   Thå TMS9914Á datá booë 
+(includeä iî Appendiø G© suggestó that¬  witè á µ MHú crystaì (aó 
+iî  thå  Acorî  box)¬  buó accesseó caî bå  completeä  iî  ´  us¬ 
+provideä thaô thå remotå uniô ió ready.
+ŠInsert Acorn Connector details here ..
+.paŠ     Thå importanô partó oæ thå Acorî circuiô boarä werå  deduceä 
+bù  tracinç  ouô PCÂ tracks®   Thå addresó decodinç  anä  controì 
+logiã waó lefô ouô oæ thió analysis¬ aó thå porô locationó oæ thå 
+boarä  arå alreadù known®  Thå resultó oæ thió investigatioî  arå 
+showî iî Figurå 7®   Aó iô stands¬ somå oæ thå piî assignmentó oî 
+datá buseó arå arbitary¬ buô thå flo÷ oæ datá ió correctlù shown®  
+Notå  thaô  thå TMS9914Á datá booë alsï includeó datá oî thå  twï 
+buó buffersº SN7516° anä SN75162.
+
+     Mù conclusioî froí theså investigationó intï thå Acorî IEEE-
+48¸  interfacå boø ió thaô therå ió nothinç withiî thå uniô  thaô 
+restrictó thå GPIÂ bytå transfeò timå tï ± ms®   Indeed¬ iô seemó 
+likelù  thaô datá coulä bå senô froí thió interfacå aó fasô aó oî 
+thå Commodore PEÔ (20° uó peò byte), if not faster.
+
+     Thå  factoò  whicè limitó thå speeä oæ transactionó  betweeî 
+thå BBÃ Computeò anä remotå deviceó must¬  therfore¬ bå thå Acorî 
+softwarå withiî thå IEEEFÓ EPROM®  Thió haó alreadù beeî stronglù 
+suggesteä bù thå waù iî whicè thå "senä message¢ routinå  acceptó 
+datá backwardó º  aó á result¬  thå wholå strinç musô bå receiveä 
+by the routine before any of it can be sent over the bus.
+
+     Aî  interestinç  piecå  oæ "detectivå  work¢  foò  á  futurå 
+studenô  woulä  bå tï worë ouô thå allocatioî oæ  porô  addresseó 
+withiî thå Acorî interfacå boø anä tï writå machinå codå routineó 
+tï  accesó thå buó aó rapidlù aó possible®   É believå thaô iô ió 
+possiblå tï achievå aî improvemenô oæ aô leasô á factoò oæ five.
+
+     Iæ  á dramatiã improvemenô iî buó speeä werå achieved¬  theî 
+interestinç possibilitieó witè thå Voltagå Calibratoò arå  openeä 
+uğ  - foò exampleº  á prograí coulä seô uğ á sinå wavå outpuô  tï 
+checë thå accuracù oæ r.m.s®  readingó oî thå Premá DMÍ »  oò onå 
+coulä generatå pseudo-randoí "noise"¬  witè thå uniô actinç aó aî 
+expensive D to A converter.
+.PAŠInsert Circuit Diagram of Acorn Board here ..
+.PAŠ              VIII. CHECKING THE VOLTAGE CALIBRATOR
+
+     Aô  thå enä oæ chapteò V¬  á hypothesió waó formeä thaô  thå 
+Voltagå Calibratoò exhibitó "jumps¢ iî itó outpuô voltagå wheî iô 
+ió  swepô acrosó itó programmeä range¬  duå tï thå resistoró iî á 
+divideò  chaiî beinç switcheä "in¢ anä  "out"®   Á  supplementarù 
+experimenô  waó carrieä ouô tï investigatå thå variationó iî  itó 
+outpuô  voltage¬  witè  thå aiä oæ á 1° volô referencå  froí  thå 
+Standardó Laboratory®
+
+     Thå  Premá DMÍ anä Voltagå Calibratoò werå ruî iî locaì modå 
+(i.e®  awaù froí thå IEEE-48¸ bus)¬ anä thå followinç sequencå oæ 
+operations were carried out:
+
+     (1) Thå 1° Ö standarä waó measureä oî thå DMÍ (=VM10).
+
+     (2) Thå Calibratoò anä 1° Ö standarä werå connecteä iî 
+         oppositioî  anä  thå outpuô voltagå  waó  adjusteä 
+         untiì  zerï  voltó waó measureä oî thå  DMM®   Thå 
+         Calibratoò settinç (=VC10© waó recorded.
+
+     (3) Thå Calibratoò (oî thió setting© anä 1° Ö standarä 
+         werå  addeä togetheò iî serieó anä thå suí voltagå 
+         waó measureä (=VM20).
+
+     (4) Thå Calibratoò anä 1° Ö standarä werå connecteä iî 
+         oppositioî anä thå Calibratoò voltagå waó adjusteä 
+         untiì  thå  DMÍ  measureä  VM10®   Thå  Calibratoò 
+         settinç waó recordeä (=VC20).
+
+     (5) Stepó  (3© anä (4© werå repeateä  foò  VM20¬  VC30–  
+         anä sï on¬ uğ tï á maximuí oæ 10° V.
+
+     The readings are recorded in Appendix A.
+
+Š     Froí  thå  specificatioî oæ thå Calibratoò (seå Appendiø  D© 
+thå maximuí expecteä erroò ió (1° ppí « 10° uV© ½ 2° ppm®   Sincå 
+á meaî erroò oæ « 11° ppí ió measured¬  theî onå oæ twï  possiblå     
+conclusionó caî bå drawn:
+
+     (a) Thå  Voltagå Calibratoò haó noô beeî re-calibrateä 
+         foò á whilå anä haó drifteä ouô oæ specification® 
+
+     (b) Thå +1° Ö standarä haó drifteä considerablù  sincå 
+         iô waó lasô testeä iî Julù 1986.
+
+     Froí thå specificatioî oæ thå Premá DMÍ (seå Appendiø C© thå 
+maximuí  readinç erroò oî thå 20° volô scalå ió 13°  ppm®   Hencå 
+thå meaî observeä erroò oæ « 5° ppí ió withiî tolerancå limits.
+
+     Thå  resultó oæ thió experimenô dï noô sho÷ anù  "jumps¢  iî 
+thå Calibratoò outpuô voltagå accuracù º  alì oæ thå collecteä VÃ 
+valueó arå betweeî +9µ anä +11µ ppí iî error® 
+
+     However¬ á "jump¢ iî DMÍ accuracù ió observeä wheî itó rangå 
+oæ  measuremenô changeó froí 2V-20Ö tï 20V-200V®   Iî thå  formeò 
+range¬  wå seå aî erroò oæ +7µ ppm¬  compareä witè +4´ tï +5² ppí 
+iî thå latteò range®
+
+     Thus¬ insteaä oæ observinç "jumps¢ iî thå Calibratoò output¬ 
+we have observed them in the DMM readings.
+.PAŠ             IX. THE "QUIZBOARD" SEQUENCE GENERATOR
+
+     Thå  lasô twï weekó oæ thió projecô werå spenô designinç anä 
+constructinç  á "Quizboard¢ sequencå generatoò foò uså iî thå  E± 
+"Logiã Analysers¢ practical®   Thå devicå waó requireä tï senä aî 
+8-biô cyclinç sequencå tï thå logiã analyseò viá itó standarä 15-
+waù front-paneì connector®   Thå "Quizboard¢ ió powereä froí  thå 
+analyseò itself¬ anä thereforå musô consumå nï morå thaî 25° mA.
+
+     C.U.E.D®  alreadù  haó  twï "Quizboxes¢ º  onå  generateó  á 
+psuedo-randoí 8-biô sequence» thå otheò produceó 4-biô binarù anä 
+Graù codå counts.
+
+     Á numbeò oæ approacheó tï thå probleí werå considered¬ whicè 
+includeä using:
+ 
+          (a)  Conventional TTL logic, connected together to 
+               form a "dedicated" sequence generator.
+
+          (b©  A counteò, an EPROÍ anä an 8-bit latcè tï give
+               a fully programmable generator.
+
+          (c)  An F.P.L.S. (Field Programmable Logic Sequencer)
+               to integrate the "TTL" approach of (a) into a
+               single programmable chip.
+
+          (d)  A semi-custom gate array.
+
+     Tï  decidå betweeî theså possibilities¬  iô ió necessarù  tï 
+consideò thå advantageó anä disadvantageó oæ each® 
+
+     Approacè (a© offeró thå mosô direcô solution®   However¬  iô 
+requireó  thaô  á ne÷ PCÂ bå drafteä foò eacè differenô  typå  oæ 
+generator¬ whicè makeó iô inflexible.
+
+Š     Approacè (b© partlù overcomeó thå abovå limitation¬ allowinç 
+anù requireä sequencå tï bå programmeä intï thå EPROÍ anä  placeä 
+oî thå samå PCB® Strictly¬ froí thå hardwarå poinô oæ view¬ iô ió 
+noô  á sequentiaì logiã circuit¬  aó nï outpuô bytå ió physicallù 
+connecteä tï anù other®  Also¬ thå lengtè oæ thå sequencå wilì bå 
+determineä  bù  thå counteò chaiî connecteä tï thå EPROM®   Iæ  á 
+counô  lengtè ió requireä thaô ió noô á poweò oæ  two¬  theî  thå 
+requireä  counteò circuiô maù bå complicated¬  whicè negateó  thå 
+simplificatioî oæ usinç aî EPROÍ iî thå firsô place.
+
+     Approacè (c© offeró almosô aó mucè flexibilitù aó (b© above¬ 
+sincå  mosô  outpuô sequenceó caî bå achieveä iî  thió  way®   Iî 
+addition¬  thå programmeä F.P.L.S®  ió á condenseä versioî oæ thå 
+TTÌ circuiô thaô woulä bå achieveä usinç (a© above¬  anä hencå ió 
+trulù  sequentiaì logic®   Finally¬  thå sequencå lengtè ió noô á 
+functioî oæ externaì hardware¬  buô dependó oî thå statå  diagraí 
+correspondinç tï thå functioî oæ thå device®   Thus¬ approacè (c© 
+haó considerablå advantageó oveò (a© anä (b).
+
+     Approacè  (d©  ió thå mosô efficienô solutioî oæ all¬  aó  á 
+gatå  arraù ió tailor-madå tï providå alì oæ thå  requireä  logiã 
+(includinç  thå onboarä oscillator© withouô wastinç silicoî  reaì 
+estatå oî unuseä functions®   Unfortunately¬  thå cosô anä efforô 
+requireä tï develoğ á semi-custoí desigî arå prohibitive.
+
+     Hence¬  solutioî (c© waó adopted®  Oæ thå programmablå logiã 
+sequenceró oî thå market¬ thå PAÌ 16R¸ waó thå cheapesô anä best-
+suiteä device¬ witè aî 8-biô outpuô registeò anä ¸ feedbacë terms
+per register input line (see data sheet in Appendix H).
+
+     Thå "Quizboard¢ circuiô diagraí (seå Figurå 8© showó thå PAÌ 
+16R¸ tï bå thå maiî componenô (IÃ 2)®  Iî addition¬ aî oscillatoò 
+ió  requireä  tï  clocë thå sequenceº  thió ió  provideä  bù  thå 
+Schmitô  triggeró oæ IÃ 1¬  aó shown®   Aî RÃ networë provideó  á 
+power-on-reseô  pulså tï thå logiã sequencer¬  ensurinç thaô  thå 
+outpuô sequencå startó iî á defineä state.ŠInsert Quizboard Circuit Diagram here ..
+.paŠ     Á  PCÂ waó designeä foò thå "Quizboard¢ (seå PCÂ  printó  iî 
+Appendiø H)® Aó thå circuitrù ió relativelù simple¬ á smalì (3.5¢ 
+ø 2.0"© single-sideä boarä waó easù tï achieve®   Twï boardó werå 
+fabricateä  anä  builô up¬  sï thaô theù coulä bå compareä  iæ  á 
+faulô developeä oî onå oæ theí (seå photograpè iî Appendiø H).
+
+     Threå PAÌ 16R¸ deviceó werå ordereä froí Farnelì  Electroniã 
+Components¬  tï allo÷ foò mistakeó iî programminç anä enablå morå 
+thaî onå sequencå generatoò tï bå constructed®   However¬  oæ thå 
+I.C.ó supplied¬ twï werå founä tï bå noô PAÌ 16R8ó buô PAÌ 16L8s¬ 
+whicè arå totallù incompatible®   Tï completå thå project¬ iô waó 
+thereforå essentiaì tï prograí thå onå PAÌ 16R¸ correctly.
+
+     Á compromiså waó needeä betweeî á "Quizboard¢ sequencå whicè 
+waó  subtlå anä interestinç tï analyså anä yet¬  iî logiã  terms¬ 
+simplå tï creatå anä debug®  Afteò somå thought¬ thå systeí belo÷ 
+waó designed:
+
+     (a) FIVÅ OUTPUÔ LINEÓ tï producå á four-biô binarù counô 
+         pluó onå biô oæ eveî parity.
+
+     (b) THREÅ  OUTPUÔ LINEÓ tï producå á circulatinç Johnsoî 
+         counô (two outputs low, one output high).
+
+     Thå binary/paritù sequencå waó thå morå difficulô tï realiså 
+usinç thå "suí oæ products¢ sequentiaì logiã availablå withiî thå 
+PAÌ 16R8®   Onå complicatioî arisesº thå outputó froí thå latcheó 
+withiî thå PAÌ arå inverteä sï that¬  iî thå Karnaugè map¬  iô ió 
+necessarù  tï  "pick¢ zeroeó ratheò thaî ones®   Thå sequencå  oæ 
+eventó anä Karnaugè mapó arå includeä iî Tablå 5.
+
+     Aó welì aó providinç thå requireä sequence¬  thå PAÌ musô bå 
+initialiseä oî power-up®   Thå inpuô linå provided¬ POR¬ goeó lo÷ 
+oî reset¬  theî riseó high®   Eacè inverteä outpuô is¬ therefore¬ 
+forceä lo÷ oî power-uğ bù ORiîg iô witè POR___.
+ŠInsert Karnaugh Maps here ..
+.paŠ     Thå Johnsoî counô iî (b© ió simplå tï provide®  Thå functioî 
+oæ circulatinç shifô registeò ió achieveä bù setting:
+
+          QF+___ = QH__          QG+___ = QF___          QH+___ = QG__
+
+     Wå must¬ however¬ remembeò tï power-uğ thå shifô registeò iî 
+thå correcô configuratioî (QÆ high¬ QG,QÈ low)®  Thió ió achieveä 
+by modifying the logic functions to:
+
+          QF+___ = QH__.POR      QG+___ = QF___ + POR___    QH+___ = QG__ + POR___
+
+     Thå  programminç facilitieó requireä tï "burn¢ thå PAÌ  16R¸ 
+werå provideä bù Dr® Malcolí MacLeoä (Cambridgå Consultantó Ltd.© 
+tï whoí manù thankó arå due.
+
+     Thå  programmeä  PAÌ 16R¸ waó inserteä iî thå populateä  PCÂ 
+anä connecteä tï thå Logiã Analyser®   Fortunately¬  á displaù oæ 
+itó outpuô showeä thå devicå tï bå operatinç exactlù aó  desired®  
+See the Logic Analyser printout in Appendix H for details.
+
+     Onå minoò probleí waó encounteredº  thå PAÌ 16R¸ onlù resetó 
+correctlù  iæ thå boarä ió pluggeä intï thå Logiã Analyseò  afteò 
+thå  latteò haó beeî switcheä on®   Iæ thå "Quizboard¢ anä  Logiã 
+Analyseò  arå  powereä uğ together¬  thå power-on-reseô doeó  noô 
+worë - presumablù becauså thå poweò supplù oæ thå Logiã  Analyseò 
+riseó toï slowly®
+
+     Á  fe÷  testó showeä thaô thió probleí coulä bå overcomå  bù 
+increasinç  thå  valuå  oæ thå power-on-reseô capacitoò  C²  froí 
+100nÆ tï 1uF®
+
+     É  anticipatå thaô aî imaginativå studenô coulä producå manù 
+differenô "Quizboards¢ usinç thå PAÌ approach®   É haä tï  resisô 
+thå  temptatioî  tï  consideò  á generatoò  whicè  produceó  "IAÎ 
+CHAPMAN¢ in ASCIÉ code¬ thougè thió ió probablù feasible!

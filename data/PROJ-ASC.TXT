@@ -1,0 +1,1106 @@
+.LH 12
+.SR 10
+.HEI.D.CHAPMAN       E1 PROJECT - THE IEEE-488 BUS
+.PN 1
+                    I. INTRODUCTION AND AIMS
+                        ("Investigate!")
+
+     This project took shape from a challenging, open assignment: 
+what  could I discover in six weeks,  given a logic  analyser,  a 
+computer with a GPIB interface, and some measuring instruments? 
+
+     Like many engineering projects, not all of the possibilities 
+were obvious at first.   While my aims were originally centred on 
+analysis  of  the  IEEE-488  bus using  the  logic  analyser,  my 
+attention turned towards the field of automatic data logging, and 
+it soon became clear that the accuracy,  speed and value of  such 
+measurements were worthy of further investigation.  I also became 
+interested in interface electronics for the IEEE-488 bus.
+
+     The above activities took six weeks to complete. Afterwards, 
+some of the IEEE bus equipment was required by another group,  so 
+I  spent the next two weeks devising a "Quizboard",  which  would 
+produce a predefined sequence for the logic analyser to examine.
+
+     As  the above description suggests,  my project "evolved" as 
+it  went along.   I was given the freedom to look into the  areas 
+that  I  found particularly interesting.   For this  reason,  the 
+project proved very stimulating.
+
+     The chapter headings in this report set out the "aims" of my 
+project  at each stage.   I hope that I have opened up some areas 
+of  interest  for later  students.   Wherever  possible,  I  have 
+suggested some further investigations which could be made.
+.PA
+               II. GETTING TO GRIPS WITH THE SYSTEM
+
+     The aim of this chapter is to describe the equipment used in 
+this  project,  pointing out the short cuts and difficulties that 
+arose along the way.  This section may be of time-saving value to 
+future students who intend to investigate the IEEE-488 bus.
+
+(1) LOGIC ANALYSER
+
+     A Thurlby LA-160 Logic Analyser was used to examine data  on 
+the IEEE bus.  This was connected to the bus using the specially-
+designed LC-03 Bus Analysis Unit,  which connects to the front of 
+the  LA-160  via three 15-way cables,  and to the IEEE bus via  a 
+standard 24-way GPIB cable.
+
+     While  the three cables between the LC-03 and the LA-160 are 
+identical  and unmarked,  no damage can occur to either  unit  by 
+connecting them in the wrong order.   In any case, the cables are 
+connected  in  the  "obvious" order,  running back from  the  bus 
+interface to the logic analyser front panel.
+
+     The  IEEE bus uses NEGATIVE LOGIC,  so the LA-160 should  be 
+set for this (see Table 1).   Since there are 16 active bus lines 
+to  be  examined,  the "(Don't Care) Scope 8/16"  key  should  be 
+pressed until "All 16" is displayed.
+
+     The  following  features of the LA-160 are normally left  at 
+their 'set-up' states.
+
+          Clock enables:           Both '1' (unconnected)
+          Trigger enables:         Both '1' (unconnected)
+          Trigger hold-off:        Off
+          Trigger arm:             '1'
+          Trigger arm delay:       Off
+
+
+     An oscilloscope display can be set up as detailed in the LA-
+160 manual - there should be no problem here.   The 16 data lines 
+on the display correspond to the following IEEE-488 signals:
+
+.UJ 0
+          TOP       15   ATN       ATtentioN                       
+                    14   SRQ       Serial ReQuest
+                    13   IFC       InterFace Clear
+                    12   DAC___       Data ACknowledge
+                    11   RFD___       Ready For Data
+                    10   DAV       Data AVailable
+                     9   EOI       End Or Identify 
+                     8   REN       Remote ENable
+                     7   DIO8      Data In/Out  MSB
+                     6   DIO7      Data In/Out
+                     5   DIO6      Data In/Out
+                     4   DIO5      Data In/Out
+                     3   DIO4      Data In/Out
+                     2   DIO3      Data In/Out
+                     1   DIO2      Data In/Out
+          BOTTOM     0   DIO1      Data In/Out  LSB
+.UJ 1
+
+     Both  binary and hexadecimal display formats are useful  for 
+IEEE-488 analysis :  the former allows the status of each control 
+line  to  be  individually monitored,  while the latter  is  more 
+convenient for reading off the ASCII codes of the data present on 
+the DIO lines.
+
+     Either  internal or external clocking of the LA-160  can  be 
+used, depending on the type of bus analysis that is to be carried 
+out.   If one wishes to monitor the timing of DAC___, RFD___ and DAV as 
+individual bytes are transferred,  then INTERNAL clock is needed. 
+If the timing is of no concern, and the aim is just to record the 
+data  bytes  that are sent (one entry per  byte),  then  EXTERNAL 
+clocking off the POSITIVE edge of DAV (as preset by a link on the 
+LC-03 board) is preferable.  See Tables 2a/2b for these settings.
+
+Insert Tables 1-3 here ..
+.PA
+     One limitation of the LA-160 is the maximum period of  400us 
+for  its internal clock.  In some cases,  this can be overcome by 
+connecting the clock enable inputs appropriately.   When this  is 
+not possible,  the link on the LC-03 which connects the  external 
+clock  input  to DAV can be broken,  and an  external  oscillator 
+(such as that suggested in Figure 1) added to increase the  range 
+of available periods.
+
+     The  trigger word should be set in "binary" mode,  according 
+to  the  event  that  is  to  be  trapped.   To  capture  general 
+address/control information, trigger on ATN high and "don't care" 
+on the remaining lines.  To capture a given byte of data, trigger 
+with ATN low and the required byte on the DIO lines.
+
+     It is perfectly possible,  though tedious,  to record events 
+captured by the logic analyser using a pencil and piece of  graph 
+paper.  However,  by  using an LA-160 that has been equipped with 
+the  LR-64 extended facilities ROM,  it is possible to  reproduce 
+the oscilloscope display on an EPSON FX-80 printer.
+
+     The EPSON FX-80 printer in the Oatley Laboratory is,  at the 
+time of writing, operated with a series of IBM microcomputers via 
+a serial link operating at 2400 baud.   Unfortunately, the LA-160 
+is only capable of sending data at 9600 baud, so that the printer 
+must be re-configured to run at 9600 baud before it can be used.
+
+     The  FX-80 serial card can be accessed by opening a flap  on 
+the  right-hand  side of the printer (having removed  the  single 
+screw) revealing two sets of DIP switches.   To run at 9600 baud, 
+SW  1(2) should be changed from ON to OFF (see  Figure  2).   The 
+printer   should  be  restored  to  2400  baud  operation  before 
+replacing the flap.  The other DIP switches set up details of the 
+serial  link such as parity,  stop bits and automatic line feed - 
+but  these were all set correctly for the LA-160 at the  time  of 
+writing.   See  the  FX-80  manual in the Oatley  Laboratory  for 
+further details.
+Insert Figures 1 and 2 here ..
+.pa
+     On  connecting the FX-80 to the serial interface cable  from 
+the  LA-160   and switching the printer on,  a hard copy  of  the 
+oscilloscope display is obtained by using print mode 2 (see Table 
+3) by depressing "SHIFT" "(Compress) PRINT".  The printout covers 
+51  memory locations centered on the cursor position,  so that it 
+is  normally  possible to 'fit' the events of interest  onto  the 
+copy by positioning the cursor appropriately.
+
+     A  single printout takes about two minutes to  produce,  and 
+includes  waveforms,  binary,  ASCII and hexadecimal dumps of the 
+enclosed data.
+
+(2) DIGITAL MULTIMETER
+
+     A  Prema 5000 Integrating Digital Multimeter was one of  two 
+tested IEEE bus devices.  Once the meter is connected to the GPIB 
+using a standard cable, the only setting-up needed is to select a 
+device address and a terminator string for IEEE bus transactions.
+
+     For  the purposes of this project,  a device address of '18' 
+and  terminating string '4' ( CR + LF + EOI ) were  satisfactory. 
+See section 11.1 of the Prema DMM manual (included in Appendix C) 
+if these settings are to be changed.
+
+(3) VOLTAGE CALIBRATOR
+
+     A  Data Precision 8200 Voltage Calibrator was the other IEEE 
+bus device used in this project.   Device address is selected  by 
+five  DIP  switches on the option assembly board - an address  of 
+'20'  was retained.   See specification 2.1.5 (in Appendix D) for 
+details of the data format.
+
+(4) BBC COMPUTER
+
+     A BBC Master computer with the Acorn IEEE-488 interface unit 
+was used to communicate with devices on the GPIB.
+     To obtain hard copy of programs and data, the BBC Master was 
+connected to the FX-80 printer using a standard lead:  this has a 
+5-pin  DIN plug (for the RS-423 port on the BBC computer) at  one 
+end,  and a 25-pin 'D' plug (for the printer) at the other.   The 
+following  instructions configure the BBC computer to operate  at 
+2400 or 9600 baud:
+
+     2400 BAUD:     *FX 5,2        9600 BAUD:     *FX 5,2
+                    *FX 7,5                       *FX 7,7
+                    *FX 8,5                       *FX 8,7
+                    *FX 6,0                       *FX 6,0
+
+     For  ease of use,  a program 'PRINT' was devised  such  that 
+'CHAIN  "PRINT"'  would configure the BBC computer for 2400  baud 
+operation and set the printer to enhanced text mode,  for greater 
+legibility of text (see program listing in Appendix B).
+
+     Following the above initialisation,  CONTROL-B and CONTROL-C 
+can  be used to respectively start and stop the echoing of screen 
+output to the printer.
+
+(5) IEEE INTERFACE BOX AND FIRMWARE
+
+     Before  using the IEEE-488 interface box,  ensure that it is 
+switched on.   The Acorn firmware provided gives an obscure error 
+message (which keeps one guessing!) if the box is unpowered.
+
+     The manual provided with the Acorn IEEE interface is hard to 
+read and fails to make two important points:
+
+     (a) The IEEE and Disc filing systems are independent of each 
+other - only the names of the commands (e.g. OPENIN, PRINT #) are 
+common.  Thus, if one wishes to make disc accesses while the IEEE 
+filing  system  is active,  one must issue a *DISC  command  (and 
+vice-versa).   It is NOT necessary to close files when  switching 
+between filing systems - this is only needed at the end of a run.
+     (b) LISTEN commands require an "EXECUTE" keyword afterwards, 
+as  more than one device can be LISTENing at one  time.  However, 
+only  one  device can TALK on the bus at a  time,  so  that  this 
+instruction  does  not require the trailing  keyword.   The  same 
+argument follows for other multiple and single device commands.
+
+     The best way to become familiar with the control of the GPIB 
+from the BBC computer is to read through my example programs (see 
+listings in Appendix B) using the manual for reference.
+.PA
+.SR 3
+               III. SIMPLE PROGRAMS ON THE IEEE BUS
+
+     To  prove that the BBC Master was able to access  the  Prema 
+DMM over the IEEE bus,  the simple program suggested in the Acorn 
+IEEE-488 interface guide (see Appendix E page 10) was entered and 
+modified  to suit the DMM device address (18).  This program  was 
+saved as 'IEEE01A' and 'IEEE01B'.   Two bugs in the original were 
+fixed :  "voltage$" has to be dimensioned (line 10),  and a *DISC 
+instruction  should  be given at the end (line 250) or  else  the 
+system will refuse to perform subsequent disc accesses.
+
+     The  program  carries  out a simple task :  it  demands  and 
+prints  out three data strings from the DMM.   These contain  the 
+meter reading corresponding to the range selected.
+
+     Note  that the "V5" issued to the DMM in line 130 serves  no 
+functional  purpose (the Prema 5000 ignores it) and is left  over 
+from the original program.   However, when analysing the IEEE bus 
+transactions on the logic analyser,  it is useful to observe data 
+flowing  both  to  and  from the Master  computer,  and  so  this 
+instruction was retained.
+
+     'IEEE01A/B'  is not a very useful program,  for a number  of 
+reasons.   First,  there is no guarantee that the user will  have 
+set up the DMM to the correct range :  it would be preferable for 
+the  computer to do this via the IEEE bus.   Secondly,  while the 
+program  is reasonably readable for a user who is  familiar  with 
+the  IEEE  bus,  it  looks too confusing for a user who  is  only 
+interested in taking readings from the DMM.   Thirdly,  data  are 
+demanded  from  the meter whether or not a new reading  has  been 
+taken.   Ideally,  to  save  bus time,  the computer should  only 
+request  data once the meter has taken a new reading.   The  next 
+program, saved as 'IEEE02A' and 'IEEE02B', solves these problems.
+
+
+
+     To assist in readability,  and to make the programmer's task 
+easier,  'IEEE02A/B'  (see Appendix B) consists of two parts :  a 
+main program (from lines 40-140) and a common core of  procedures 
+and  functions (from lines 180-510).   Each procedure or function 
+has   a  name  that  represents  its  function   (e.g.   'start', 
+'await_dvm',  'read_dvm')  and so the main program  becomes  much 
+simpler and more readable.
+
+     "PROCstart"  and "PROCfinish" contain the header and trailer 
+code from 'IEEE01A/B'.  "PROCsend_dvm()" sends a string of output 
+to the DMM,  to set its range and operating parameters.   In this 
+case,  the  command  string sent in line 60 instructs the DMM  to 
+read resistance with auto-ranging,  sending short messages  every 
+second  using  serial polling (see Prema manual in  Appendix  C). 
+"FNread_dvm" is much the same as before - demanding a string from 
+the  DMM.   The  innovation in this program  is  "PROCawait_dvm", 
+which  causes the computer to wait until a fresh reading has been 
+taken by the meter.
+ 
+     "PROCawait_dvm" only works with the DMM in serial poll  mode 
+(set by the 'Q1' in the DMM command string).   In this case,  the 
+Prema  5000 flags up a serial request on the IEEE bus whenever  a 
+new reading has been made.   "PROCawait_dvm" inspects the  STATUS 
+word  from  the IEEE interface and loops around until the  serial 
+request flag is raised.  When this happens, the flag is reset and 
+the procedure is ended.
+
+     Testing of 'IEEE02A/B' revealed a defect in the operation of 
+the Prema 5000.  When the DMM is instructed to change range then, 
+although the meter acknowledges the new range,  the next  reading 
+is taken on the previous range,  giving an erroneous result.   To 
+combat this, after changing range (line 60) the program waits for 
+one dummy reading (line 70) which it ignores,  before waiting for 
+and receiving the true data (lines 80 & 90).   A series of  tests 
+showed this method to be an adequate precaution.
+
+     The  data string from the Prema 5000 is transmitted  in  'E' 
+format  (e.g.  '003.34625E+4') and so is translated into a number 
+by the VAL() function (line 100).   Note that,  once the DMM  has 
+been  accessed  from the IEEE bus,  the front panel  buttons  are 
+inhibited  until  the DMM is returned to "local" mode.  For  this 
+reason, a "GO TO LOCAL" command is executed in line 110, allowing 
+manual operation again.
+
+     To  test the variability of resistance measurements from the 
+DMM,  a  variable resistance box was placed across the  terminals 
+of  the meter,  and several successive readings were taken.   The 
+results, on several resistance ranges, were as stable as expected 
+from the 612 digit accuracy of the meter.
+
+     The Prema 5000 operates by integrating an input voltage over 
+a  time interval T.   An interesting possibility was to  use  the 
+computer  to  integrate the results over a longer time  interval, 
+say  20T,  by taking the mean of 20 readings.   In  principle,  a 
+higher resolution will be obtained, as the last digit uncertainty 
+will tend to even out.
+
+     To demonstrate this effect, 'IEEE02A/B' was modified to take 
+the  mean  of 20 resistance readings - this program was saved  as 
+'MEAN' (see Appendix B).   Measurements were made on a 10  kilohm 
+standard resistance, with the DMM left on for two hours to ensure 
+thermal stability.  To remove any offset due to resistance of the 
+meter  leads,  the  DMM  was  zeroed (see Prema  5000  manual  in 
+Appendix C) with the leads in place but with the terminals of the 
+standard shorted together.
+
+     For a laboratory temperature of 22o Celsius,  and taking all 
+measured corrections into account, the expected resistance of the 
+standard was 10000.17 ohms.   Random single measurements recorded 
+10000.77,  10000.41,  and 10000.56 ohms.   Taking the mean of 100 
+readings using 'MEAN' gave an overall result of 10000.482 ohms.  
+
+     The measured resistance is +0.0032% higher than the expected 
+value.  This error is within the DMM accuracy quoted in the Prema 
+5000 manual as +/- 0.005% on the 20 kilohm range.   However,  one 
+of the randomly-taken single values,  10 000.77 ohms,  is +0.006% 
+higher than expected, which is outside the meter tolerance.
+
+     These  results suggest that the meter should only be trusted 
+to  its  rated accuracy if the mean of a series  of  readings  is 
+taken.   The extreme single reading of 10000.77 ohms was shown by 
+observation  to be a freak value,  and so a sample of only  three 
+values  should  be  suffucient to greatly reduce this  source  of 
+measurement error.
+
+     Since it is good experimental practice to take the mean (and 
+deviation) of several values,  rather than one sample value, this 
+approach was adopted in the data logging experiments (chapter  V) 
+within this project,  which attempt to obtain more information on 
+the reliability of measurements taken from the DMM.
+
+     As  well  as  obtaining readings from  the  DMM,  these  two 
+programs  provided IEEE bus activity suitable for capture on  the 
+logic  analyser.   Thus,  the GPIB protocol could be inspected in 
+depth,  and checks made to ensure that the control lines  conform 
+to the IEEE-488 standard.  Chapter IV describes these results.
+.PA
+.SR 10
+              IV. ANALYSIS OF IEEE BUS TRANSACTIONS
+
+     One  pitfall in discussing signals on the IEEE bus  is  that 
+the lines operate in negative logic.   To minimize confusion over 
+this point,  I shall avoid using the terms 'high' and 'low',  and 
+instead  use 'true' and 'false',  where 'true'=OV and 'false'=+5V 
+on  the  bus.   Since the LA-160 was set to operate  in  negative 
+logic, these definitions will accord with its own protocol.
+
+     An IEEE bus system will comprise one 'controller' and one or 
+more remote 'devices',  which may be 'talkers' or 'listeners'.  A 
+'listener' accepts commands or data, whilst a 'talker' sends data 
+back to the controller.   The BBC computer is the 'controller' in 
+this system.  The digital multimeter is a 'talker / listener', as 
+it  both  accepts  commands  from and  returns  readings  to  the 
+computer.   The voltage calibrator is only a 'listener' : it just 
+responds to commands from the computer.
+
+     The major problem in operating an asynchronous communication 
+bus is that of timing data transfers - how does the controller:
+
+          (a) tell a device that data is to be transferred?
+          (b) establish that the device is ready for transfer?
+          (c) confirm that the data has been received?
+
+     On the IEEE bus,  the problem is compounded, as there may be 
+more than one active remote device, and so the system has to cope 
+with the slowest one.  Three transfer control lines (DAV, RFD___ and 
+DAC___)  are used.   These bus wires are driven by  'open-collector' 
+devices  (see  Figure 3),  which are 'wire-ORed' together  :  one 
+device alone can force a line to 0V (i.e.  'true'),  but the line 
+can only reach +5V (i.e.  'false') if all of the drivers agree on 
+it.   This  method  of handshaking automatically copes  with  the 
+presence of multiple talkers / listeners.
+
+
+Insert Figures 3-5 here ..
+.PA
+     I found that the logical significance of the three handshake 
+lines  was  not  clear  from their  names,  so  the  table  below 
+clarifies these:
+
+   DAV true => data available     DAV false => no data present
+   RFD___ true => device not ready   RFD___ false => device is ready
+   DAC___ true => not acknowledged   DAC___ false => data acknowledged
+
+     Note  that  RFD___ will remain true (not ready) until  all  the 
+addressed bus devices are ready.   Similarly, DAC___ will be clamped 
+true  (not acknowledged) until the slowest device is the only one 
+holding  it :  the acknowledge pulse from THIS device is the  one 
+that the computer will finally receive.  In this way the bus goes 
+at the speed of the slowest device.
+
+     The  following handshake descriptions are derived both  from 
+the  Commodore  PET manual (relevant extract in Appendix  F)  and  
+from  the results of many experiments on the IEEE bus  using  the 
+logic analyser.  In all tests,  the Acorn interface box was found 
+to  adhere to the IEEE-488 standard,  and so these protocols  are 
+presented as proven for this system.  My experimental results are 
+not reproduced here, but are included in Appendix A.
+
+(1) HANDSHAKE (a): COMPUTER TALKING TO REMOTE LISTENER
+
+     See Figure 4 for the expected timing diagram, and printout 1 
+(see Appendix A) for the results recorded by the logic analyser.
+  
+     The controller puts a data byte onto the IEEE bus and checks 
+that RFD___ is false.   It then asserts DAV true,  to indicate  that 
+valid data is present.  The remote device responds by setting RFD___ 
+true, and subsequently pulses DAC___ false once it has read the data 
+byte.  On receipt of the DAC___ pulse, the controller returns DAV to 
+false, and removes its data from the bus.  The listener holds RFD___ 
+true until it is ready for the next data byte,  and the operation 
+is repeated.
+(2) HANDSHAKE (b): COMPUTER LISTENING TO REMOTE TALKER
+
+     See Figure 5 for the timing diagram.
+
+     The  controller  waits for the remote device to put  a  data 
+byte  on the bus and drive DAV true.   It then asserts RFD___  true, 
+reads  the data from the bus,  and pulses DAC___ false.   The remote 
+device responds by resetting DAV false.   When the controller  is 
+ready  for  the  next  data byte,  it puts  RFD___  false,  and  the 
+operation is repeated.
+
+     Table  4.1  gives the ASCII codes for the representation  of 
+alphanumeric information within 7 or 8 bits.   Typically, data is 
+sent over the IEEE bus in this format.
+
+(3) PASSING ADDRESS AND CONTROL INFORMATION
+
+     Apart from sending and receiving data bytes,  it is  clearly 
+necessary  for the controller to send information to bus devices, 
+to indicate, for example, which are being talked or listened to.
+
+     When true,  the ATN line indicates that the byte on the  DIO 
+bus is not data, but a control message.  All devices take part in 
+handshaking during this transaction, as it is essential that they 
+all receive the control byte.
+
+     Table 4.2 shows the IEEE-488 control bytes, all of which are 
+sent  with ATN (ATtentioN) asserted true.  Only those codes  that 
+are relevant to this project are now discussed.
+
+     When the controller requires a device to talk,  it sends the 
+control  byte corresponding to that device address from the  Talk 
+Address Group - e.g.  to make device 18 (the Prema DMM) talk, the 
+controller  sends $52 hexadecimal.   When the device has finished 
+sending data, the controller issues an 'UNTALK' code ($5F hex).
+
+Insert Tables 4.1 and 4.2 here ..
+.pa
+     Whilst only one device can talk on the bus at the same time, 
+it  is clearly possible for more than one device to be  listening 
+to  the controller at any one time.  The controller issues one or 
+more  addresses  from the Listen Address  Group  - e.g.  to  make 
+device  20 (the Voltage Calibrator) listen,  the controller sends 
+$34  hex.   When  the controller has finished  sending  data,  it 
+issues an 'UNLISTEN' code ($3F hex).
+
+     See printout 2 (in Appendix A) for examples of data transfer 
+captured from a run of 'IEEE01A/B'.  First, the controller forces 
+IFC (InterFace Clear) true to initialise the bus and REN  (Remote 
+ENable)  true  to force bus devices to accept commands  from  the 
+IEEE  bus.   Then,  when  the channel to the DMM is  opened,  the 
+controller  issues a talk command to address  18.  The  remaining 
+transactions  are self-explanatory - see 'IEEE01A/B' listing  for 
+details.
+
+(4) SERIAL REQUESTS
+
+     See  printout 3 (Appendix A) for data captured from a run of 
+'IEEE02A/B'.  Here,  the SRQ (Serial ReQuest) line becomes active 
+as the DMM makes a new reading,  and a SERIAL POLL transaction is 
+carried out by the computer.   The serial poll is carried out  by 
+sending a SPE (Serial Poll Enable) command, followed by a TALK 18 
+command.  A status byte is then placed on the data bus by the DMM 
+:  in this case,  'A' corresponds to a successful reading.  A SPD 
+(Serial  Poll  Disable) command,  followed by an  UNTALK  command 
+terminates the serial poll operation.  Printout 4 shows a further 
+test carried out on the SRQ operation.
+
+     In  addition to the above protocols,  there are some  timing 
+constraints to be met,  as defined by the IEEE-488 standard.  The 
+document in Appendix F gives a detailed description of these, but 
+for  the  purposes of this project it is sufficient to know  that 
+the standard is met.
+.PA
+                   V. DATA LOGGING EXPERIMENTS
+
+     The  aim of the data logging experiments in this section  of 
+the  project  was for the BBC Master computer to collect as  many 
+results  as possible from the Prema DMM over a period of  several 
+hours without human intervention.
+
+     I designed the system to meet the following standards:
+
+        (a)  All data files must include time and date stamps, 
+             so  that information about when the readings were 
+             taken is not lost.
+
+        (b)  The software should be tolerant of system crashes. 
+             If the power fails,  then only the current  data 
+             should be lost - prior readings should be safe.
+
+        (c)  The  readings on disk should be saved  in  ASCII, 
+             rather than as BASIC data variables,  so that the 
+             BBC Editor (*EDIT) can be used on it.
+
+        (d)  Readings  should be taken in "batches" of several 
+             minutes.  At the end of each interval, these data 
+             should be written to disk.
+
+     Time and date information can be obtained from TIME$,  based 
+on the real-time clock within the BBC Master:
+
+        RIGHT$( TIME$, 8 )      gives just the TIME
+        LEFT$ ( TIME$, 15 )     gives the full DATE
+        MID$  ( TIME$, 5, 11 )  gives the DATE w/o WEEKDAY
+
+     The BBC Master also has an event counter, TIME, which clocks 
+up  hundredths of a second.   The following sequence carries  out 
+PROCactivity for ten seconds:
+
+        TIME = 0                 ; reset and start counter
+        REPEAT                   ; marks top of loop
+           PROCactivity          ; do activity
+        UNTIL TIME >= 1000       ; until 10 seconds is up
+
+     To send output to a disk file in ASCII format,  the  "SPOOL" 
+command must be used, which "captures" screen output to disk.  If 
+F$ holds the output filename, then:
+
+        OSCLI( "SPOOL "+F$ )    creates F$ and starts "spooling"
+        OSCLI( "SPOOL" )        closes F$ and stops "spooling"
+
+        OSCLI( "SPOOLON "+F$ )  appends "spooled" output to an 
+                                existing file F$
+        OSCLI( "SPOOLON" )      closes F$ and stops "spooling"
+
+     One obvious approach to data logging is to start by  opening 
+the output file,  write readings to it for a few hours,  and only 
+close the file at the end of the experiment.   However, when data 
+is sent to a disk file from BASIC on the BBC Computer,  it is not 
+written straight to disk,  but goes into a buffer which continues 
+to take in data until it is full, at which point it is flushed to 
+disk.   If the computer were to crash, then all of those readings 
+held  in the buffer would be lost.  More disastrously,  the  disk 
+file would be left open,  and an attempt to delete this open file 
+could result in the disk being corrupted.
+
+     By  using the "SPOOLON" command to write successive readings 
+to disk, the output file can be left closed for almost all of the 
+time,  and  the buffer is flushed after each reading.   All of my 
+data logging programs use this technique :  a header is "SPOOLed" 
+to disk and the file is closed, then an open/spool/close sequence 
+writes each "batch" of data to the file.
+
+     NOTE: Contrary to Murphy's Law, the system never crashed !
+
+     In  order that output files from the data  logging  programs 
+are compatible with the BBC Editor (*EDIT), each end-of-line must 
+be  marked by a CHR$(13) (carriage return) only,  rather than the 
+more conventional CHR$(13);CHR$(10) (carriage return/line feed).
+
+     To prevent "SPOOLed" output from reaching the VDU screen,  a 
+"*FX 3,6" command is executed to disable VDU output.   The VDU is 
+re-enabled by a "*FX 3,4" instruction.
+
+     If it were necessary to read data back from the output file, 
+then the BASIC instruction "BGET #file,A$" should be used, as the 
+*EDIT format is not compatible with the "INPUT #file,A$" command.  
+However,  this  was  never needed during my experiments:  it  was 
+sufficient to be able to print out the recorded data.
+
+     Three data logging programs were developed:
+
+     "LOGRESA/B"  collects resistance readings from the DMM.
+     "LOGVOLA/B"  collects voltage readings from the DMM.
+     "LOGSWPA/B"  sweeps across the range of the voltage 
+                  calibrator, comparing the set value with
+                  the voltage readings from the DMM.
+
+     Each  output file consists of a header (giving the  filename 
+and  the  date) and a trailer (holding the  maximum  and  minimum 
+measured values).  Between these,  the data consists of a time of 
+measurement (typically,  the start time of a five minute batch of 
+readings),  the  mean reading,  and a "wobble" value (which gives 
+the peak variation in batch readings, in parts per million of the 
+mean).
+
+     To prevent outsiders from tampering with the computer during 
+a data logging run,  the BBC Master ESCAPE key is disabled with a 
+"*FX 220,0" command.  [ TOP SECRET: An escape can still be caused 
+by CONTROL-@ in an emergency... ]
+
+     In "LOGRESA/B" and "LOGVOLA/B", data logging continues until 
+interrupted by a CONTROL-C from the user.  At this point, the BBC 
+computer acknowledges that a BREAK is to occur,  and finishes its 
+current  batch  before writing a trailer to the output  file  and 
+ending the program.
+
+     "LOGRESA/B" was used in the first experiment, which aimed to 
+measure the "drift" of the Prema DMM from power up.   The DMM was 
+left switched off with a 10 kilohm standard resistor connected to 
+its terminals.   The DMM and the resistor were left for one  hour 
+to reach thermal equilibrium with the laboratory, and the program 
+was started as the DMM was switched on.   Readings were taken for 
+two  hours,  with periodic checks of the laboratory  temperature.  
+The results were recorded in a file called "MONDAY".
+
+     See  Appendix  A for a printout of "MONDAY",  along  with  a 
+graph and analysis of the results.  The main conclusion from this 
+experiment  is  that  the Prema DMM needs at least  one  hour  to 
+"warm-up" before its resistance measurements can be relied upon.
+
+     "LOGVOLA/B" was used in the next two experiments, which were 
+designed  to  measure the "drifts" of the Voltage Calibrator  and 
+the Prema DMM (on Voltage range) separately.   In each case,  the 
+Voltage  Calibrator was set to deliver a precise 5  volt  output, 
+with  the Prema DMM making voltage measurements for a few  hours.  
+See Appendix A for printouts and graphs from these experiments.
+
+     Firstly,  (data  file "COLDPSU"),  the DMM was left to "warm 
+up"  for two hours (as suggested by "MONDAY"),  but  the  Voltage 
+Calibrator  was not switched on until logging was started.   From 
+the  "COLDPSU" graph,  it is clear that all but the first reading 
+are  consistent  and  within 2 ppm of a mean  value  of  4.999985 
+volts.   Surprisingly, this indicates that the Voltage Calibrator 
+output is stable after as little as five minutes.   In  practice, 
+one might allow 30 minutes "warm-up" before using it.
+
+     Secondly,  (data file "COLDDVM"), the Voltage Calibrator was 
+left to warm up for half an hour (as suggested by "COLDPSU"), and 
+the  DMM was only switched on at the start of data logging.   The 
+"COLDDVM" results,  like those of "MONDAY",  suggest that the DMM 
+needs some time to "warm up".   From the graph,  we see that  the 
+DMM  readings  are within 20 ppm of their final value  after  one 
+hour,  and within 4 ppm after two hours.   The conclusion is that 
+the  Prema DMM should be left to "warm up" for at least one  hour 
+before its readings can be trusted.
+
+     The next experiment, using "LOGSWPA/B", was designed to show 
+whether or not the Voltage Calibrator output varies smoothly over 
+its range.   It is likely that the unit operates by adjusting its 
+output level until an appropriate fraction of this output voltage 
+matches  an  internal voltage standard.  This "fraction"  of  the 
+output may be formed by a switched resistor network configured as 
+a  potential divider:  if this is the case,  then "jumps" in  the 
+output voltage may occur for certain range changes,  as different 
+sets of resistors are switched in.
+
+     "LOGSWPA/B"  sweeps across the 100 volt range of the Voltage 
+Calibrator,  stepping in five volt increments to compare the  DMM 
+reading with the programmed output voltage.   Since the Prema DMM 
+is an integrating voltmeter,  it is reasonable to expect a linear 
+characteristic from it,  so that sudden changes in the fractional 
+offset  between the readings can be attributed to the Calibrator.  
+See Appendix A for a printout of output file "SWEEP1" and a graph 
+of offset against programmed voltage.
+
+     The  "SWEEP1" graph shows two sudden "jumps" of 40 ppm:  one 
+between 5 and 10 volts,  the other between 20 and 25 volts (about 
+four times higher).  If a binary resistor network is in use, then 
+we would expect a "jump" from, say, 0011111 to 0100000,  followed 
+by  another from 0111111 to 1000000 (at  four times the  previous 
+value, as observed).
+
+     Following  the above logic,  we expect another output "jump" 
+between 80 and 100 volts.   No large change is seen on the graph, 
+though  there is a small "hop" between 95 and 100  volts.   Given 
+that  the discontinuities can be small if the resistors are  well 
+matched,  then we could have a jump at,  say,  96 volts.  If this 
+were  the case,  then the previous two jumps could have been at 6 
+volts and at 24 volts.
+
+     Chapter  VIII describes an additional test which was carried 
+out on the Voltage Calibrator to follow up the above hypothesis.
+
+     Time  did  not permit any further tests to  be  carried  out 
+using the data logging software.  There are many other tests that 
+could be performed, as well as many experimental applications.  I 
+leave these to the imagination of later students !
+.PA
+            VI. SPEED LIMITATIONS ON THE IEEE-488 BUS
+
+     The IEEE-488 specification sets a maximum data rate over the 
+GPIB of 1 megabyte per second.  Already, my results show that the 
+bus is running much more slowly than this.   The obvious question 
+to ask is, what limits the operating speed in this case?
+
+     Before  starting my investigation,  I made a bet with myself 
+that  the DMM and the Voltage Calibrator were holding up the bus.  
+To prove the point,  I monitored RFD___ on the logic analyser  while 
+sending messages to the Voltage Calibrator.   To my surprise, RFD___ 
+appeared to be always false (i.e.  device ready).   In fact, this 
+is  not strictly true:  the correct interpretation is that RFD___ is 
+pulsing true on a timescale that is very small compared with  the 
+clock  rate  of the logic analyser,  so that the pulses  are  not 
+observed.
+
+     Since DAV,  RFD___, DAC___ do not limit the data rate, it is clear 
+that the peripheral devices cannot be holding the bus.  The blame 
+for the slowness of the bus therefore rests with the BBC computer 
+and its interface box.
+
+     Measurement  of the effective data rate is made difficult by 
+the limit of 400us on the clock period of the logic analyser.  To 
+overcome  the problem,  a special program "WAVEA/B" was  written, 
+which produces a square wave (between +2V and +7V) on the Voltage 
+Calibrator.  By measuring the period on an oscilloscope, the rate 
+at which commands are reaching the Calibrator can be determined.
+
+     First, the "LISTEN" and "UNLISTEN" commands (lines 100, 130) 
+were taken outside the REPEAT loop (lines 90, 140) to balance the 
+mark/space ratio. Sure enough, a 1:1 square wave with a period of 
+48ms was observed.  Interestingly,  the waveform was "clean" with 
+negligible rise and fall times.  Hence, with no external loading, 
+the  Voltage Calibrator recovers from a change of output  voltage 
+quickly and without over- or under-shoot.
+     Each  command to the Voltage Calibrator consists of 10  data 
+bytes, plus two "end of string" bytes.  Since a half cycle of the 
+square wave corresponds to one command,  we have 12 bytes sent in 
+24ms, giving a transfer rate of 2ms/byte => 500 bytes/second.
+
+     Secondly, "WAVEA/B" was executed in its unmodified form.  An 
+asymmetric  wave was observed this time,  with an unchanged  MARK 
+time of 24ms,  but an increased SPACE time of 42ms, implying that 
+the extra "LISTEN"/"UNLISTEN" cycle is taking an additional 18ms.
+
+     In the case of the Commodore PET (see manual in Appendix F), 
+we would expect the following timings:
+
+            LISTEN (primary address)      :     84us
+            UNLISTEN                      :     88us
+            Send Data Byte                :    210us  
+
+     Since the Voltage Calibrator is not holding up the transfer, 
+there is clearly  a large percentage of "dead time" with the  BBC 
+computer as bus controller.
+
+     It is possible that the BBC BASIC interpeter is limiting the 
+operating speed.   To determine whether this is the case, "MCA/B" 
+was  written,  which  places the time-sensitive portions  of  the 
+program into machine code, which should run over 100 times faster 
+than  BASIC.
+
+     To write this software, it was necessary to call some of the 
+subroutines  provided in the IEEE Eprom.   Section 7 of the Acorn 
+IEEE-488  Interface User Guide is extremely unhelpful  here,  and 
+many hours of blood,  sweat and tears were needed to decipher the 
+instructions.  The listing of "MCA/B" contains the culmination of 
+these efforts and should be self-documenting.   The key point  is 
+that  data must be entered BACKWARDS,  even when the single  byte 
+transfer subroutine (OSBPUT) is used (perverse!).
+
+     First, as with "WAVEA/B", the "LISTEN"/"UNLISTEN" operations 
+were  moved outside the main loop (by swapping line 110 with  120 
+and line 140 with 150).  The MARK time became 11ms, and the SPACE 
+time was 28ms - hardly the reductions that one might expect.
+
+     Secondly,  running  the unmodifed "WAVEA/B",  the MARK  time 
+changed  to  11 ms (as above) whilst the SPACE time became  46ms.  
+The results are tabulated below:
+
+                                 MARK        SPACE
+     "WAVEA/B" w/o  L/U :        24 ms       24 ms
+     "WAVEA/B" with L/U :        24 ms       42 ms
+     "MCA/B"   w/o  L/U :        11 ms       28 ms
+     "MCA/B"   with L/U :        11 ms       46 ms  
+
+     [ L/U denotes "LISTEN/UNLISTEN" cycle within loop ] 
+
+     In "MCA/B",  as compared with "WAVEA/B", the 13 ms reduction 
+in  MARK times occurs because the control messages to set +7V and 
++2V are sent together,  rather than as two separate strings.  The 
+4  ms increase in SPACE times are due to the overhead in entering 
+and leaving the machine code routine "PULSE" on each pass through 
+the loop.   In both "WAVEA/B" and "MCA/B",  the "LISTEN/UNLISTEN" 
+cycle  adds an extra 18 ms to SPACE times :  this must be due  to 
+the extra control messages that need to be sent.
+
+     Using the logic analyser,  detailed timings were made on bus 
+transactions with each remote device (data timings overleaf).
+
+     These tests in machine code show conclusively that the BASIC 
+interpreter does NOT limit the bus speed.   Two possibilities are 
+left  :  that the hardware within the IEEE interface box  imposes 
+the constraint ;  or that the Acorn subroutines (which reside  in 
+EPROM) are slow.  To determine the cause, it is necessary to open 
+the Acorn box and investigate the contents.
+.PA
+Insert Data Timings I here ..
+.pa
+Insert Data Timings II and III here ..
+.pa
+        VII. CONTENTS OF THE ACORN IEEE-488 INTERFACE BOX
+
+     The Acorn IEEE-488 interface unit connects to the 1 MHz  bus 
+of  the BBC Computer via a short length of ribbon  cable.   While 
+the unit enclosure is about 10" x 8" x 4", the electronics within 
+the box occupies only one-quarter of the available space.   There 
+are two printed circuit boards within the unit :  one comprises a 
++5V  power supply,  while the other carries all of the integrated 
+circuits.
+
+     The 1 MHz bus is an extension of the internal data,  address 
+and control buses of the BBC Computer which exit through a 34-way 
+connector.   From  the  "BBC Master  Advanced  User  Guide",  the 
+allocations on this connector are given in Figure 6.
+
+     Various areas of memory within the BBC Computer are reserved 
+for  specific uses.  Page &FC (named "FRED") is of interest  with 
+the 1 MHz bus, as it contains the memory-mapped peripherals.  The 
+Acorn  IEEE-488 expansion box is assigned address locations  from 
+&FC28 to &FC2F (hex) for its own use.
+
+     The important point thus far is that the architecture of the 
+1 MHz bus does not limit the data transfer rate.    As it extends 
+the  internal  bus of the computer,  it will operate at  the  CPU 
+rate,  with cycles taking a few microseconds at worst.  Note that 
+the  CPU  clock rate is normally 2 MHz - but this is slowed to  1 
+MHz when operations are carried out over the 1 MHz bus.
+
+     Within the Acorn unit,  the controller chip for the GPIB  is 
+the  Texas Instruments TMS9914A,  which is specially designed for 
+this  purpose.   There is no indication that this  device  limits 
+GPIB cycles to a maximum period of 1 ms.   The TMS9914A data book 
+(included in Appendix G) suggests that,  with a 5 MHz crystal (as 
+in  the  Acorn  box),  bus accesses can be  completed  in  4  us, 
+provided that the remote unit is ready.
+
+Insert Acorn Connector details here ..
+.pa
+     The important parts of the Acorn circuit board were  deduced 
+by  tracing  out PCB tracks.   The address decoding  and  control 
+logic was left out of this analysis, as the port locations of the 
+board  are already known.  The results of this investigation  are 
+shown in Figure 7.   As it stands, some of the pin assignments on 
+data buses are arbitary, but the flow of data is correctly shown.  
+Note  that  the TMS9914A data book also includes data on the  two 
+bus buffers: SN75160 and SN75162.
+
+     My conclusion from these investigations into the Acorn IEEE-
+488  interface box is that there is nothing within the unit  that 
+restricts the GPIB byte transfer time to 1 ms.   Indeed, it seems 
+likely  that data could be sent from this interface as fast as on 
+the Commodore PET (200 us per byte), if not faster.
+
+     The  factor  which limits the speed of transactions  between 
+the BBC Computer and remote devices must,  therfore, be the Acorn 
+software within the IEEEFS EPROM.  This has already been strongly 
+suggested by the way in which the "send message" routine  accepts 
+data backwards :  as a result,  the whole string must be received 
+by the routine before any of it can be sent over the bus.
+
+     An  interesting  piece  of "detective  work"  for  a  future 
+student  would  be to work out the allocation of  port  addresses 
+within the Acorn interface box and to write machine code routines 
+to  access the bus as rapidly as possible.   I believe that it is 
+possible to achieve an improvement of at least a factor of five.
+
+     If  a dramatic improvement in bus speed were achieved,  then 
+interesting possibilities with the Voltage Calibrator are  opened 
+up  - for example:  a program could set up a sine wave output  to 
+check the accuracy of r.m.s.  readings on the Prema DMM ;  or one 
+could generate pseudo-random "noise",  with the unit acting as an 
+expensive D to A converter.
+.PA
+Insert Circuit Diagram of Acorn Board here ..
+.PA
+              VIII. CHECKING THE VOLTAGE CALIBRATOR
+
+     At  the end of chapter V,  a hypothesis was formed that  the 
+Voltage Calibrator exhibits "jumps" in its output voltage when it 
+is  swept across its programmed range,  due to the resistors in a 
+divider  chain being switched "in" and  "out".   A  supplementary 
+experiment  was carried out to investigate the variations in  its 
+output  voltage,  with  the aid of a 10 volt reference  from  the 
+Standards Laboratory.
+
+     The  Prema DMM and Voltage Calibrator were run in local mode 
+(i.e.  away from the IEEE-488 bus), and the following sequence of 
+operations were carried out:
+
+     (1) The 10 V standard was measured on the DMM (=VM10).
+
+     (2) The Calibrator and 10 V standard were connected in 
+         opposition  and  the output voltage  was  adjusted 
+         until  zero  volts was measured on the  DMM.   The 
+         Calibrator setting (=VC10) was recorded.
+
+     (3) The Calibrator (on this setting) and 10 V standard 
+         were  added together in series and the sum voltage 
+         was measured (=VM20).
+
+     (4) The Calibrator and 10 V standard were connected in 
+         opposition and the Calibrator voltage was adjusted 
+         until  the  DMM  measured  VM10.   The  Calibrator 
+         setting was recorded (=VC20).
+
+     (5) Steps  (3) and (4) were repeated  for  VM20,  VC30  
+         and so on, up to a maximum of 100 V.
+
+     The readings are recorded in Appendix A.
+
+
+     From  the  specification of the Calibrator (see Appendix  D) 
+the maximum expected error is (10 ppm + 100 uV) = 20 ppm.   Since 
+a mean error of + 110 ppm is measured,  then one of two  possible     
+conclusions can be drawn:
+
+     (a) The  Voltage Calibrator has not been re-calibrated 
+         for a while and has drifted out of specification. 
+
+     (b) The +10 V standard has drifted considerably  since 
+         it was last tested in July 1986.
+
+     From the specification of the Prema DMM (see Appendix C) the 
+maximum  reading error on the 200 volt scale is 130  ppm.   Hence 
+the mean observed error of + 50 ppm is within tolerance limits.
+
+     The  results of this experiment do not show any  "jumps"  in 
+the Calibrator output voltage accuracy :  all of the collected VC 
+values are between +95 and +115 ppm in error. 
+
+     However, a "jump" in DMM accuracy is observed when its range 
+of  measurement changes from 2V-20V to 20V-200V.   In the  former 
+range,  we see an error of +75 ppm,  compared with +44 to +52 ppm 
+in the latter range.
+
+     Thus, instead of observing "jumps" in the Calibrator output, 
+we have observed them in the DMM readings.
+.PA
+             IX. THE "QUIZBOARD" SEQUENCE GENERATOR
+
+     The  last two weeks of this project were spent designing and 
+constructing  a "Quizboard" sequence generator for use in the  E1 
+"Logic Analysers" practical.   The device was required to send an 
+8-bit cycling sequence to the logic analyser via its standard 15-
+way front-panel connector.   The "Quizboard" is powered from  the 
+analyser itself, and therefore must consume no more than 250 mA.
+
+     C.U.E.D.  already  has  two "Quizboxes" :  one  generates  a 
+psuedo-random 8-bit sequence; the other produces 4-bit binary and 
+Gray code counts.
+
+     A number of approaches to the problem were considered, which 
+included using:
+ 
+          (a)  Conventional TTL logic, connected together to 
+               form a "dedicated" sequence generator.
+
+          (b)  A counter, an EPROM and an 8-bit latch to give
+               a fully programmable generator.
+
+          (c)  An F.P.L.S. (Field Programmable Logic Sequencer)
+               to integrate the "TTL" approach of (a) into a
+               single programmable chip.
+
+          (d)  A semi-custom gate array.
+
+     To  decide between these possibilities,  it is necessary  to 
+consider the advantages and disadvantages of each. 
+
+     Approach (a) offers the most direct solution.   However,  it 
+requires  that  a new PCB be drafted for each different  type  of 
+generator, which makes it inflexible.
+
+
+     Approach (b) partly overcomes the above limitation, allowing 
+any required sequence to be programmed into the EPROM and  placed 
+on the same PCB. Strictly, from the hardware point of view, it is 
+not  a sequential logic circuit,  as no output byte is physically 
+connected to any other.  Also, the length of the sequence will be 
+determined  by  the counter chain connected to the EPROM.   If  a 
+count  length is required that is not a power of  two,  then  the 
+required  counter circuit may be complicated,  which negates  the 
+simplification of using an EPROM in the first place.
+
+     Approach (c) offers almost as much flexibility as (b) above, 
+since  most  output sequences can be achieved in  this  way.   In 
+addition,  the programmed F.P.L.S.  is a condensed version of the 
+TTL circuit that would be achieved using (a) above,  and hence is 
+truly  sequential logic.   Finally,  the sequence length is not a 
+function of external hardware,  but depends on the state  diagram 
+corresponding to the function of the device.   Thus, approach (c) 
+has considerable advantages over (a) and (b).
+
+     Approach  (d)  is the most efficient solution of all,  as  a 
+gate  array is tailor-made to provide all of the  required  logic 
+(including  the onboard oscillator) without wasting silicon  real 
+estate on unused functions.   Unfortunately,  the cost and effort 
+required to develop a semi-custom design are prohibitive.
+
+     Hence,  solution (c) was adopted.  Of the programmable logic 
+sequencers on the market, the PAL 16R8 was the cheapest and best-
+suited device, with an 8-bit output register and 8 feedback terms
+per register input line (see data sheet in Appendix H).
+
+     The "Quizboard" circuit diagram (see Figure 8) shows the PAL 
+16R8 to be the main component (IC 2).  In addition, an oscillator 
+is  required  to  clock the sequence:  this is  provided  by  the 
+Schmitt  triggers of IC 1,  as shown.   An RC network provides  a 
+power-on-reset  pulse to the logic sequencer,  ensuring that  the 
+output sequence starts in a defined state.
+Insert Quizboard Circuit Diagram here ..
+.pa
+     A  PCB was designed for the "Quizboard" (see PCB  prints  in 
+Appendix H). As the circuitry is relatively simple, a small (3.5" 
+x 2.0") single-sided board was easy to achieve.   Two boards were 
+fabricated  and  built up,  so that they could be compared  if  a 
+fault developed on one of them (see photograph in Appendix H).
+
+     Three PAL 16R8 devices were ordered from Farnell  Electronic 
+Components,  to allow for mistakes in programming and enable more 
+than one sequence generator to be constructed.   However,  of the 
+I.C.s supplied, two were found to be not PAL 16R8s but PAL 16L8s, 
+which are totally incompatible.   To complete the project, it was 
+therefore essential to program the one PAL 16R8 correctly.
+
+     A compromise was needed between a "Quizboard" sequence which 
+was  subtle and interesting to analyse and yet,  in logic  terms, 
+simple to create and debug.  After some thought, the system below 
+was designed:
+
+     (a) FIVE OUTPUT LINES to produce a four-bit binary count 
+         plus one bit of even parity.
+
+     (b) THREE  OUTPUT LINES to produce a circulating Johnson 
+         count (two outputs low, one output high).
+
+     The binary/parity sequence was the more difficult to realise 
+using the "sum of products" sequential logic available within the 
+PAL 16R8.   One complication arises: the outputs from the latches 
+within the PAL are inverted so that,  in the Karnaugh map,  it is 
+necessary  to  "pick" zeroes rather than ones.   The sequence  of 
+events and Karnaugh maps are included in Table 5.
+
+     As well as providing the required sequence,  the PAL must be 
+initialised on power-up.   The input line provided, POR, goes low 
+on reset,  then rises high.   Each inverted output is, therefore, 
+forced low on power-up by ORing it with POR___.
+
+Insert Karnaugh Maps here ..
+.pa
+     The Johnson count in (b) is simple to provide.  The function 
+of circulating shift register is achieved by setting:
+
+          QF+___ = QH__          QG+___ = QF___          QH+___ = QG__
+
+     We must, however, remember to power-up the shift register in 
+the correct configuration (QF high, QG,QH low).  This is achieved 
+by modifying the logic functions to:
+
+          QF+___ = QH__.POR      QG+___ = QF___ + POR___    QH+___ = QG__ + POR___
+
+     The  programming facilities required to "burn" the PAL  16R8 
+were provided by Dr. Malcolm MacLeod (Cambridge Consultants Ltd.) 
+to whom many thanks are due.
+
+     The  programmed  PAL 16R8 was inserted in the populated  PCB 
+and connected to the Logic Analyser.   Fortunately,  a display of 
+its output showed the device to be operating exactly as  desired.  
+See the Logic Analyser printout in Appendix H for details.
+
+     One minor problem was encountered:  the PAL 16R8 only resets 
+correctly  if the board is plugged into the Logic Analyser  after 
+the  latter has been switched on.   If the "Quizboard" and  Logic 
+Analyser  are  powered up together,  the power-on-reset does  not 
+work - presumably because the power supply of the Logic  Analyser 
+rises too slowly.
+
+     A  few  tests showed that this problem could be overcome  by 
+increasing  the  value  of the power-on-reset capacitor  C2  from 
+100nF to 1uF.
+
+     I  anticipate that an imaginative student could produce many 
+different "Quizboards" using the PAL approach.   I had to  resist 
+the  temptation  to  consider  a generator  which  produces  "IAN 
+CHAPMAN" in ASCII code, though this is probably feasible!
