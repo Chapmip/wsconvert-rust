@@ -1,0 +1,14 @@
+$ cat PROJ-WS.TXT | cargo run > PROJ-ASC.TXT
+    Finished dev [unoptimized + debuginfo] target(s) in 0.03s
+     Running `target/debug/wsconvert`
+[src/main.rs:19] num_read = 16384
+[src/main.rs:24] num_conv = 16384
+[src/main.rs:19] num_read = 16384
+[src/main.rs:24] num_conv = 16384
+[src/main.rs:19] num_read = 16384
+[src/main.rs:24] num_conv = 16384
+[src/main.rs:19] num_read = 6656
+[src/main.rs:24] num_conv = 6627
+total input bytes: 55808
+total output bytes: 55779
+$ 
