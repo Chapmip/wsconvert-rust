@@ -18,7 +18,7 @@ fn main() {
         total_input += num_read;
         dbg!(num_read);
         
-        let conv = asciify::convert(&mut buffer[..num_read]);
+        let conv = asciify::convert_chunk(&mut buffer[..num_read]);
         let num_conv = conv.len();
         total_output += num_conv;
         dbg!(num_conv);
