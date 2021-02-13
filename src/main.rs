@@ -8,15 +8,21 @@ use control_count::ControlCount;
 // TESTING CODE HERE FOR NOW...
 
 use std::io::{Read, Write, BufRead, BufReader, BufWriter};  // + self
+use std::char;
 
 fn transform_line(input: &str, counts: &mut ControlCount) -> String {
     let mut output = String::with_capacity(input.len()*2);
     for c in input.chars() {
         if c.is_ascii_control() {
             counts.up(c);
+            output.push('^');
+            output.push(match char::from_u32(c as u32 + '@' as u32) {
+                Some(ch) => ch,
+                None => '*'
+            });
+        } else {
+            output.push(c);
         }
-        output.push(c.to_ascii_uppercase());
-        output.push(c.to_ascii_lowercase());
     }
     output
 }
