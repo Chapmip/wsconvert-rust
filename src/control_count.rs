@@ -17,9 +17,32 @@ const ARRAY_SIZE: usize = BLK_SIZE + 1;
 /// Holds a name tag for a set of counters and an array of values that map to
 /// ASCII control characters as defined by `char::is_ascii_control()`
 #[derive(Debug)]
-struct ControlCount {
+pub struct ControlCount {
     tag: String,
     arr: [i32; ARRAY_SIZE],
+}
+
+/// Display trait implementation for ControlCount, starting with the name tag,
+/// then listing each non-zero count as a hex ASCII value and a decimal count
+impl fmt::Display for ControlCount {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}: ", self.tag)?;
+        let mut previous = false;
+        for i in 0..=ARRAY_SIZE-1 {
+            if self.arr[i] != 0 {
+                if previous {
+                    write!(f, ", ")?;
+                }
+                let mut u = (i as u32) + U32_NUL;
+                if i == ARRAY_SIZE-1 {
+                    u = U32_DEL;
+                }
+                write!(f, "[{:02X}]={}", u, self.arr[i])?;
+                previous = true;
+            }
+        }
+        Ok(())
+    }
 }
 
 impl ControlCount {
@@ -27,16 +50,16 @@ impl ControlCount {
     ///
     /// # Arguments
     ///
-    /// * `name` - String containing name tag (moved into ControlCount struct)
+    /// * `name` - String containing name tag (moved into `ControlCount` struct)
     ///
     /// # Examples
     ///
     /// ```
     /// use control_count;
     ///
-    /// let counts = ControlCount::new("name");
+    /// let counts = ControlCount::new("name".to_string());
     /// ```
-    fn new(tag: String) -> ControlCount {
+    pub fn new(tag: String) -> ControlCount {
         ControlCount { tag, arr: [0; ARRAY_SIZE] }
     }
     
@@ -54,10 +77,10 @@ impl ControlCount {
     /// ```
     /// use control_count;
     ///
-    /// let counts = ControlCount::new("name");
+    /// let counts = ControlCount::new("name".to_string());
     /// counts.add('\x05', 1);
     /// ```
-    fn add(&mut self, ch: char, delta: i32) {
+    pub fn add(&mut self, ch: char, delta: i32) {
         if ch.is_ascii_control() {
             match ch as u32 {
                 u @ U32_NUL..=U32_US => self.arr[(u - U32_NUL) as usize] += delta,
@@ -83,10 +106,10 @@ impl ControlCount {
     /// ```
     /// use control_count;
     ///
-    /// let counts = ControlCount::new("name");
+    /// let counts = ControlCount::new("name".to_string());
     /// counts.up('\x06');
     /// ```
-    fn up(&mut self, ch:char) {
+    pub fn up(&mut self, ch:char) {
         &self.add(ch, 1);
     }
 
@@ -103,10 +126,10 @@ impl ControlCount {
     /// ```
     /// use control_count;
     ///
-    /// let counts = ControlCount::new("name");
+    /// let counts = ControlCount::new("name".to_string());
     /// counts.down('\x07');
     /// ```
-    fn down(&mut self, ch: char) {
+    pub fn down(&mut self, ch: char) {
         &self.add(ch, -1);
     }
 
@@ -123,10 +146,10 @@ impl ControlCount {
     /// ```
     /// use control_count;
     ///
-    /// let counts = ControlCount::new("name");
+    /// let counts = ControlCount::new("name".to_string());
     /// assert_eq!(counts.get('\x08'), Some(0));
     /// ```
-    fn get(&self, ch: char) -> Option<i32> {
+    pub fn get(&self, ch: char) -> Option<i32> {
         if ch.is_ascii_control() {
             match ch as u32 {
                 u @ U32_NUL..=U32_US => Some(self.arr[(u - U32_NUL) as usize]),
@@ -139,29 +162,6 @@ impl ControlCount {
         } else {
             None
         }
-    }
-}
-
-/// Display trait implementation for ControlCount, starting with the name tag,
-/// then listing each non-zero count as a hex ASCII value and a decimal count
-impl fmt::Display for ControlCount {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}: ", self.tag)?;
-        let mut previous = false;
-        for i in 0..=ARRAY_SIZE-1 {
-            if self.arr[i] != 0 {
-                if previous {
-                    write!(f, ", ")?;
-                }
-                let mut u = (i as u32) + U32_NUL;
-                if i == ARRAY_SIZE-1 {
-                    u = U32_DEL;
-                }
-                write!(f, "[{:02X}]={}", u, self.arr[i])?;
-                previous = true;
-            }
-        }
-        Ok(())
     }
 }
 
