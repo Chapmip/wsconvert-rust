@@ -2,6 +2,7 @@ use std::io::{self, Seek, SeekFrom};
 use tempfile;
 
 mod asciify;
+mod control_count;
 
 // TESTING CODE HERE FOR NOW...
 
