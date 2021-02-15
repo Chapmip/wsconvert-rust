@@ -37,38 +37,12 @@ impl ControlCount {
     ///
     /// # Examples
     /// ```
-    /// use control_count;
-    ///
-    /// let counts = ControlCount::new("name".to_string());
+    /// let mut counts = ControlCount::new("name".to_string());
     /// ```
     pub fn new(tag: String) -> ControlCount {
         ControlCount {
             tag,
             counts: BTreeMap::new(),
-        }
-    }
-
-    /// Attempts to add a +/- delta (i32) to the count for the given character
-    ///
-    /// If the given character is not an ASCII control character then no action
-    /// is taken
-    ///
-    /// # Arguments
-    ///
-    /// * `ch` - A character (char) specifying the count to be changed
-    /// * `delta` - A positive/negative/zero delta to the current count value
-    ///
-    /// # Examples
-    /// ```
-    /// use control_count;
-    ///
-    /// let counts = ControlCount::new("name".to_string());
-    /// counts.add('\x05', 1);
-    /// ```
-    pub fn add(&mut self, ch: char, delta: i32) {
-        if ch.is_ascii_control() {
-            let counter = self.counts.entry(ch).or_insert(0);
-            *counter += delta;
         }
     }
 
@@ -83,33 +57,14 @@ impl ControlCount {
     ///
     /// # Examples
     /// ```
-    /// use control_count;
-    ///
-    /// let counts = ControlCount::new("name".to_string());
+    /// let mut counts = ControlCount::new("name".to_string());
     /// counts.up('\x06');
     /// ```
     pub fn up(&mut self, ch: char) {
-        self.add(ch, 1);
-    }
-
-    /// Attempts to decrement (by one) the count for the given character
-    ///
-    /// If the given character is not an ASCII control character then no action
-    /// is taken
-    ///
-    /// # Arguments
-    ///
-    /// * `ch` - A character (char) specifying the count to be decremented
-    ///
-    /// # Examples
-    /// ```
-    /// use control_count;
-    ///
-    /// let counts = ControlCount::new("name".to_string());
-    /// counts.down('\x07');
-    /// ```
-    pub fn down(&mut self, ch: char) {
-        self.add(ch, -1);
+        if ch.is_ascii_control() {
+            let counter = self.counts.entry(ch).or_insert(0);
+            *counter += 1;
+        }
     }
 
     /// Attempts to return the current count for the given character
@@ -123,13 +78,33 @@ impl ControlCount {
     ///
     /// # Examples
     /// ```
-    /// use control_count;
-    ///
-    /// let counts = ControlCount::new("name".to_string());
-    /// assert_eq!(counts.get('\x08'), Some(0));
+    /// let mut counts = ControlCount::new("name".to_string());
+    /// counts.up('\x07');
+    /// assert_eq!(counts.get('\x07'), Some(1));
+    /// assert_eq!(counts.get('\x08'), None);
     /// ```
+    #[allow(dead_code)]
     pub fn get(&self, ch: char) -> Option<i32> {
         self.counts.get(&ch).copied()
+    }
+
+    /// Scans string slice and increments counts for each ASCII control
+    /// character found in it
+    ///
+    /// # Arguments
+    ///
+    /// * `s` - A string slice (or String) to be scanned
+    ///
+    /// # Examples
+    /// ```
+    /// let mut counts = ControlCount::new("name".to_string());
+    /// counts.scan("ABC\x14DEF");
+    /// assert_eq!(counts.get('\x14'), Some(1));
+    /// ```
+    pub fn scan(&mut self, s: &str) {
+        for ch in s.chars() {
+            self.up(ch);
+        }
     }
 }
 
@@ -149,13 +124,12 @@ mod tests {
     }
 
     #[test]
-    fn test_up_down() {
+    fn test_multi() {
         let mut counts = ControlCount::new("Counts".to_string());
         counts.up('\x04');
         counts.up('\x04');
-        counts.down('\x04');
         counts.up('\x04');
-        assert_eq!(counts.get('\x04'), Some(2));
+        assert_eq!(counts.get('\x04'), Some(3));
     }
 
     #[test]
@@ -172,5 +146,13 @@ mod tests {
             format!("{}", counts),
             "Counts: [03]=1, [05]=1, [07]=1, [08]=1, [19]=1, [7F]=2"
         );
+    }
+    
+    #[test]
+    fn test_scan() {
+        let mut counts = ControlCount::new("name".to_string());
+        counts.scan("a'\x07bc\x14de'\x07f");
+        assert_eq!(counts.get('\x07'), Some(2));
+        assert_eq!(counts.get('\x14'), Some(1));
     }
 }

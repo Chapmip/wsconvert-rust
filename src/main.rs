@@ -9,11 +9,10 @@ use std::io::{self, Seek, SeekFrom};
 use std::char;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
 
-fn transform_line(input: &str, counts: &mut ControlCount) -> String {
+fn transform_line(input: &str) -> String {
     let mut output = String::with_capacity(input.len() * 2);
     for c in input.chars() {
         if c.is_ascii_control() {
-            counts.up(c);
             output.push('^');
             output.push(match c as u32 {
                 u @ 0..=0x1F => char::from_u32(u + '@' as u32).unwrap_or('*'),
@@ -37,7 +36,8 @@ fn transform_file(
 
     for line in reader.lines() {
         let line = line?;
-        writeln!(writer, "{}", transform_line(&line, counts))?;
+        counts.scan(&line);
+        writeln!(writer, "{}", transform_line(&line))?;
     }
 
     writer.flush()?;
