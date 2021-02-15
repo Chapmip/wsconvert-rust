@@ -21,7 +21,7 @@ const CHUNK_SIZE: usize = 16 * 1024; // Moderate sized buffer
 /// # Examples
 /// ```
 /// use std::io;
-/// use asciify::{convert_file, convert_chunk};
+/// use asciify::convert_file;
 ///
 /// let mut input = io::stdin();
 /// let mut output = io::stdout();

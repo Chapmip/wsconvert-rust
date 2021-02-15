@@ -147,7 +147,7 @@ mod tests {
             "Counts: [03]=1, [05]=1, [07]=1, [08]=1, [19]=1, [7F]=2"
         );
     }
-    
+
     #[test]
     fn test_scan() {
         let mut counts = ControlCount::new("name".to_string());
