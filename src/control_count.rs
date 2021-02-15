@@ -114,7 +114,7 @@ impl ControlCount {
 
     /// Attempts to return the current count for the given character
     ///
-    /// Returns `Some(u32)` if the given character is a valid ASCII control
+    /// Returns `Some(u32)` if a count has been established for the given
     /// character or `None` if not
     ///
     /// # Arguments
