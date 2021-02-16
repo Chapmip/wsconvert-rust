@@ -10,9 +10,8 @@ fn check_dot_cmd(s: &str) -> Option<(&str, Option<&str>)> {
     let (_, c) = iter.next()?;
     char::is_ascii_alphanumeric(&c).then(go_on)?;
     match iter.next() {
-        Some((j, ' ')) => Some((&s[i..j], Some(&s[j..]))),
+        Some((j, _)) => Some((&s[i..j], Some(&s[j..]))),
         None => Some((&s[i..], None)),
-        Some(_) => None,
     }
 }
 
@@ -57,7 +56,7 @@ fn main() {
     } else {
         println!("Failure!");
     }
-    
+
     let s = "bjfkf".to_ascii_uppercase();
     println!("{}", s);
 
@@ -71,7 +70,7 @@ fn main() {
 
     let text = ".pA";
     println!(".pa -> {:?}", process_dot_cmd(text));
-    
+
     let text = ".co 4";
     println!(".co -> {:?}", process_dot_cmd(text));
 }

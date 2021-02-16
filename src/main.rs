@@ -68,7 +68,6 @@ fn transform_file_dot_cmds(
     Ok(())
 }
 
-
 fn main() {
     let mut input = io::stdin();
     let mut output = tempfile::tempfile().expect("Cannot open temp file");
@@ -79,12 +78,12 @@ fn main() {
     let mut output = tempfile::tempfile().expect("Cannot open temp file");
     let mut counts = ControlCount::new("Pre-Dot ".to_string());
     transform_file_dot_cmds(&mut input, &mut output, &mut counts).unwrap();
-    println!("{}", counts);
+    eprintln!("{}", counts);
 
     let mut input = output;
     input.seek(SeekFrom::Start(0)).unwrap();
     let mut output = io::stdout();
     let mut counts = ControlCount::new("Post-Dot".to_string());
     transform_file_ctrl(&mut input, &mut output, &mut counts).unwrap();
-    println!("{}", counts);
+    eprintln!("{}", counts);
 }
