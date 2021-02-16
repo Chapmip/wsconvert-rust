@@ -1,5 +1,6 @@
 mod asciify;
 mod control_count;
+mod ws_dot_cmd;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
@@ -26,7 +27,7 @@ fn transform_line(input: &str) -> String {
     output
 }
 
-fn transform_file(
+fn transform_file_ctrl(
     input: &mut impl Read,
     output: &mut impl Write,
     counts: &mut ControlCount,
@@ -44,6 +45,30 @@ fn transform_file(
     Ok(())
 }
 
+fn transform_file_dot_cmds(
+    input: &mut impl Read,
+    output: &mut impl Write,
+    counts: &mut ControlCount,
+) -> io::Result<()> {
+    let reader = BufReader::new(input);
+    let mut writer = BufWriter::new(output);
+
+    for line in reader.lines() {
+        let mut line = line?;
+        counts.scan(&line);
+        if let Some(replacement) = ws_dot_cmd::process_dot_cmd(&line) {
+            match &replacement[..] {
+                "" => continue,
+                _ => line = replacement,
+            }
+        }
+        writeln!(writer, "{}", line)?;
+    }
+    writer.flush()?;
+    Ok(())
+}
+
+
 fn main() {
     let mut input = io::stdin();
     let mut output = tempfile::tempfile().expect("Cannot open temp file");
@@ -51,8 +76,15 @@ fn main() {
 
     let mut input = output;
     input.seek(SeekFrom::Start(0)).unwrap();
+    let mut output = tempfile::tempfile().expect("Cannot open temp file");
+    let mut counts = ControlCount::new("Pre-Dot ".to_string());
+    transform_file_dot_cmds(&mut input, &mut output, &mut counts).unwrap();
+    println!("{}", counts);
+
+    let mut input = output;
+    input.seek(SeekFrom::Start(0)).unwrap();
     let mut output = io::stdout();
-    let mut counts = ControlCount::new("Counts".to_string());
-    transform_file(&mut input, &mut output, &mut counts).unwrap();
+    let mut counts = ControlCount::new("Post-Dot".to_string());
+    transform_file_ctrl(&mut input, &mut output, &mut counts).unwrap();
     println!("{}", counts);
 }
