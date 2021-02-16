@@ -1,3 +1,5 @@
+//! Module to process WordStar dot commands
+
 fn check_dot_cmd(s: &str) -> Option<(&str, Option<&str>)> {
     let go_on = || ();
     let is_dot = |&c: &char| c == '.';
@@ -42,36 +44,55 @@ pub fn process_dot_cmd(line: &str) -> Option<String> {
     }
 }
 
-/*
-fn main() {
-    println!("{} {}", ws_constants::ABC, ws_constants::CH);
+// Unit tests
 
-    let mut s = String::new();
-    s.push('b');
-    s.push('a');
-    s.push('r');
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    if check_str(&s) {
-        println!("Success!");
-    } else {
-        println!("Failure!");
+    #[test]
+    fn test_dot_cmds() {
+        assert_eq!(check_dot_cmd(".cw 8"), Some(("cw", Some(" 8"))));
+        assert_eq!(check_dot_cmd(".op"), Some(("op", None)));
+        assert_eq!(check_dot_cmd(".h4"), Some(("h4", None)));
+        assert_eq!(check_dot_cmd(".4h"), None);
+        assert_eq!(check_dot_cmd(".h!"), None);
+        assert_eq!(check_dot_cmd("abc"), None);
+        assert_eq!(check_dot_cmd(""), None);
     }
 
-    let s = "bjfkf".to_ascii_uppercase();
-    println!("{}", s);
+    #[test]
+    fn test_strip_cc() {
+        let text = "\x08  jdj  \x06df  kf\x08\x08\x08  ";
+        assert_eq!(strip_control_chars(text), "  jdj  df  kf  ");
+        assert_eq!(strip_control_chars("abc"), "abc");
+        assert_eq!(strip_control_chars("\x08\x13"), "");
+        assert_eq!(strip_control_chars(""), "");
+    }
 
-    let text = "\x08  jdj  \x06df  kf\x08\x08\x08  ";
-    let s = strip_control_chars(text);
-    println!("{}", s.trim());
+    #[test]
+    fn test_make_header() {
+        assert_eq!(
+            make_header("# ", Some("hello")),
+            Some("# hello".to_string())
+        );
+        assert_eq!(
+            make_header("# ", Some("he\x03llo")),
+            Some("# hello".to_string())
+        );
+        assert_eq!(make_header("# ", None), None);
+    }
 
-    let text = ".He \x03 jd \x04 jhhfjf*¬£   \x05  ";
-    // let text = ".he";
-    println!(".he -> {:?}", process_dot_cmd(text));
-
-    let text = ".pA";
-    println!(".pa -> {:?}", process_dot_cmd(text));
-
-    let text = ".co 4";
-    println!(".co -> {:?}", process_dot_cmd(text));
+    #[test]
+    fn test_process() {
+        let text = ".He \x03 jd \x04 jhhfjf*¬£   \x05  ";
+        assert_eq!(process_dot_cmd(text), Some("## jd  jhhfjf*¬£".to_string()));
+        assert_eq!(
+            process_dot_cmd(".f3 \x13\x14TEST\x13\x14"),
+            Some("### TEST".to_string())
+        );
+        assert_eq!(process_dot_cmd(".op"), Some("".to_string()));
+        assert_eq!(process_dot_cmd("abc"), None);
+        assert_eq!(process_dot_cmd(""), None);
+    }
 }
-*/
