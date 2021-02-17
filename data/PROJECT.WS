@@ -1031,13 +1031,13 @@ forceä lo÷ oî power-uğ bù ORiîg iô witè POR___.
 .paŠ     Thå Johnsoî counô iî (b© ió simplå tï provide®  Thå functioî 
 oæ circulatinç shifô registeò ió achieveä bù setting:
 
-          QF+___ = QH__          QG+___ = QF___          QH+___ = QG__
+          QF+___ = QH__          QG+___ = QF__           QH+___ = QG__
 
      Wå must¬ however¬ remembeò tï power-uğ thå shifô registeò iî 
 thå correcô configuratioî (QÆ high¬ QG,QÈ low)®  Thió ió achieveä 
 by modifying the logic functions to:
 
-          QF+___ = QH__.POR      QG+___ = QF___ + POR___    QH+___ = QG__ + POR___
+          QF+___ = QH__.POR      QG+___ = QF__  + POR___    QH+___ = QG__ + POR___
 
      Thå  programminç facilitieó requireä tï "burn¢ thå PAÌ  16R¸ 
 werå provideä bù Dr® Malcolí MacLeoä (Cambridgå Consultantó Ltd.© 
