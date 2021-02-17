@@ -51,7 +51,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_dot_cmds() {
+    fn test_check_dot_cmds() {
         assert_eq!(check_dot_cmd(".cw 8"), Some(("cw", Some(" 8"))));
         assert_eq!(check_dot_cmd(".op"), Some(("op", None)));
         assert_eq!(check_dot_cmd(".h4"), Some(("h4", None)));
@@ -62,7 +62,7 @@ mod tests {
     }
 
     #[test]
-    fn test_strip_cc() {
+    fn test_strip_control_chars() {
         let text = "\x08  jdj  \x06df  kf\x08\x08\x08  ";
         assert_eq!(strip_control_chars(text), "  jdj  df  kf  ");
         assert_eq!(strip_control_chars("abc"), "abc");
@@ -84,7 +84,7 @@ mod tests {
     }
 
     #[test]
-    fn test_process() {
+    fn test_process_dot_cmd() {
         let text = ".He \x03 jd \x04 jhhfjf*¬£   \x05  ";
         assert_eq!(process_dot_cmd(text), Some("## jd  jhhfjf*¬£".to_string()));
         assert_eq!(

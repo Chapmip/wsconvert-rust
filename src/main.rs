@@ -10,7 +10,7 @@ use std::io::{self, Seek, SeekFrom};
 use std::char;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
 
-fn transform_line(input: &str) -> String {
+fn transform_ctrl_chars(input: &str) -> String {
     let mut output = String::with_capacity(input.len() * 2);
     for c in input.chars() {
         if c.is_ascii_control() {
@@ -27,44 +27,33 @@ fn transform_line(input: &str) -> String {
     output
 }
 
-fn transform_file_ctrl(
-    input: &mut impl Read,
-    output: &mut impl Write,
-    counts: &mut ControlCount,
-) -> io::Result<()> {
-    let reader = BufReader::new(input);
-    let mut writer = BufWriter::new(output);
+fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
+    let mut original_counts = ControlCount::new("Original ".to_string());
+    let mut middle_counts = ControlCount::new("Middle   ".to_string());
+    let mut final_counts = ControlCount::new("Final    ".to_string());
 
-    for line in reader.lines() {
-        let line = line?;
-        counts.scan(&line);
-        writeln!(writer, "{}", transform_line(&line))?;
-    }
-
-    writer.flush()?;
-    Ok(())
-}
-
-fn transform_file_dot_cmds(
-    input: &mut impl Read,
-    output: &mut impl Write,
-    counts: &mut ControlCount,
-) -> io::Result<()> {
     let reader = BufReader::new(input);
     let mut writer = BufWriter::new(output);
 
     for line in reader.lines() {
         let mut line = line?;
-        counts.scan(&line);
+        original_counts.scan(&line);
         if let Some(replacement) = ws_dot_cmd::process_dot_cmd(&line) {
             match &replacement[..] {
                 "" => continue,
                 _ => line = replacement,
             }
         }
+        middle_counts.scan(&line);
+        line = transform_ctrl_chars(&line);
+        final_counts.scan(&line);
         writeln!(writer, "{}", line)?;
     }
     writer.flush()?;
+
+    eprintln!("{}", original_counts);
+    eprintln!("{}", middle_counts);
+    eprintln!("{}", final_counts);
     Ok(())
 }
 
@@ -75,15 +64,6 @@ fn main() {
 
     let mut input = output;
     input.seek(SeekFrom::Start(0)).unwrap();
-    let mut output = tempfile::tempfile().expect("Cannot open temp file");
-    let mut counts = ControlCount::new("Pre-Dot ".to_string());
-    transform_file_dot_cmds(&mut input, &mut output, &mut counts).unwrap();
-    eprintln!("{}", counts);
-
-    let mut input = output;
-    input.seek(SeekFrom::Start(0)).unwrap();
     let mut output = io::stdout();
-    let mut counts = ControlCount::new("Post-Dot".to_string());
-    transform_file_ctrl(&mut input, &mut output, &mut counts).unwrap();
-    eprintln!("{}", counts);
+    transform_file(&mut input, &mut output).unwrap();
 }

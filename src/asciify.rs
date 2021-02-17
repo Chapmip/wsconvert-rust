@@ -97,37 +97,37 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_simple() {
+    fn test_convert_chunk_simple() {
         let mut buf = [0x7E, 0x7F, 0x80, 0x81, 0x82];
         assert_eq!(convert_chunk(&mut buf), [0x7E, 0x7F, 0x00, 0x01, 0x02]);
     }
 
     #[test]
-    fn test_slice() {
+    fn test_convert_chunk_slice() {
         let mut buf = [0x41, 0xC2, 0x43, 0xC4, 0x45];
         assert_eq!(convert_chunk(&mut buf[..2]), [0x41, 0x42]);
     }
 
     #[test]
-    fn test_eof_first() {
+    fn test_convert_chunk_eof_first() {
         let mut buf = [EOF_BYTE, 0xC2, 0x43, 0xC4, 0x45];
         assert_eq!(convert_chunk(&mut buf), []);
     }
 
     #[test]
-    fn test_eof_middle() {
+    fn test_convert_chunk_eof_middle() {
         let mut buf = [0x41, 0xC2, 0x43, EOF_BYTE, 0x45];
         assert_eq!(convert_chunk(&mut buf), [0x41, 0x42, 0x43]);
     }
 
     #[test]
-    fn test_eof_last() {
+    fn test_convert_chunk_eof_last() {
         let mut buf = [0x41, 0xC2, 0x43, 0xC4, EOF_BYTE];
         assert_eq!(convert_chunk(&mut buf), [0x41, 0x42, 0x43, 0x44]);
     }
 
     #[test]
-    fn test_empty() {
+    fn test_convert_chunk_empty() {
         let mut buf = [];
         println!("{:?}", buf);
         assert_eq!(convert_chunk(&mut buf), []);

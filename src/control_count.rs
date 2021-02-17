@@ -24,6 +24,10 @@ impl fmt::Display for ControlCount {
             write!(f, "[{:02X}]={}", *key as u32, *value)?;
             previous = true;
         }
+        if !previous {
+            write!(f, "None")?;
+
+        }
         Ok(())
     }
 }
