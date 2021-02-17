@@ -1,6 +1,6 @@
 ## I.D.CHAPMAN       E1 PROJECT - THE IEEE-488 BUS
-^BI̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲^B
-(̲"̲I̲n̲v̲e̲s̲t̲i̲g̲a̲t̲e̲!̲"̲)̲
+^B                    I̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲^B
+                        (̲"̲I̲n̲v̲e̲s̲t̲i̲g̲a̲t̲e̲!̲"̲)̲
 
      This project took shape from a challenging, open assignment: 
 what  could I discover in six weeks,  given a logic  analyser,  a 
@@ -29,7 +29,7 @@ project  at each stage.   I hope that I have opened up some areas
 of  interest  for later  students.   Wherever  possible,  I  have 
 suggested some further investigations which could be made.
 ---
-^BI̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲^B
+^B               I̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲^B
 
      The aim of this chapter is to describe the equipment used in 
 this  project,  pointing out the short cuts and difficulties that 
@@ -223,7 +223,7 @@ argument follows for other multiple and single device commands.
 from the BBC computer is to read through my example programs (see 
 listings in Appendix B) using the manual for reference.
 ---
-^BI̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲^B
+^B               I̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲^B
 
      To  prove that the BBC Master was able to access  the  Prema 
 DMM over the IEEE bus,  the simple program suggested in the Acorn 
@@ -356,7 +356,7 @@ logic  analyser.   Thus,  the GPIB protocol could be inspected in
 depth,  and checks made to ensure that the control lines  conform 
 to the IEEE-488 standard.  Chapter IV describes these results.
 ---
-^BI̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲^B
+^B              I̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲^B
 
      One  pitfall in discussing signals on the IEEE bus  is  that 
 the lines operate in negative logic.   To minimize confusion over 
@@ -504,7 +504,7 @@ document in Appendix F gives a detailed description of these, but
 for  the  purposes of this project it is sufficient to know  that 
 the standard is met.
 ---
-^BV̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲^B
+^B                   V̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲^B
 
      The  aim of the data logging experiments in this section  of 
 the  project  was for the BBC Master computer to collect as  many 
@@ -781,7 +781,7 @@ time was 28ms - hardly the reductions that one might expect.
 changed  to  11 ms (as above) whilst the SPACE time became  46ms.  
 The results are tabulated below:
 
-M̲A̲R̲K̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲S̲P̲A̲C̲E̲
+                                 M̲A̲R̲K̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲S̲P̲A̲C̲E̲
      "WAVEA/B" w/o  L/U :        24 ms       24 ms
      "WAVEA/B" with L/U :        24 ms       42 ms
      "MCA/B"   w/o  L/U :        11 ms       28 ms

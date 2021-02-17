@@ -44,10 +44,10 @@ fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
     Some((left, middle, right))
 }
 
-fn split_ctrl_text_ctrl(s: &str) -> (&str, &str, &str) {
+fn split_wrapped_text(s: &str, func: fn(&char) -> bool) -> (&str, &str, &str) {
     let mut left = 0;
     let mut right = 0;
-    let is_control = |&(_, c): &(usize, char)| char::is_ascii_control(&c);
+    let is_control = |&(_, c): &(usize, char)| func(&c);
 
     let mut iter = s.char_indices().skip_while(is_control);
     if let Some((i, _)) = iter.next() {
@@ -79,10 +79,13 @@ pub fn process_underlines(s: &str) -> Option<String> {
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
-        let (ctrl_left, text, ctrl_right) = split_ctrl_text_ctrl(text);
+        let (ctrl_left, text, ctrl_right) = split_wrapped_text(text, char::is_ascii_control);
         result.push_str(ctrl_left);
-        let combined = add_combiner(text.trim(), COMB_UNDERLINE);
-        result.push_str(combined.trim());
+        let (spc_left, text, spc_right) = split_wrapped_text(text, char::is_ascii_whitespace);
+        result.push_str(spc_left);
+        let combined = add_combiner(text, COMB_UNDERLINE);
+        result.push_str(&combined);
+        result.push_str(spc_right);
         result.push_str(ctrl_right);
         rest = right;
         changed = true;
@@ -187,17 +190,20 @@ mod tests {
     }
 
     #[test]
-    fn test_split_ctrl_text_ctrl() {
+    fn test_split_wrapped_text() {
         assert_eq!(
-            split_ctrl_text_ctrl("\x13\x13¬efef\x13wf£wfwbc¬\x13"),
-            ("", "¬efefwf£wfwbc¬", "")
+            split_wrapped_text("\x13\x13¬efef\x13wf£wfwbc¬\x13", char::is_ascii_control),
+            ("\x13\x13", "¬efef\x13wf£wfwbc¬", "\x13",)
         );
-        assert_eq!(split_ctrl_text_ctrl("abc"), ("", "abc", ""));
         assert_eq!(
-            split_ctrl_text_ctrl("\x13\x02\x13\x02"),
+            split_wrapped_text("abc", char::is_ascii_control),
+            ("", "abc", "")
+        );
+        assert_eq!(
+            split_wrapped_text("\x13\x02\x13\x02", char::is_ascii_control),
             ("", "", "\x13\x02\x13\x02")
         );
-        assert_eq!(split_ctrl_text_ctrl(""), ("", "", ""));
+        assert_eq!(split_wrapped_text("", char::is_ascii_control), ("", "", ""));
     }
 
     #[test]
@@ -238,8 +244,8 @@ mod tests {
         assert_eq!(
             process_underlines("\x13\x02  I. INTRO & AIMS\x13\x02"),
             Some(
-                "\u{2}I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
-                \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\u{2}"
+                "\x02  I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
+                \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
                     .to_string()
             )
         );
@@ -253,7 +259,7 @@ mod tests {
         );
         assert_eq!(
             process_overlines("See DAC\x08?\x08\x14___\x14, RFD\x08\x08\x08\x14___\x14 and DAV"),
-            Some("See DAC\u{8}?\u{8}\u{14}___\u{14}, R\u{305}F\u{305}D\u{305} and DAV".to_string())
+            Some("See DAC\x08?\x08\x14___\x14, R\u{305}F\u{305}D\u{305} and DAV".to_string())
         );
         assert_eq!(process_overlines("abcd"), None);
         assert_eq!(process_overlines(""), None);

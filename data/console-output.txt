@@ -1,5 +1,5 @@
 $ cat data/PROJECT.WS | cargo run > data/PROJECT.TXT
-    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
      Running `target/debug/wsconvert`
 [src/asciify.rs:41] num_read = 16384
 [src/asciify.rs:46] num_conv = 16384
