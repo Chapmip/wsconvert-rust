@@ -1,6 +1,8 @@
 mod asciify;
 mod control_count;
+mod ws_chars;
 mod ws_dot_cmd;
+mod ws_under_over;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
@@ -28,9 +30,11 @@ fn transform_ctrl_chars(input: &str) -> String {
 }
 
 fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
-    let mut original_counts = ControlCount::new("Original ".to_string());
-    let mut middle_counts = ControlCount::new("Middle   ".to_string());
-    let mut final_counts = ControlCount::new("Final    ".to_string());
+    let mut original_counts = ControlCount::new("Original   ".to_string());
+    let mut no_dot_counts = ControlCount::new("No dot cmd ".to_string());
+    let mut under_counts = ControlCount::new("Underline  ".to_string());
+    let mut over_counts = ControlCount::new("Overline   ".to_string());
+    let mut final_counts = ControlCount::new("Final      ".to_string());
 
     let reader = BufReader::new(input);
     let mut writer = BufWriter::new(output);
@@ -38,21 +42,36 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     for line in reader.lines() {
         let mut line = line?;
         original_counts.scan(&line);
+
         if let Some(replacement) = ws_dot_cmd::process_dot_cmd(&line) {
             match &replacement[..] {
                 "" => continue,
                 _ => line = replacement,
             }
         }
-        middle_counts.scan(&line);
+        no_dot_counts.scan(&line);
+
+        if let Some(replacement) = ws_under_over::process_underlines(&line) {
+            line = replacement;
+        }
+        under_counts.scan(&line);
+
+        if let Some(replacement) = ws_under_over::process_overlines(&line) {
+            line = replacement;
+        }
+        over_counts.scan(&line);
+
         line = transform_ctrl_chars(&line);
         final_counts.scan(&line);
+
         writeln!(writer, "{}", line)?;
     }
     writer.flush()?;
 
     eprintln!("{}", original_counts);
-    eprintln!("{}", middle_counts);
+    eprintln!("{}", no_dot_counts);
+    eprintln!("{}", under_counts);
+    eprintln!("{}", over_counts);
     eprintln!("{}", final_counts);
     Ok(())
 }

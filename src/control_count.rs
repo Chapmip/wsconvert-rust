@@ -26,7 +26,6 @@ impl fmt::Display for ControlCount {
         }
         if !previous {
             write!(f, "None")?;
-
         }
         Ok(())
     }

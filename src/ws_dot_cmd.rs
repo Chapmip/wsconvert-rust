@@ -1,5 +1,9 @@
 //! Module to process WordStar dot commands
 
+// Utilises new "bool then" feature in Rust 1.50 to simplify use of '?' operator
+//     [condition].then(|| ())
+//  -> if [condition] { Some( () ) } else { None }
+//
 fn check_dot_cmd(s: &str) -> Option<(&str, Option<&str>)> {
     let go_on = || ();
     let is_dot = |&c: &char| c == '.';
