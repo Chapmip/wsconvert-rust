@@ -98,6 +98,7 @@ fn add_combiner(s: &str, combiner: char) -> String {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
+// Call before process_underlines / process_overlines / process_other_wrappers
 pub fn align_wrappers(s: &str) -> Option<String> {
     let mut changed_at_all = false;
     let mut result = String::new();
@@ -121,12 +122,7 @@ pub fn align_wrappers(s: &str) -> Option<String> {
 pub fn process_underlines(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
-    let mut line = String::new();
-    if let Some(fixed) = fix_wrapper(s, ws_chars::UNDERLINE) {
-        line = fixed;
-        changed = true;
-    }
-    let mut rest = if !changed { s } else { &line };
+    let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
         let combined = add_combiner(text, COMB_UNDERLINE);
@@ -173,6 +169,16 @@ pub fn process_overlines(s: &str) -> Option<String> {
         None
     }
 }
+
+/* %%% TO BE ADDED %%%
+pub fn process_other_wrappers(s: &str) -> Option<String> {
+
+} */
+
+/* %%% TO BE ADDED %%%
+pub fn test_process_emphasis(s: &str) -> Option<String> {
+
+} */
 
 // Unit tests
 
@@ -294,16 +300,16 @@ mod tests {
     #[test]
     fn test_process_underline() {
         assert_eq!(
+            process_underlines("\x13under\x13"),
+            Some("u\u{332}n\u{332}d\u{332}e\u{332}r\u{332}".to_string())
+        );
+        assert_eq!(
             process_underlines("Go \x13under\x13 and \x13go again\x13."),
             Some(
                 "Go u\u{332}n\u{332}d\u{332}e\u{332}r\u{332} and g\u{332}\
                 o\u{332} \u{332}a\u{332}g\u{332}a\u{332}i\u{332}n\u{332}."
                     .to_string()
             )
-        );
-        assert_eq!(
-            process_underlines("\x13under\x13"),
-            Some("u\u{332}n\u{332}d\u{332}e\u{332}r\u{332}".to_string())
         );
         assert_eq!(
             process_underlines("\x13\x02c\x13\x02"),
@@ -313,30 +319,26 @@ mod tests {
             process_underlines("\x13\x02\x13\x02"),
             Some("\x02\x02".to_string())
         );
+        let text = "\x13\x02  I. INTRO & AIMS\x13\x02";
+        assert_eq!(
+            process_underlines(&align_wrappers(text).unwrap_or(text.to_string())),
+            Some(
+                "  \x02I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
+                \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
+                    .to_string()
+            )
+        );
+        let text = " \x02  \x13 abc \x19 def \x13 \x19\x02";
+        assert_eq!(
+            process_underlines(&align_wrappers(text).unwrap_or(text.to_string())),
+            Some(
+                "    \x02a\u{332}b\u{332}c\u{332} \u{332} \u{332}\x19\
+                d\u{332}e\u{332}f\u{332}\x19\x02  "
+                    .to_string()
+            )
+        );
         assert_eq!(process_underlines("abcd"), None);
         assert_eq!(process_underlines(""), None);
-        let text = "\x13\x02  I. INTRO & AIMS\x13\x02";
-        if let Some(fixed) = align_wrappers(text) {
-            assert_eq!(
-                process_underlines(&fixed),
-                Some(
-                    "  \x02I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
-                    \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
-                        .to_string()
-                )
-            );
-        }
-        let text = " \x02  \x13 abc \x19 def \x13 \x19\x02";
-        if let Some(fixed) = align_wrappers(text) {
-            assert_eq!(
-                process_underlines(&fixed),
-                Some(
-                    "    \x02a\u{332}b\u{332}c\u{332} \u{332} \u{332}\x19\
-                    d\u{332}e\u{332}f\u{332}\x19\x02  "
-                        .to_string()
-                )
-            );
-        }
     }
 
     #[test]
@@ -352,4 +354,16 @@ mod tests {
         assert_eq!(process_overlines("abcd"), None);
         assert_eq!(process_overlines(""), None);
     }
+
+    /* %%% TO BE ADDED %%%
+    #[test]
+    fn test_process_other_wrappers() {
+
+    } */
+
+    /* %%% TO BE ADDED %%%
+    #[test]
+    fn test_process_emphasis() {
+
+    } */
 }
