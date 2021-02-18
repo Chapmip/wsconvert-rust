@@ -60,6 +60,31 @@ fn split_wrapped_text(s: &str, func: fn(&char) -> bool) -> (&str, &str, &str) {
     (&s[..left], &s[left..right], &s[right..])
 }
 
+pub fn fix_wrapper(s: &str, marker: char) -> Option<String> {
+    let mut changed = false;
+    let mut result = String::new();
+    let mut rest = s;
+    while let Some((left, text, right)) = split_first_three(rest, marker) {
+        result.push_str(left);
+        let (spc_left, text, spc_right) = split_wrapped_text(text, char::is_ascii_whitespace);
+        result.push_str(spc_left);
+        result.push(marker);
+        result.push_str(text);
+        result.push(marker);
+        result.push_str(spc_right);
+        rest = right;
+        if !spc_left.is_empty() || !spc_right.is_empty() {
+            changed = true;
+        }
+    }
+    if changed {
+        result.push_str(rest);
+        Some(result)
+    } else {
+        None
+    }
+}
+
 fn add_combiner(s: &str, combiner: char) -> String {
     let mut result = String::new();
     for ch in s.chars() {
@@ -73,20 +98,39 @@ fn add_combiner(s: &str, combiner: char) -> String {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
+pub fn align_wrappers(s: &str) -> Option<String> {
+    let mut changed_at_all = false;
+    let mut result = String::new();
+    loop {
+        let mut changed_this_loop = false;
+        for wrapper in &ws_chars::WRAPPERS {
+            let line = if !changed_at_all { s } else { &result };
+            if let Some(fixed) = fix_wrapper(line, *wrapper) {
+                result = fixed;
+                changed_this_loop = true;
+                changed_at_all = true;
+            }
+        }
+        if !changed_this_loop {
+            break;
+        }
+    }
+    changed_at_all.then(|| result)
+}
+
 pub fn process_underlines(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
-    let mut rest = s;
+    let mut line = String::new();
+    if let Some(fixed) = fix_wrapper(s, ws_chars::UNDERLINE) {
+        line = fixed;
+        changed = true;
+    }
+    let mut rest = if !changed { s } else { &line };
     while let Some((left, text, right)) = split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
-        let (ctrl_left, text, ctrl_right) = split_wrapped_text(text, char::is_ascii_control);
-        result.push_str(ctrl_left);
-        let (spc_left, text, spc_right) = split_wrapped_text(text, char::is_ascii_whitespace);
-        result.push_str(spc_left);
         let combined = add_combiner(text, COMB_UNDERLINE);
         result.push_str(&combined);
-        result.push_str(spc_right);
-        result.push_str(ctrl_right);
         rest = right;
         changed = true;
     }
@@ -207,6 +251,24 @@ mod tests {
     }
 
     #[test]
+    fn test_fix_wrapper() {
+        assert_eq!(
+            fix_wrapper("a*  bc  *d", '*'),
+            Some("a  *bc*  d".to_string())
+        );
+        assert_eq!(fix_wrapper("a*  bc  d", '*'), None);
+        assert_eq!(fix_wrapper("a  bc  d", '*'), None);
+        assert_eq!(
+            fix_wrapper("*a * bc * *d", '*'),
+            Some("*a*  bc ** d".to_string())
+        );
+        assert_eq!(
+            fix_wrapper("*a * bc * *d", '*'),
+            Some("*a*  bc ** d".to_string())
+        );
+    }
+
+    #[test]
     fn test_add_combiner() {
         assert_eq!(add_combiner("abcd", '*'), "a*b*c*d*".to_string());
         assert_eq!(
@@ -215,6 +277,18 @@ mod tests {
         );
         assert_eq!(add_combiner("\x08\x13", '*'), "\x08\x13".to_string());
         assert_eq!(add_combiner("", '*'), "".to_string());
+    }
+
+    #[test]
+    fn test_align_wrappers() {
+        assert_eq!(
+            align_wrappers("\x02\x13  abc  \x13\x02"),
+            Some("  \x02\x13abc\x13\x02  ".to_string())
+        );
+        assert_eq!(
+            align_wrappers(" \x02  \x13 abc \x19 def \x13 \x19\x02"),
+            Some("    \x02\x13abc  \x19def\x13\x19\x02  ".to_string())
+        );
     }
 
     #[test]
@@ -241,14 +315,28 @@ mod tests {
         );
         assert_eq!(process_underlines("abcd"), None);
         assert_eq!(process_underlines(""), None);
-        assert_eq!(
-            process_underlines("\x13\x02  I. INTRO & AIMS\x13\x02"),
-            Some(
-                "\x02  I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
-                \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
-                    .to_string()
-            )
-        );
+        let text = "\x13\x02  I. INTRO & AIMS\x13\x02";
+        if let Some(fixed) = align_wrappers(text) {
+            assert_eq!(
+                process_underlines(&fixed),
+                Some(
+                    "  \x02I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
+                    \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
+                        .to_string()
+                )
+            );
+        }
+        let text = " \x02  \x13 abc \x19 def \x13 \x19\x02";
+        if let Some(fixed) = align_wrappers(text) {
+            assert_eq!(
+                process_underlines(&fixed),
+                Some(
+                    "    \x02a\u{332}b\u{332}c\u{332} \u{332} \u{332}\x19\
+                    d\u{332}e\u{332}f\u{332}\x19\x02  "
+                        .to_string()
+                )
+            );
+        }
     }
 
     #[test]
