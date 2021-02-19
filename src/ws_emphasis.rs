@@ -103,7 +103,6 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
         result.push_str(replacement);
         result.push_str(text);
         result.push_str(replacement);
-        result.push_str(right);
         rest = right;
         changed = true;
     }
@@ -275,6 +274,7 @@ mod tests {
         );
         assert_eq!(split_first_three("//ab¬/cd", '/'), Some(("", "", "ab¬/cd")));
         assert_eq!(split_first_three("ab¬/cd", '/'), None);
+        assert_eq!(split_first_three("abcd", '/'), None);
         assert_eq!(split_first_three("", '/'), None);
     }
 
@@ -307,12 +307,12 @@ mod tests {
             ("\x13\x13", "¬efef\x13wf£wfwbc¬", "\x13",)
         );
         assert_eq!(
-            split_wrapped_text("abc", char::is_ascii_control),
-            ("", "abc", "")
-        );
-        assert_eq!(
             split_wrapped_text("\x13\x02\x13\x02", char::is_ascii_control),
             ("", "", "\x13\x02\x13\x02")
+        );
+        assert_eq!(
+            split_wrapped_text("abc", char::is_ascii_control),
+            ("", "abc", "")
         );
         assert_eq!(split_wrapped_text("", char::is_ascii_control), ("", "", ""));
     }
@@ -333,11 +333,24 @@ mod tests {
             fix_wrapper("*a * bc * *d", '*'),
             Some("*a*  bc ** d".to_string())
         );
+        assert_eq!(fix_wrapper("abcd", '*'), None);
+        assert_eq!(fix_wrapper("", '*'), None);
     }
 
     #[test]
     fn test_replace_wrapper() {
-        // %%% TO BE ADDED %%%
+        assert_eq!(
+            replace_wrapper(".abc.hd .d.  ..", '.', "**"),
+            Some("**abc**hd **d**  ****".to_string())
+        );
+        assert_eq!(
+            replace_wrapper("ab..cd", '.', "**"),
+            Some("ab****cd".to_string())
+        );
+        assert_eq!(replace_wrapper("ab..cd", '.', ""), Some("abcd".to_string()));
+        assert_eq!(replace_wrapper("ab.cd", '.', "**"), None);
+        assert_eq!(replace_wrapper("abcd", '.', "**"), None);
+        assert_eq!(replace_wrapper("", '.', "**"), None);
     }
 
     #[test]
@@ -361,6 +374,8 @@ mod tests {
             align_wrappers(" \x02  \x13 abc \x19 def \x13 \x19\x02"),
             Some("    \x02\x13abc  \x19def\x13\x19\x02  ".to_string())
         );
+        assert_eq!(align_wrappers("abcd"), None);
+        assert_eq!(align_wrappers(""), None);
     }
 
     #[test]
@@ -421,15 +436,51 @@ mod tests {
         assert_eq!(process_overlines(""), None);
     }
 
-    /* %%% TO BE ADDED %%%
     #[test]
     fn test_process_others() {
+        assert_eq!(
+            process_others("The \x02bold\x02 and \x19italic\x19"),
+            Some("The **bold** and *italic*".to_string())
+        );
+        assert_eq!(
+            process_others("\x18strikethru\x18 & \x04double\x04!"),
+            Some("~~strikethru~~ & **double**!".to_string())
+        );
+        assert_eq!(
+            process_others("\x02Bold\x02 and \x02bold\x02 and \x02bold\x02"),
+            Some("**Bold** and **bold** and **bold**".to_string())
+        );
+        assert_eq!(
+            process_others("\x02Bold\x02 and \x02broken"),
+            Some("**Bold** and \x02broken".to_string())
+        );
+        assert_eq!(process_others("abcd"), None);
+        assert_eq!(process_others(""), None);
+    }
 
-    } */
-
-    /* %%% TO BE ADDED %%%
     #[test]
     fn test_process_emphasis() {
-
-    } */
+        assert_eq!(
+            process_emphasis("\x13 \x02Bold\x02 title  \x13"),
+            Some(
+                " **B\u{332}o\u{332}l\u{332}d\u{332}** \u{332}t\u{332}i\u{332}t\u{332}\
+            l\u{332}e\u{332}  "
+                    .to_string()
+            )
+        );
+        assert_eq!(
+            process_emphasis("\x13 \x02Bold\x02 title  \x13"),
+            Some(
+                " **B\u{332}o\u{332}l\u{332}d\u{332}** \u{332}t\u{332}i\u{332}t\u{332}\
+            l\u{332}e\u{332}  "
+                    .to_string()
+            )
+        );
+        assert_eq!(
+            process_emphasis(" \x02DAC\x08\x08\x08\x14___\x14 and\x02 \x18strike\x18"),
+            Some(" **D\u{305}A\u{305}C\u{305} and** ~~strike~~".to_string())
+        );
+        assert_eq!(process_emphasis("abcd"), None);
+        assert_eq!(process_emphasis(""), None);
+    }
 }
