@@ -32,9 +32,12 @@ fn transform_ctrl_chars(input: &str) -> String {
 fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
     let mut original_counts = ControlCount::new("Original   ".to_string());
     let mut no_dot_counts = ControlCount::new("No dot cmd ".to_string());
-    let mut wrapper_counts = ControlCount::new("Wrappers   ".to_string());
-    let mut under_counts = ControlCount::new("Underline  ".to_string());
-    let mut over_counts = ControlCount::new("Overline   ".to_string());
+    /*  %%% TO BE DELETED %%%
+        let mut wrapper_counts = ControlCount::new("Wrappers   ".to_string());
+        let mut under_counts = ControlCount::new("Underline  ".to_string());
+        let mut over_counts = ControlCount::new("Overline   ".to_string());
+    */
+    let mut emphasis_counts = ControlCount::new("Emphasis   ".to_string());
     let mut final_counts = ControlCount::new("Final      ".to_string());
 
     let reader = BufReader::new(input);
@@ -52,20 +55,27 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         no_dot_counts.scan(&line);
 
-        if let Some(replacement) = ws_emphasis::align_wrappers(&line) {
-            line = replacement;
-        }
-        wrapper_counts.scan(&line);
+        /*  %%% TO BE DELETED %%%
+                if let Some(replacement) = ws_emphasis::align_wrappers(&line) {
+                    line = replacement;
+                }
+                wrapper_counts.scan(&line);
 
-        if let Some(replacement) = ws_emphasis::process_underlines(&line) {
-            line = replacement;
-        }
-        under_counts.scan(&line);
+                if let Some(replacement) = ws_emphasis::process_underlines(&line) {
+                    line = replacement;
+                }
+                under_counts.scan(&line);
 
-        if let Some(replacement) = ws_emphasis::process_overlines(&line) {
+                if let Some(replacement) = ws_emphasis::process_overlines(&line) {
+                    line = replacement;
+                }
+                over_counts.scan(&line);
+        */
+
+        if let Some(replacement) = ws_emphasis::process_emphasis(&line) {
             line = replacement;
         }
-        over_counts.scan(&line);
+        emphasis_counts.scan(&line);
 
         line = transform_ctrl_chars(&line);
         final_counts.scan(&line);
@@ -76,9 +86,12 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
 
     eprintln!("{}", original_counts);
     eprintln!("{}", no_dot_counts);
-    eprintln!("{}", wrapper_counts);
-    eprintln!("{}", under_counts);
-    eprintln!("{}", over_counts);
+    /*  %%% TO BE DELETED %%%
+        eprintln!("{}", wrapper_counts);
+        eprintln!("{}", under_counts);
+        eprintln!("{}", over_counts);
+    */
+    eprintln!("{}", emphasis_counts);
     eprintln!("{}", final_counts);
     Ok(())
 }

@@ -170,15 +170,38 @@ pub fn process_overlines(s: &str) -> Option<String> {
     }
 }
 
-/* %%% TO BE ADDED %%%
-pub fn process_other_wrappers(s: &str) -> Option<String> {
+pub fn process_others(s: &str) -> Option<String> {
+    // %%% TO BE ADDED %%%
+    dbg!(s); // DUMMY
+    None
+}
 
-} */
+pub fn process_emphasis(s: &str) -> Option<String> {
+    let mut changed = false;
+    let mut result = String::new();
+    let mut line = s;
 
-/* %%% TO BE ADDED %%%
-pub fn test_process_emphasis(s: &str) -> Option<String> {
-
-} */
+    if let Some(replacement) = align_wrappers(line) {
+        result = replacement;
+        line = &result;
+        changed = true;
+    }
+    if let Some(replacement) = process_underlines(line) {
+        result = replacement;
+        line = &result;
+        changed = true;
+    }
+    if let Some(replacement) = process_overlines(line) {
+        result = replacement;
+        line = &result;
+        changed = true;
+    }
+    if let Some(replacement) = process_others(line) {
+        result = replacement;
+        changed = true;
+    }
+    changed.then(|| result)
+}
 
 // Unit tests
 
