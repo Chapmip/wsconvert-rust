@@ -5,6 +5,15 @@ use crate::ws_chars;
 const COMB_OVERLINE: char = '\u{0305}'; // Combining overline
 const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline
 
+// Wrapper conversions (for other than underline and overline)
+
+const CONVERSIONS: [(char, &str); 4] = [
+    (ws_chars::BOLD, "**"),
+    (ws_chars::ITALIC, "*"),
+    (ws_chars::STRIKETHRU, "~~"),
+    (ws_chars::DOUBLE, "**"),
+];
+
 // PRIVATE HELPER FUNCTIONS
 
 fn len_in_chars(s: &str) -> usize {
@@ -60,7 +69,7 @@ fn split_wrapped_text(s: &str, func: fn(&char) -> bool) -> (&str, &str, &str) {
     (&s[..left], &s[left..right], &s[right..])
 }
 
-pub fn fix_wrapper(s: &str, marker: char) -> Option<String> {
+fn fix_wrapper(s: &str, marker: char) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
     let mut rest = s;
@@ -76,6 +85,27 @@ pub fn fix_wrapper(s: &str, marker: char) -> Option<String> {
         if !spc_left.is_empty() || !spc_right.is_empty() {
             changed = true;
         }
+    }
+    if changed {
+        result.push_str(rest);
+        Some(result)
+    } else {
+        None
+    }
+}
+
+fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> {
+    let mut changed = false;
+    let mut result = String::new();
+    let mut rest = s;
+    while let Some((left, text, right)) = split_first_three(rest, wrapper) {
+        result.push_str(left);
+        result.push_str(replacement);
+        result.push_str(text);
+        result.push_str(replacement);
+        result.push_str(right);
+        rest = right;
+        changed = true;
     }
     if changed {
         result.push_str(rest);
@@ -171,9 +201,17 @@ pub fn process_overlines(s: &str) -> Option<String> {
 }
 
 pub fn process_others(s: &str) -> Option<String> {
-    // %%% TO BE ADDED %%%
-    dbg!(s); // DUMMY
-    None
+    let mut changed = false;
+    let mut result = String::new();
+    let mut line = s;
+    for (wrapper, replacement) in &CONVERSIONS {
+        if let Some(replaced) = replace_wrapper(line, *wrapper, replacement) {
+            result = replaced;
+            line = &result;
+            changed = true;
+        }
+    }
+    changed.then(|| result)
 }
 
 pub fn process_emphasis(s: &str) -> Option<String> {
@@ -298,6 +336,11 @@ mod tests {
     }
 
     #[test]
+    fn test_replace_wrapper() {
+        // %%% TO BE ADDED %%%
+    }
+
+    #[test]
     fn test_add_combiner() {
         assert_eq!(add_combiner("abcd", '*'), "a*b*c*d*".to_string());
         assert_eq!(
@@ -380,7 +423,7 @@ mod tests {
 
     /* %%% TO BE ADDED %%%
     #[test]
-    fn test_process_other_wrappers() {
+    fn test_process_others() {
 
     } */
 
