@@ -152,7 +152,7 @@ fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - String slice (or String) to be processed
 ///
 /// # Examples
 /// ```
@@ -293,7 +293,7 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - String slice (or String) to be processed
 /// * `ch` - "Combiner" character (char) to be appended
 ///
 /// # Examples
@@ -313,6 +313,21 @@ fn add_combiner(s: &str, combiner: char) -> String {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
+/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// immediately inside a pair of any defined wrapper characters, otherwise `None`
+///
+/// This function calls `fix_all_wrappers()` repeatedly until no further changes
+/// can be made, to handle the possibility that whitespace needs to be moved outside
+/// multiple layers of "wrapper" characters in stages.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(align_wrappers("\x02\x13 a \x13\x02"), Some(" \x02\x13a\x13\x02 ".to_string()));
+/// ```
 pub fn align_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -325,6 +340,26 @@ pub fn align_wrappers(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
+/// Returns `Some(replacement)` if the given string slice contains one or more
+/// underlined sections to be converted, otherwise `None`
+///
+/// Underlining is marked by a pair of `ws_chars::UNDERLINE` wrapper characters.
+/// These wrapper characters are removed and the text between them is underlined
+/// by appending the Unicode "underline" combiner to each non control character.
+///
+/// Note: `align_wrappers()` must be called prior to this function to eliminate the
+/// possibility that the given string contains whitespace characters immediately
+/// inside the pair of wrapper characters, which would cause the underlining to be
+/// rendered incorrectly.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(process_underlines("\x13ab\x13"), Some("a\u{332}b\u{332}".to_string()));
+/// ```
 pub fn process_underlines(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -344,6 +379,28 @@ pub fn process_underlines(s: &str) -> Option<String> {
     }
 }
 
+/// Returns `Some(replacement)` if the given string slice contains one or more
+/// overlined sections to be converted, otherwise `None`
+///
+/// Overlining is marked by a special sequence: a number of `ws_chars::OVERPRINT`
+/// characters followed by a `ws_chars::SUPERSCRIPT` wrapper character, the same
+/// number of `ws_chars::UNDERSCORE` characters as the overprint characters and
+/// then another `ws_chars::SUPERSCRIPT` wrapper character.  The same number of
+/// non control characters must be found before this special sequence; these are
+/// converted by appending the Unicode "overline" combiner to each character.
+/// The special sequence is then discarded from the replacement string.
+///
+/// If the above special sequence is not matched precisely, then no replacement
+/// will be made for it.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(process_overlines("Q\x08\x14_\x14"), Some("Q\u{305}".to_string()));
+/// ```
 pub fn process_overlines(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -361,7 +418,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
                 }
             }
         }
-        // Not exact match: restore and store original string up to 'right'
+        // Not an exact match: restore and store original string up to 'right'
         result.push_str(left);
         result.push(ws_chars::SUPERSCRIPT);
         result.push_str(bars);
@@ -376,6 +433,25 @@ pub fn process_overlines(s: &str) -> Option<String> {
     }
 }
 
+/// Returns `Some(replacement)` if the given string slice contains one or more
+/// "wrapper" sections to be converted to Markdown format, otherwise `None`
+///
+/// For each tuple in `CONVERSIONS`, each pair of wrapper characters found in
+/// the given string slice are converted to the corresponding Markdown string slice.
+///
+/// Note: `align_wrappers()` must be called prior to this function to eliminate the
+/// possibility that the given string contains whitespace characters immediately
+/// inside the pair of wrapper characters, which would cause the corresponding
+/// Markdown text to be rendered incorrectly.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(process_others("\x02b\x02 & \x19i\x19"), Some("**b** & *i*".to_string()));
+/// ```
 pub fn process_others(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -390,6 +466,17 @@ pub fn process_others(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
+/// Returns `Some(replacement)` if the given string slice contains any of the
+/// "emphasis" sequences and therefore needs to be replaced, otherwise `None`
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(process_emphasis("\x13\x02B\x02\x13"), Some("**B\u{332}**".to_string()));
+/// ```
 pub fn process_emphasis(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
