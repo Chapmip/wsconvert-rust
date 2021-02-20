@@ -252,6 +252,22 @@ fn fix_all_wrappers(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
+/// Returns `Some(replacement)` if the given string slice contains at least one pair
+/// of the given "wrapper" character to be replaced, otherwise `None`
+///
+/// The string slice is scanned from left to right for pairs of the given wrapper
+/// characters.  If a pair is found, then the wrapper character is replaced with the
+/// contents of the given string slice.  This process is repeated until the string
+/// slice is exhausted, at which point the replacement string (if any) is returned.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(replace_wrapper(".a. .b.c", '.', "**"),Some("**a** **b**c".to_string()));
+/// ```
 fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -272,6 +288,18 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
     }
 }
 
+/// Returns a String that appends the given "combiner" character after each of the
+/// non control characters in the given string slice
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+/// * `ch` - "Combiner" character (char) to be appended
+///
+/// # Examples
+/// ```
+/// assert_eq!(add_combiner("abcd", '*'), "a*b*c*d*".to_string());
+/// ```
 fn add_combiner(s: &str, combiner: char) -> String {
     let mut result = String::new();
     for ch in s.chars() {
