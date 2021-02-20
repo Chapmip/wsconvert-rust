@@ -1,11 +1,13 @@
+//! Module to process WordStar "emphasis" wrappers (e.g. bold, underline)
+
 use crate::ws_chars;
 
 // Unicode modifiers (added after relevant printable character)
 
-const COMB_OVERLINE: char = '\u{0305}'; // Combining overline
-const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline
+const COMB_OVERLINE: char = '\u{0305}';     // Combining overline
+const COMB_UNDERLINE: char = '\u{0332}';    // Combining underline
 
-// Wrapper conversions (for other than underline and overline)
+// Wrapper conversions to Markdown format (for other than underline and overline)
 
 const CONVERSIONS: [(char, &str); 4] = [
     (ws_chars::BOLD, "**"),
@@ -16,20 +18,71 @@ const CONVERSIONS: [(char, &str); 4] = [
 
 // PRIVATE HELPER FUNCTIONS
 
+/// Returns length of string slice in characters (not bytes) by iterating though it
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be measured as UTF-8 characters
+///
+/// # Examples
+/// ```
+/// assert_eq!(ws_emphasis::len_in_chars("a£¬d"), 4);
+/// ```
 fn len_in_chars(s: &str) -> usize {
     s.chars().count()
 }
 
-// Note: Always returns true if s is empty, as there are no non-matching chars
+/// Returns `true` if string slice contains only the given character, otherwise `false`
+///
+/// Note: Always returns `true` if string slice is empty, as there are no non-matching chars.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+/// * `ch` - Character (char) to be matched
+///
+/// # Examples
+/// ```
+/// assert_eq!(ws_emphasis::contains_only_char("aaaa", 'a'), true);
+/// ```
 fn contains_only_char(s: &str, only: char) -> bool {
     s.chars().all(|ch| ch == only)
 }
 
-// Note: Always returns true if s is empty, as there are no non-matching chars
+/// Returns `true` if string slice contains only printable characters, otherwise `false`
+///
+/// Note: Always returns `true` if string slice is empty, as there are no non-matching chars.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(ws_emphasis::contains_only_print("abc 123"), true);
+/// ```
 fn contains_only_print(s: &str) -> bool {
     s.chars().all(|ch| !char::is_ascii_control(&ch))
 }
 
+/// Returns `Some(tuple)` if string slice contains a pair of "wrapper" characters,
+/// otherwise `None`
+///
+/// The string slice is scanned from left to right.  The returned tuple (if any) is
+/// a set of three string slices (left, within, right) corresponding to the text before,
+/// between and after the wrapper characters.  The pair of wrapper characters is not
+/// included in any of the returned string slices, but additional wrapper characters
+/// (not part of the matched pair) may still appear in the right string slice if present.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+/// * `ch` - "Wrapper" character (char) to be matched
+///
+/// # Examples
+/// ```
+/// assert_eq!(ws_emphasis::split_first_three("ab/cd/ef", '/'), Some(("ab", "cd", "ef")));
+/// ```
 fn split_first_three(s: &str, ch: char) -> Option<(&str, &str, &str)> {
     let mut iter = s.splitn(3, ch);
     let left = iter.next()?;
@@ -38,6 +91,22 @@ fn split_first_three(s: &str, ch: char) -> Option<(&str, &str, &str)> {
     Some((left, within, rest))
 }
 
+/// Returns `Some(tuple)` if string slice can be split into a pair of string slices with
+/// the right-hand slice having the specified length in bytes, otherwise `None`
+///
+/// The string slice is scanned from right to left.  The returned tuple (if any) is a
+/// set of two string slices (left, right) corresponding to the text before and after
+/// the split point in bytes (as measured from the right-hand end).
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+/// * `len` - Number of bytes to return in right-hand string slice, if possible
+///
+/// # Examples
+/// ```
+/// split_last_two("abcdefgh", 3), Some(("abcde", "fgh")));
+/// ```
 fn split_last_two(s: &str, len: usize) -> Option<(&str, &str)> {
     if len > 0 {
         let (i, _) = s.char_indices().rev().nth(len - 1)?;
@@ -47,6 +116,22 @@ fn split_last_two(s: &str, len: usize) -> Option<(&str, &str)> {
     }
 }
 
+/// Returns `Some(tuple)` if string slice can be split into three string slices with the
+/// right-hand two slices both having the specified length in bytes, otherwise `None`
+///
+/// The string slice is scanned from right to left.  The returned tuple (if any) is a
+/// set of three string slices (left, middle, right) corresponding to the text before
+/// and after the two split points in bytes (as measured from the right-hand end).
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+/// * `len` - Number of bytes to return in right-hand string slice, if possible
+///
+/// # Examples
+/// ```
+/// split_last_two("abcdefgh", 3), Some(("ab", "cde", "fgh")));
+/// ```
 fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
     let (left, right) = split_last_two(s, len)?;
     let (left, middle) = split_last_two(left, len)?;
