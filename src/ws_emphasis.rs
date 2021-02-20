@@ -94,6 +94,20 @@ fn fix_wrapper(s: &str, marker: char) -> Option<String> {
     }
 }
 
+pub fn fix_all_wrappers(s: &str) -> Option<String> {
+    let mut changed = false;
+    let mut result = String::new();
+    let mut line = s;
+    for wrapper in &ws_chars::WRAPPERS {
+        if let Some(fixed) = fix_wrapper(line, *wrapper) {
+            result = fixed;
+            line = &result;
+            changed = true;
+        }
+    }
+    changed.then(|| result)
+}
+
 fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
@@ -127,25 +141,16 @@ fn add_combiner(s: &str, combiner: char) -> String {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
-// Call before process_underlines / process_overlines / process_other_wrappers
 pub fn align_wrappers(s: &str) -> Option<String> {
-    let mut changed_at_all = false;
+    let mut changed = false;
     let mut result = String::new();
-    loop {
-        let mut changed_this_loop = false;
-        for wrapper in &ws_chars::WRAPPERS {
-            let line = if !changed_at_all { s } else { &result };
-            if let Some(fixed) = fix_wrapper(line, *wrapper) {
-                result = fixed;
-                changed_this_loop = true;
-                changed_at_all = true;
-            }
-        }
-        if !changed_this_loop {
-            break;
-        }
+    let mut line = s;
+    while let Some(fixed) = fix_all_wrappers(line) {
+        result = fixed;
+        line = &result;
+        changed = true;
     }
-    changed_at_all.then(|| result)
+    changed.then(|| result)
 }
 
 pub fn process_underlines(s: &str) -> Option<String> {
