@@ -4,8 +4,8 @@ use crate::ws_chars;
 
 // Unicode modifiers (added after relevant printable character)
 
-const COMB_OVERLINE: char = '\u{0305}';     // Combining overline
-const COMB_UNDERLINE: char = '\u{0332}';    // Combining underline
+const COMB_OVERLINE: char = '\u{0305}'; // Combining overline
+const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline
 
 // Wrapper conversions to Markdown format (for other than underline and overline)
 
@@ -105,7 +105,7 @@ fn split_first_three(s: &str, ch: char) -> Option<(&str, &str, &str)> {
 ///
 /// # Examples
 /// ```
-/// split_last_two("abcdefgh", 3), Some(("abcde", "fgh")));
+/// assert_eq!(split_last_two("abcdefgh", 3), Some(("abcde", "fgh")));
 /// ```
 fn split_last_two(s: &str, len: usize) -> Option<(&str, &str)> {
     if len > 0 {
@@ -130,7 +130,7 @@ fn split_last_two(s: &str, len: usize) -> Option<(&str, &str)> {
 ///
 /// # Examples
 /// ```
-/// split_last_two("abcdefgh", 3), Some(("ab", "cde", "fgh")));
+/// assert_eq!(split_last_two("abcdefgh", 3), Some(("ab", "cde", "fgh")));
 /// ```
 fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
     let (left, right) = split_last_two(s, len)?;
@@ -138,15 +138,35 @@ fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
     Some((left, middle, right))
 }
 
-fn split_wrapped_text(s: &str, func: fn(&char) -> bool) -> (&str, &str, &str) {
+/// Returns tuple that splits off whitespace characters (if any) at each end of
+/// a string slice from the text contained within.
+///
+/// The string slice is scanned from both ends.  The returned tuple is a set of three
+/// string slices (spc_left, text, spc_right) corresponding to the whitespace at the
+/// left-hand end, the text between any whitespace at the left-hand and right-hand
+/// ends, and the whitespace at the right-hand end.  If there is no whitespace at the
+/// left-hand end, then spc_left = "".  If there is no whitespace at the right-hand
+/// end, then spc_right = "".  If there is no whitespace at either end, then text
+/// contains the whole of the input string.  Note that whitespace characters may still
+/// appear in the text string slice -- just not at either end.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(split_space_at_ends(" abc def "), (" ", "abc def", " "));
+/// ```
+fn split_space_at_ends(s: &str) -> (&str, &str, &str) {
     let mut left = 0;
     let mut right = 0;
-    let is_control = |&(_, c): &(usize, char)| func(&c);
+    let is_space = |&(_, c): &(usize, char)| char::is_ascii_whitespace(&c);
 
-    let mut iter = s.char_indices().skip_while(is_control);
+    let mut iter = s.char_indices().skip_while(is_space);
     if let Some((i, _)) = iter.next() {
         left = i;
-        let mut iter = s.char_indices().rev().skip_while(is_control);
+        let mut iter = s.char_indices().rev().skip_while(is_space);
         if let Some((i, c)) = iter.next() {
             right = i + c.len_utf8();
         }
@@ -160,7 +180,7 @@ fn fix_wrapper(s: &str, marker: char) -> Option<String> {
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, marker) {
         result.push_str(left);
-        let (spc_left, text, spc_right) = split_wrapped_text(text, char::is_ascii_whitespace);
+        let (spc_left, text, spc_right) = split_space_at_ends(text);
         result.push_str(spc_left);
         result.push(marker);
         result.push_str(text);
@@ -391,20 +411,14 @@ mod tests {
     }
 
     #[test]
-    fn test_split_wrapped_text() {
+    fn test_split_space_at_ends() {
         assert_eq!(
-            split_wrapped_text("\x13\x13¬efef\x13wf£wfwbc¬\x13", char::is_ascii_control),
-            ("\x13\x13", "¬efef\x13wf£wfwbc¬", "\x13",)
+            split_space_at_ends("  abc¬ def  gh "),
+            ("  ", "abc¬ def  gh", " ",)
         );
-        assert_eq!(
-            split_wrapped_text("\x13\x02\x13\x02", char::is_ascii_control),
-            ("", "", "\x13\x02\x13\x02")
-        );
-        assert_eq!(
-            split_wrapped_text("abc", char::is_ascii_control),
-            ("", "abc", "")
-        );
-        assert_eq!(split_wrapped_text("", char::is_ascii_control), ("", "", ""));
+        assert_eq!(split_space_at_ends("   "), ("", "", "   "));
+        assert_eq!(split_space_at_ends("abc"), ("", "abc", ""));
+        assert_eq!(split_space_at_ends(""), ("", "", ""));
     }
 
     #[test]

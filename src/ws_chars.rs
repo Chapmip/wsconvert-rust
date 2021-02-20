@@ -1,4 +1,4 @@
-//! WordStar control characters
+//! Module containing WordStar control characters as constants
 
 // #[allow(dead_code)]
 
