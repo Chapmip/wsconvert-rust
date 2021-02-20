@@ -174,17 +174,36 @@ fn split_space_at_ends(s: &str) -> (&str, &str, &str) {
     (&s[..left], &s[left..right], &s[right..])
 }
 
-fn fix_wrapper(s: &str, marker: char) -> Option<String> {
+/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// immediately inside a pair of the given "wrapper" characters, otherwise `None`
+///
+/// The string slice is scanned from left to right for a pair of wrapper characters.
+/// If a pair is found and the text between them contains whitespace characters at
+/// either end, then the line of text is re-written with the whitespace characters
+/// moved outside the pair of wrapper characters, and this new string is returned.
+///
+/// Note that whitespace characters may still appear within the text between the
+/// pair of wrapper characters -- just not at either end.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(fix_wrapper("a* bc *d", '*'), Some("a *bc* d".to_string()));
+/// ```
+fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
     let mut rest = s;
-    while let Some((left, text, right)) = split_first_three(rest, marker) {
+    while let Some((left, text, right)) = split_first_three(rest, wrapper) {
         result.push_str(left);
         let (spc_left, text, spc_right) = split_space_at_ends(text);
         result.push_str(spc_left);
-        result.push(marker);
+        result.push(wrapper);
         result.push_str(text);
-        result.push(marker);
+        result.push(wrapper);
         result.push_str(spc_right);
         rest = right;
         if !spc_left.is_empty() || !spc_right.is_empty() {
@@ -199,7 +218,27 @@ fn fix_wrapper(s: &str, marker: char) -> Option<String> {
     }
 }
 
-pub fn fix_all_wrappers(s: &str) -> Option<String> {
+/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// immediately inside a pair of any defined wrapper characters, otherwise `None`
+///
+/// The string slice is scanned from left to right for a pair of each of the defined
+/// set of wrapper characters (in `ws_chars::WRAPPERS`).  If a pair is found and the
+/// text between them contains whitespace characters at either end, then the line of
+/// text is re-written with the whitespace characters moved outside the pair of
+/// wrapper characters, and this new string is returned.
+///
+/// Note that whitespace characters may still appear within the text between pairs
+/// of wrapper characters -- just not at either end.
+///
+/// # Arguments
+///
+/// * `s` - String slice (or String) to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(fix_all_wrappers("\x13 abc \x13"), Some(" \x13abc\x13 ".to_string()));
+/// ```
+fn fix_all_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new();
     let mut line = s;
@@ -439,6 +478,20 @@ mod tests {
         );
         assert_eq!(fix_wrapper("abcd", '*'), None);
         assert_eq!(fix_wrapper("", '*'), None);
+    }
+
+    #[test]
+    fn test_fix_all_wrappers() {
+        assert_eq!(
+            fix_all_wrappers("\x13  abc  \x13"),
+            Some("  \x13abc\x13  ".to_string())
+        );
+        assert_eq!(
+            fix_all_wrappers(" \x02 abc \x02 "),
+            Some("  \x02abc\x02  ".to_string())
+        );
+        assert_eq!(fix_all_wrappers("abcd"), None);
+        assert_eq!(fix_all_wrappers(""), None);
     }
 
     #[test]
