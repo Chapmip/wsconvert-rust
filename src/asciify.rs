@@ -7,9 +7,9 @@ const ASCII_MASK: u8 = 0x7F; // Bit mask for 7-bit ASCII
 
 const CHUNK_SIZE: usize = 16 * 1024; // Moderate sized buffer
 
-/// Converts a stream of 8-bit input bytes into a stream of output
-/// bytes in 7-bit ASCII format, using `convert_chunk()` to transform
-/// data in chunks and detect an End of File marker
+/// Converts a stream of 8-bit input bytes into a stream of output bytes in
+/// 7-bit ASCII format, using `convert_chunk()` to transform data in chunks
+/// and detect an End of File marker
 ///
 /// Returns `()` on success or a `std::io::Error` type on failure
 ///
@@ -69,7 +69,7 @@ pub fn convert_file(input: &mut impl Read, output: &mut impl Write) -> io::Resul
 ///
 /// # Arguments
 ///
-/// * `buf` - A mutable byte (u8) slice of 8-bit input characters
+/// * `buf` - Mutable byte (u8) slice of 8-bit input characters
 ///
 /// # Examples
 /// ```

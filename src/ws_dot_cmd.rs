@@ -1,5 +1,22 @@
 //! Module to process WordStar dot commands
 
+// PRIVATE HELPER FUNCTIONS
+
+/// Returns `Some(tuple)` if text slice contains a dot followed by a two character
+/// command (an alphabetic then an alphanumeric character), otherwise `None`
+///
+/// The text slice is scanned from left to right.  The returned tuple (if any) is a
+/// pair of text slices (command, optional text) corresponding to the two character
+/// command plus any following text (`Some(text)` if so or `None` if not).
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be scanned
+///
+/// # Examples
+/// ```
+/// assert_eq!(check_dot_cmd(".cw 8"), Some(("cw", Some(" 8"))));
+/// ```
 // Note: utilises new "bool then" feature in Rust 1.50 to simplify use of '?' operator
 //     (condition).then(|| ())
 //  -> if (condition) { Some( () ) } else { None }
@@ -21,12 +38,34 @@ fn check_dot_cmd(s: &str) -> Option<(&str, Option<&str>)> {
     }
 }
 
+/// Returns new String formed from given text slice with control characters removed
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(strip_control_chars("\x13ab\x08c"), "abc");
+/// ```
 fn strip_control_chars(s: &str) -> String {
     s.chars()
         .filter(|c| !char::is_ascii_control(c))
         .collect::<String>()
 }
 
+/// Returns `Some(replacement)` with a concatenation of the given prefix and the optional
+/// text with control characters removed if the optional text is present, otherwise `None`
+///
+/// # Arguments
+///
+/// * `prefix` - Slice of text containing prefix to the optional following text
+/// * `opt_text` - Must contain `Some(text)` in order to make a new header
+///
+/// # Examples
+/// ```
+/// assert_eq!(make_header("# ", Some("hello")), Some("# hello".to_string()));
+/// ```
 fn make_header(prefix: &str, opt_text: Option<&str>) -> Option<String> {
     let text = opt_text?;
     let mut result = String::from(prefix);
@@ -35,8 +74,24 @@ fn make_header(prefix: &str, opt_text: Option<&str>) -> Option<String> {
     Some(result)
 }
 
-pub fn process_dot_cmd(line: &str) -> Option<String> {
-    let (cmd, opt_text) = check_dot_cmd(line)?;
+// EXTERNAL PUBLIC FUNCTION
+
+/// Returns `Some(replacement)` wrapping text to be substituted if a valid dot command is
+/// detected, otherwise `None`
+///
+/// The replacement text may be "", indicating that the line containing the dot command
+/// needs to be eliminated entirely, rather than just replaced with a blank line.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(process_dot_cmd(".he abc"), Some("## abc".to_string()));
+/// ```
+pub fn process_dot_cmd(s: &str) -> Option<String> {
+    let (cmd, opt_text) = check_dot_cmd(s)?;
     let lower_cmd = cmd.to_ascii_lowercase();
     match &lower_cmd[..] {
         "he" | "fo" => make_header("## ", opt_text),

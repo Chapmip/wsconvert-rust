@@ -56,7 +56,7 @@ impl ControlCount {
     ///
     /// # Arguments
     ///
-    /// * `ch` - A character (char) specifying the count to be incremented
+    /// * `ch` - Character (char) specifying the count to be incremented
     ///
     /// # Examples
     /// ```
@@ -77,7 +77,7 @@ impl ControlCount {
     ///
     /// # Arguments
     ///
-    /// * `ch` - A character (char) specifying the count to be returned
+    /// * `ch` - Character (char) specifying the count to be returned
     ///
     /// # Examples
     /// ```
@@ -91,12 +91,12 @@ impl ControlCount {
         self.counts.get(&ch).copied()
     }
 
-    /// Scans string slice and increments counts for each ASCII control
+    /// Scans text slice and increments counts for each ASCII control
     /// character found in it
     ///
     /// # Arguments
     ///
-    /// * `s` - A string slice (or String) to be scanned
+    /// * `s` - Slice of text to be scanned
     ///
     /// # Examples
     /// ```

@@ -24,17 +24,17 @@ const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline
 const CONVERSIONS: [(char, &str); 4] = [
     (ws_chars::BOLD, "**"),
     (ws_chars::ITALIC, "*"),
-    (ws_chars::STRIKETHRU, "~~"),
+    (ws_chars::STRIKETHROUGH, "~~"),
     (ws_chars::DOUBLE, "**"),
 ];
 
 // PRIVATE HELPER FUNCTIONS
 
-/// Returns length of string slice in characters (not bytes) by iterating though it
+/// Returns length of text slice in characters (not bytes) by iterating though it
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be measured as UTF-8 characters
+/// * `s` - Slice of text to be measured as UTF-8 characters
 ///
 /// # Examples
 /// ```
@@ -44,13 +44,13 @@ fn len_in_chars(s: &str) -> usize {
     s.chars().count()
 }
 
-/// Returns `true` if string slice contains only the given character, otherwise `false`
+/// Returns `true` if text slice contains only the given character, otherwise `false`
 ///
-/// Note: Always returns `true` if string slice is empty, as there are no non-matching chars.
+/// Note: Always returns `true` if text slice is empty, as there are no non-matching chars.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 /// * `ch` - Character (char) to be matched
 ///
 /// # Examples
@@ -61,13 +61,13 @@ fn contains_only_char(s: &str, only: char) -> bool {
     s.chars().all(|ch| ch == only)
 }
 
-/// Returns `true` if string slice contains only printable characters, otherwise `false`
+/// Returns `true` if text slice contains only printable characters, otherwise `false`
 ///
-/// Note: Always returns `true` if string slice is empty, as there are no non-matching chars.
+/// Note: Always returns `true` if text slice is empty, as there are no non-matching chars.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 ///
 /// # Examples
 /// ```
@@ -77,18 +77,18 @@ fn contains_only_print(s: &str) -> bool {
     s.chars().all(|ch| !char::is_ascii_control(&ch))
 }
 
-/// Returns `Some(tuple)` if string slice contains a pair of "wrapper" characters,
+/// Returns `Some(tuple)` if text slice contains at least one pair of "wrapper" characters,
 /// otherwise `None`
 ///
-/// The string slice is scanned from left to right.  The returned tuple (if any) is
-/// a set of three string slices (left, within, right) corresponding to the text before,
-/// between and after the wrapper characters.  The pair of wrapper characters is not
-/// included in any of the returned string slices, but additional wrapper characters
-/// (not part of the matched pair) may still appear in the right string slice if present.
+/// The text slice is scanned from left to right.  The returned tuple (if any) is
+/// a set of three text slices (left, within, right) corresponding to the text before,
+/// between and after the found wrapper characters.  The pair of wrapper characters is
+/// not included in any of the returned text slices, but additional wrapper characters
+/// (not part of the matched pair) may still appear in the right text slice if present.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 /// * `ch` - "Wrapper" character (char) to be matched
 ///
 /// # Examples
@@ -103,17 +103,17 @@ fn split_first_three(s: &str, ch: char) -> Option<(&str, &str, &str)> {
     Some((left, within, rest))
 }
 
-/// Returns `Some(tuple)` if string slice can be split into a pair of string slices with
+/// Returns `Some(tuple)` if text slice can be split into a pair of text slices with
 /// the right-hand slice having the specified length in bytes, otherwise `None`
 ///
-/// The string slice is scanned from right to left.  The returned tuple (if any) is a
-/// set of two string slices (left, right) corresponding to the text before and after
+/// The text slice is scanned from right to left.  The returned tuple (if any) is a
+/// set of two text slices (left, right) corresponding to the text before and after
 /// the split point in bytes (as measured from the right-hand end).
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
-/// * `len` - Number of bytes to return in right-hand string slice, if possible
+/// * `s` - Slice of text to be scanned
+/// * `len` - Number of bytes to return in right-hand text slice, if possible
 ///
 /// # Examples
 /// ```
@@ -128,17 +128,17 @@ fn split_last_two(s: &str, len: usize) -> Option<(&str, &str)> {
     }
 }
 
-/// Returns `Some(tuple)` if string slice can be split into three string slices with the
+/// Returns `Some(tuple)` if text slice can be split into three text slices with the
 /// right-hand two slices both having the specified length in bytes, otherwise `None`
 ///
-/// The string slice is scanned from right to left.  The returned tuple (if any) is a
-/// set of three string slices (left, middle, right) corresponding to the text before
+/// The text slice is scanned from right to left.  The returned tuple (if any) is a
+/// set of three text slices (left, middle, right) corresponding to the text before
 /// and after the two split points in bytes (as measured from the right-hand end).
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
-/// * `len` - Number of bytes to return in right-hand string slice, if possible
+/// * `s` - Slice of text to be scanned
+/// * `len` - Number of bytes to return in right-hand text slice, if possible
 ///
 /// # Examples
 /// ```
@@ -151,20 +151,20 @@ fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
 }
 
 /// Returns tuple that splits off whitespace characters (if any) at each end of
-/// a string slice from the text contained within.
+/// a text slice from the text contained within.
 ///
-/// The string slice is scanned from both ends.  The returned tuple is a set of three
-/// string slices (spc_left, text, spc_right) corresponding to the whitespace at the
+/// The text slice is scanned from both ends.  The returned tuple is a set of three
+/// text slices (spc_left, middle, spc_right) corresponding to the whitespace at the
 /// left-hand end, the text between any whitespace at the left-hand and right-hand
 /// ends, and the whitespace at the right-hand end.  If there is no whitespace at the
 /// left-hand end, then spc_left = "".  If there is no whitespace at the right-hand
-/// end, then spc_right = "".  If there is no whitespace at either end, then text
-/// contains the whole of the input string.  Note that whitespace characters may still
-/// appear in the text string slice -- just not at either end.
+/// end, then spc_right = "".  If there is no whitespace at either end, then middle
+/// contains the whole of the input text.  Note that whitespace characters may still
+/// appear in the middle slice -- just not at either end.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -186,20 +186,20 @@ fn split_space_at_ends(s: &str) -> (&str, &str, &str) {
     (&s[..left], &s[left..right], &s[right..])
 }
 
-/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// Returns `Some(replacement)` if the given text slice has whitespace characters
 /// immediately inside a pair of the given "wrapper" characters, otherwise `None`
 ///
-/// The string slice is scanned from left to right for a pair of wrapper characters.
+/// The text slice is scanned from left to right for a pair of wrapper characters.
 /// If a pair is found and the text between them contains whitespace characters at
-/// either end, then the line of text is re-written with the whitespace characters
-/// moved outside the pair of wrapper characters, and this new string is returned.
+/// either end, then the text is re-written with the whitespace characters moved
+/// outside the pair of wrapper characters, and this new String is returned.
 ///
 /// Note that whitespace characters may still appear within the text between the
 /// pair of wrapper characters -- just not at either end.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 ///
 /// # Examples
 /// ```
@@ -230,21 +230,21 @@ fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
     }
 }
 
-/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// Returns `Some(replacement)` if the given text slice has whitespace characters
 /// immediately inside a pair of any defined wrapper characters, otherwise `None`
 ///
-/// The string slice is scanned from left to right for a pair of each of the defined
+/// The text slice is scanned from left to right for a pair of each of the defined
 /// set of wrapper characters (in `ws_chars::WRAPPERS`).  If a pair is found and the
-/// text between them contains whitespace characters at either end, then the line of
-/// text is re-written with the whitespace characters moved outside the pair of
-/// wrapper characters, and this new string is returned.
+/// text between them contains whitespace characters at either end, then the text
+/// is re-written with the whitespace characters moved outside the pair of wrapper
+/// characters, and this new String is returned.
 ///
 /// Note that whitespace characters may still appear within the text between pairs
 /// of wrapper characters -- just not at either end.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 ///
 /// # Examples
 /// ```
@@ -264,17 +264,18 @@ fn fix_all_wrappers(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
-/// Returns `Some(replacement)` if the given string slice contains at least one pair
+/// Returns `Some(replacement)` if the given text slice contains at least one pair
 /// of the given "wrapper" character to be replaced, otherwise `None`
 ///
-/// The string slice is scanned from left to right for pairs of the given wrapper
+/// The text slice is scanned from left to right for pairs of the given wrapper
 /// characters.  If a pair is found, then the wrapper character is replaced with the
-/// contents of the given string slice.  This process is repeated until the string
-/// slice is exhausted, at which point the replacement string (if any) is returned.
+/// contents of the given replacement text slice.  This process is repeated until
+/// the text slice is exhausted, at which point the replacement String (if any)
+/// is returned.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be scanned
+/// * `s` - Slice of text to be scanned
 ///
 /// # Examples
 /// ```
@@ -301,11 +302,11 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
 }
 
 /// Returns a String that appends the given "combiner" character after each of the
-/// non control characters in the given string slice
+/// non control characters in the given text slice
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 /// * `ch` - "Combiner" character (char) to be appended
 ///
 /// # Examples
@@ -325,7 +326,7 @@ fn add_combiner(s: &str, combiner: char) -> String {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
-/// Returns `Some(replacement)` if the given string slice has whitespace characters
+/// Returns `Some(replacement)` if the given text slice has whitespace characters
 /// immediately inside a pair of any defined wrapper characters, otherwise `None`
 ///
 /// This function calls `fix_all_wrappers()` repeatedly until no further changes
@@ -334,7 +335,7 @@ fn add_combiner(s: &str, combiner: char) -> String {
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -352,7 +353,7 @@ pub fn align_wrappers(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
-/// Returns `Some(replacement)` if the given string slice contains one or more
+/// Returns `Some(replacement)` if the given text slice contains one or more
 /// underlined sections to be converted, otherwise `None`
 ///
 /// Underlining is marked by a pair of `ws_chars::UNDERLINE` wrapper characters.
@@ -360,13 +361,13 @@ pub fn align_wrappers(s: &str) -> Option<String> {
 /// by appending the Unicode "underline" combiner to each non control character.
 ///
 /// Note: `align_wrappers()` must be called prior to this function to eliminate the
-/// possibility that the given string contains whitespace characters immediately
+/// possibility that the given text slice contains whitespace characters immediately
 /// inside the pair of wrapper characters, which would cause the underlining to be
 /// rendered incorrectly.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -391,7 +392,7 @@ pub fn process_underlines(s: &str) -> Option<String> {
     }
 }
 
-/// Returns `Some(replacement)` if the given string slice contains one or more
+/// Returns `Some(replacement)` if the given text slice contains one or more
 /// overlined sections to be converted, otherwise `None`
 ///
 /// Overlining is marked by a special sequence: a number of `ws_chars::OVERPRINT`
@@ -400,14 +401,14 @@ pub fn process_underlines(s: &str) -> Option<String> {
 /// then another `ws_chars::SUPERSCRIPT` wrapper character.  The same number of
 /// non control characters must be found before this special sequence; these are
 /// converted by appending the Unicode "overline" combiner to each character.
-/// The special sequence is then discarded from the replacement string.
+/// The special sequence is then discarded from the replacement String.
 ///
 /// If the above special sequence is not matched precisely, then no replacement
 /// will be made for it.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -430,7 +431,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
                 }
             }
         }
-        // Not an exact match: restore and store original string up to 'right'
+        // Not an exact match: restore and store original text up to 'right'
         result.push_str(left);
         result.push(ws_chars::SUPERSCRIPT);
         result.push_str(bars);
@@ -445,20 +446,20 @@ pub fn process_overlines(s: &str) -> Option<String> {
     }
 }
 
-/// Returns `Some(replacement)` if the given string slice contains one or more
+/// Returns `Some(replacement)` if the given text slice contains one or more
 /// "wrapper" sections to be converted to Markdown format, otherwise `None`
 ///
 /// For each tuple in `CONVERSIONS`, each pair of wrapper characters found in
-/// the given string slice are converted to the corresponding Markdown string slice.
+/// the given text slice are converted to the corresponding Markdown wrapper.
 ///
 /// Note: `align_wrappers()` must be called prior to this function to eliminate the
-/// possibility that the given string contains whitespace characters immediately
+/// possibility that the given text slice contains whitespace characters immediately
 /// inside the pair of wrapper characters, which would cause the corresponding
 /// Markdown text to be rendered incorrectly.
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -478,12 +479,12 @@ pub fn process_others(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
-/// Returns `Some(replacement)` if the given string slice contains any of the
+/// Returns `Some(replacement)` if the given text slice contains any of the
 /// "emphasis" sequences and therefore needs to be replaced, otherwise `None`
 ///
 /// # Arguments
 ///
-/// * `s` - String slice (or String) to be processed
+/// * `s` - Slice of text to be processed
 ///
 /// # Examples
 /// ```
@@ -727,8 +728,8 @@ mod tests {
             Some("The **bold** and *italic*".to_string())
         );
         assert_eq!(
-            process_others("\x18strikethru\x18 & \x04double\x04!"),
-            Some("~~strikethru~~ & **double**!".to_string())
+            process_others("\x18strike\x18 & \x04double\x04!"),
+            Some("~~strike~~ & **double**!".to_string())
         );
         assert_eq!(
             process_others("\x02Bold\x02 and \x02bold\x02 and \x02bold\x02"),
