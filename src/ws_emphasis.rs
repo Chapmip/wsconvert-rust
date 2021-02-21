@@ -1,5 +1,17 @@
 //! Module to process WordStar "emphasis" wrappers (e.g. bold, underline)
 
+// Written as an exercise in Rust string processing, without resorting to the `regex`
+// crate for regular expression parsing (for which the code would probably be simpler)
+
+// It may be more efficient for the public functions to return `Cow<'_, str>` instead
+// of `Option<String>`, but I'm still figuring that out!  One advantage of returning
+// `Option<String>` is that it enables the code to use Rust `?` operator as a terse
+// way to exit from a function with a `None` result.
+
+// Note: utilises new "bool then" feature in Rust 1.50 to simplify Option return
+//     (condition).then(|| ())
+//  -> if (condition) { Some( () ) } else { None }
+
 use crate::ws_chars;
 
 // Unicode modifiers (added after relevant printable character)
@@ -195,7 +207,7 @@ fn split_space_at_ends(s: &str) -> (&str, &str, &str) {
 /// ```
 fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len());
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, wrapper) {
         result.push_str(left);
@@ -240,7 +252,7 @@ fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
 /// ```
 fn fix_all_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len());
     let mut line = s;
     for wrapper in &ws_chars::WRAPPERS {
         if let Some(fixed) = fix_wrapper(line, *wrapper) {
@@ -270,7 +282,7 @@ fn fix_all_wrappers(s: &str) -> Option<String> {
 /// ```
 fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len() * 2);
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, wrapper) {
         result.push_str(left);
@@ -301,7 +313,7 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
 /// assert_eq!(add_combiner("abcd", '*'), "a*b*c*d*".to_string());
 /// ```
 fn add_combiner(s: &str, combiner: char) -> String {
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len() * 2);
     for ch in s.chars() {
         result.push(ch);
         if !char::is_ascii_control(&ch) {
@@ -330,7 +342,7 @@ fn add_combiner(s: &str, combiner: char) -> String {
 /// ```
 pub fn align_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len());
     let mut line = s;
     while let Some(fixed) = fix_all_wrappers(line) {
         result = fixed;
@@ -362,7 +374,7 @@ pub fn align_wrappers(s: &str) -> Option<String> {
 /// ```
 pub fn process_underlines(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len() * 2);
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
@@ -403,7 +415,7 @@ pub fn process_underlines(s: &str) -> Option<String> {
 /// ```
 pub fn process_overlines(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len());
     let mut rest = s;
     while let Some((left, bars, right)) = split_first_three(rest, ws_chars::SUPERSCRIPT) {
         if contains_only_char(bars, ws_chars::UNDERSCORE) {
@@ -454,7 +466,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
 /// ```
 pub fn process_others(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len() * 2);
     let mut line = s;
     for (wrapper, replacement) in &CONVERSIONS {
         if let Some(replaced) = replace_wrapper(line, *wrapper, replacement) {
@@ -479,7 +491,7 @@ pub fn process_others(s: &str) -> Option<String> {
 /// ```
 pub fn process_emphasis(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::new();
+    let mut result = String::with_capacity(s.len() * 2);
     let mut line = s;
 
     if let Some(replacement) = align_wrappers(line) {
