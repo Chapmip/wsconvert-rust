@@ -23,6 +23,21 @@ const UNI_REPLACEMENT: &str = "\u{FFFD}"; // Invalid marker
 
 // PRIVATE HELPER FUNCTIONS
 
+/// Returns `Some(replacement)` if the given text slice contains one or more special
+/// sequences that have been converted to degree symbols, otherwise `None`
+///
+/// A degree symbol is indicated a pair of `ws_chars::SUPERSCRIPT` wrapper characters
+/// with a single lower-case 'o' between them.  This sequence is converted to the
+/// corresponding Unicode "degree" symbol.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// assert_eq!(transform_degrees("-40\x14o\x14C"), Some("-40\u{00B0}C".to_string()));
+/// ```
 fn transform_degrees(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_DEGREE: Regex = {
@@ -40,6 +55,23 @@ fn transform_degrees(before: &str) -> Option<String> {
     }
 }
 
+/// Returns `Some(replacement)` if the given text slice contains one or more special
+/// sequences that have been converted to 1/2 (half) symbols, otherwise `None`
+///
+/// A half symbol is indicated a pair of `ws_chars::SUPERSCRIPT` wrapper characters
+/// surrounding an underlined '1' followed by a `ws_chars::OVERPRINT` characters and
+/// then a pair of `ws_chars::SUBSCRIPT` wrapper characters surrounding a '2'.  This
+/// sequence is converted to the corresponding Unicode "half" symbol.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// let before = "\x141\u{0332}\x14\x08\x162\x16";
+/// assert_eq!(transform_half(before), Some("\u{00BD}".to_string()));
+/// ```
 fn transform_half(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_HALF: Regex = {
@@ -62,6 +94,14 @@ fn transform_half(before: &str) -> Option<String> {
     }
 }
 
+/// Returns text slice containing Unicode "quarters" character corresponding to the
+/// "1" or "3" numerator passed in the captured "n" parameter.  Returns the Unicode
+/// `U+FFFD REPLACEMENT CHARACTER` if the "n" parameter is not "1" or "3".
+///
+/// # Arguments
+///
+/// * `caps` - Reference to group of captured strings for a regular expression match
+///
 fn get_quarters(caps: &regex::Captures) -> &'static str {
     match &caps["n"] {
         "1" => UNI_ONE_QUARTER,
@@ -70,6 +110,25 @@ fn get_quarters(caps: &regex::Captures) -> &'static str {
     }
 }
 
+/// Returns `Some(replacement)` if the given text slice contains one or more special
+/// sequences that have been converted to 1/4 (one quarter) or 3/4 (three quarters)
+/// symbols, otherwise `None`
+///
+/// A one or three quarter symbol is indicated a pair of `ws_chars::SUPERSCRIPT`
+/// wrapper characters surrounding an underlined '1' or '3' (as appropriate)followed
+/// by a `ws_chars::OVERPRINT` characters and then a pair of `ws_chars::SUBSCRIPT`
+/// wrapper characters surrounding a '4'.  This sequence is converted to the
+/// corresponding Unicode "one quarter" or "three quarters" symbol.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// let before = "\x143\u{0332}\x14\x08\x164\x16";
+/// assert_eq!(transform_quarter(before), Some("\u{00BE}".to_string()));
+/// ```
 fn transform_quarter(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_QUARTER: Regex = {
@@ -115,7 +174,8 @@ fn transform_superscript(_before: &str) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process_special("6\x141\x14\x08\x162\x16"), Some("6\u{00BD}".to_string()));
+/// let before = "6\x141\x14\x08\x162\x16";
+/// assert_eq!(process_special(before), Some("6\u{00BD}".to_string()));
 /// ```
 pub fn process_special(s: &str) -> Option<String> {
     let mut changed = false;
@@ -159,7 +219,7 @@ mod tests {
     fn test_transform_degrees() {
         assert_eq!(
             transform_degrees("-40\x14o\x14C is -40\x14o\x14F"),
-            Some("-40°C is -40°F".to_string())
+            Some("-40\u{00B0}C is -40\u{00B0}F".to_string())
         );
         assert_eq!(transform_degrees("abcd"), None);
         assert_eq!(transform_degrees(""), None);
