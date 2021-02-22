@@ -14,11 +14,6 @@
 
 use crate::ws_chars;
 
-// Unicode modifiers (added after relevant printable character)
-
-const COMB_OVERLINE: char = '\u{0305}'; // Combining overline
-const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline
-
 // Wrapper conversions to Markdown format (for other than underline and overline)
 
 const CONVERSIONS: [(char, &str); 4] = [
@@ -252,7 +247,7 @@ fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
 /// ```
 fn fix_all_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len());
+    let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
     for wrapper in &ws_chars::WRAPPERS {
         if let Some(fixed) = fix_wrapper(line, *wrapper) {
@@ -283,7 +278,7 @@ fn fix_all_wrappers(s: &str) -> Option<String> {
 /// ```
 fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len() * 2);
+    let mut result = String::with_capacity(s.len() * replacement.len());
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, wrapper) {
         result.push_str(left);
@@ -314,7 +309,7 @@ fn replace_wrapper(s: &str, wrapper: char, replacement: &str) -> Option<String> 
 /// assert_eq!(add_combiner("abcd", '*'), "a*b*c*d*".to_string());
 /// ```
 fn add_combiner(s: &str, combiner: char) -> String {
-    let mut result = String::with_capacity(s.len() * 2);
+    let mut result = String::with_capacity(s.len() * 3);
     for ch in s.chars() {
         result.push(ch);
         if !char::is_ascii_control(&ch) {
@@ -343,7 +338,7 @@ fn add_combiner(s: &str, combiner: char) -> String {
 /// ```
 pub fn align_wrappers(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len());
+    let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
     while let Some(fixed) = fix_all_wrappers(line) {
         result = fixed;
@@ -375,11 +370,11 @@ pub fn align_wrappers(s: &str) -> Option<String> {
 /// ```
 pub fn process_underlines(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len() * 2);
+    let mut result = String::with_capacity(s.len() * 3);
     let mut rest = s;
     while let Some((left, text, right)) = split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
-        let combined = add_combiner(text, COMB_UNDERLINE);
+        let combined = add_combiner(text, ws_chars::COMB_UNDERLINE);
         result.push_str(&combined);
         rest = right;
         changed = true;
@@ -424,7 +419,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
             if let Some((prefix, text, over)) = split_last_three(left, len) {
                 if contains_only_char(over, ws_chars::OVERPRINT) && contains_only_print(text) {
                     result.push_str(prefix);
-                    result.push_str(&add_combiner(text, COMB_OVERLINE));
+                    result.push_str(&add_combiner(text, ws_chars::COMB_OVERLINE));
                     rest = right;
                     changed = true;
                     continue;
@@ -467,7 +462,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
 /// ```
 pub fn process_others(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len() * 2);
+    let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
     for (wrapper, replacement) in &CONVERSIONS {
         if let Some(replaced) = replace_wrapper(line, *wrapper, replacement) {
@@ -492,7 +487,7 @@ pub fn process_others(s: &str) -> Option<String> {
 /// ```
 pub fn process_emphasis(s: &str) -> Option<String> {
     let mut changed = false;
-    let mut result = String::with_capacity(s.len() * 2);
+    let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
 
     if let Some(replacement) = align_wrappers(line) {

@@ -41,9 +41,10 @@ fn transform_degrees(before: &str) -> Option<String> {
 fn transform_half(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_HALF: Regex = {
-            let mut re = String::with_capacity(7);  // Can't calculate statically
+            let mut re = String::with_capacity(9);  // Can't calculate statically
             re.push(ws_chars::SUPERSCRIPT);
             re.push('1');
+            re.push(ws_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);
@@ -70,9 +71,10 @@ fn get_quarters(caps: &regex::Captures) -> &'static str {
 fn transform_quarter(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_QUARTER: Regex = {
-            let mut re = String::with_capacity(17);  // Can't calculate statically
+            let mut re = String::with_capacity(19);  // Can't calculate statically
             re.push(ws_chars::SUPERSCRIPT);
             re.push_str("(?P<n>[13])");
+            re.push(ws_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);
