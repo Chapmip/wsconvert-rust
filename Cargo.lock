@@ -194,6 +194,7 @@ name = "wsconvert"
 version = "0.1.0"
 dependencies = [
  "lazy_static",
+ "rand",
  "regex",
  "tempfile",
 ]
