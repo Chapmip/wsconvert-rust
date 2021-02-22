@@ -161,6 +161,8 @@ mod tests {
             transform_degrees("-40\x14o\x14C is -40\x14o\x14F"),
             Some("-40°C is -40°F".to_string())
         );
+        assert_eq!(transform_degrees("abcd"), None);
+        assert_eq!(transform_degrees(""), None);
     }
 
     #[test]
@@ -169,6 +171,8 @@ mod tests {
             transform_half("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
             Some("6\u{00BD} has \u{00BD}!".to_string())
         );
+        assert_eq!(transform_half("abcd"), None);
+        assert_eq!(transform_half(""), None);
     }
 
     #[test]
@@ -177,23 +181,39 @@ mod tests {
             transform_quarter("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
         );
+        assert_eq!(transform_quarter("abcd"), None);
+        assert_eq!(transform_quarter(""), None);
     }
 
     #[test]
     fn test_transform_subscript() {
         // DUMMY STUB FOR NOW
+        assert_eq!(transform_subscript("abcd"), None);
+        assert_eq!(transform_subscript(""), None);
     }
 
     #[test]
     fn test_transform_superscript() {
         // DUMMY STUB FOR NOW
+        assert_eq!(transform_superscript("abcd"), None);
+        assert_eq!(transform_superscript(""), None);
     }
 
     #[test]
     fn test_process_special() {
         assert_eq!(
+            process_special("-40\x14o\x14C is -40\x14o\x14F"),
+            Some("-40°C is -40°F".to_string())
+        );
+        assert_eq!(
+            process_special("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
+            Some("6\u{00BD} has \u{00BD}!".to_string())
+        );
+        assert_eq!(
             process_special("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
         );
+        assert_eq!(process_special("abcd"), None);
+        assert_eq!(process_special(""), None);
     }
 }
