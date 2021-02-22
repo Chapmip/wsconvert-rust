@@ -1,5 +1,5 @@
 ## I.D.CHAPMAN       E1 PROJECT - THE IEEE-488 BUS
-^B                    I̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲^B
+                    **I̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲**
                         (̲"̲I̲n̲v̲e̲s̲t̲i̲g̲a̲t̲e̲!̲"̲)̲
 
      This project took shape from a challenging, open assignment: 
@@ -29,7 +29,7 @@ project  at each stage.   I hope that I have opened up some areas
 of  interest  for later  students.   Wherever  possible,  I  have 
 suggested some further investigations which could be made.
 ---
-^B               I̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲^B
+               **I̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲**
 
      The aim of this chapter is to describe the equipment used in 
 this  project,  pointing out the short cuts and difficulties that 
@@ -223,7 +223,7 @@ argument follows for other multiple and single device commands.
 from the BBC computer is to read through my example programs (see 
 listings in Appendix B) using the manual for reference.
 ---
-^B               I̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲^B
+               **I̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲**
 
      To  prove that the BBC Master was able to access  the  Prema 
 DMM over the IEEE bus,  the simple program suggested in the Acorn 
@@ -307,7 +307,7 @@ manual operation again.
 DMM,  a  variable resistance box was placed across the  terminals 
 of  the meter,  and several successive readings were taken.   The 
 results, on several resistance ranges, were as stable as expected 
-from the 6^T1̲^T^H^V2^V digit accuracy of the meter.
+from the 6½ digit accuracy of the meter.
 
      The Prema 5000 operates by integrating an input voltage over 
 a  time interval T.   An interesting possibility was to  use  the 
@@ -325,7 +325,7 @@ meter  leads,  the  DMM  was  zeroed (see Prema  5000  manual  in
 Appendix C) with the leads in place but with the terminals of the 
 standard shorted together.
 
-     For a laboratory temperature of 22^To^T Celsius,  and taking all 
+     For a laboratory temperature of 22° Celsius,  and taking all 
 measured corrections into account, the expected resistance of the 
 standard was 10000.17 ohms.   Random single measurements recorded 
 10000.77,  10000.41,  and 10000.56 ohms.   Taking the mean of 100 
@@ -356,7 +356,7 @@ logic  analyser.   Thus,  the GPIB protocol could be inspected in
 depth,  and checks made to ensure that the control lines  conform 
 to the IEEE-488 standard.  Chapter IV describes these results.
 ---
-^B              I̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲^B
+              **I̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲**
 
      One  pitfall in discussing signals on the IEEE bus  is  that 
 the lines operate in negative logic.   To minimize confusion over 
@@ -504,7 +504,7 @@ document in Appendix F gives a detailed description of these, but
 for  the  purposes of this project it is sufficient to know  that 
 the standard is met.
 ---
-^B                   V̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲^B
+                   **V̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲**
 
      The  aim of the data logging experiments in this section  of 
 the  project  was for the BBC Master computer to collect as  many 
@@ -700,7 +700,7 @@ using the data logging software.  There are many other tests that
 could be performed, as well as many experimental applications.  I 
 leave these to the imagination of later students !
 ---
-            ^BV̲I̲.̲ ̲S̲P̲E̲E̲D̲ ̲L̲I̲M̲I̲T̲A̲T̲I̲O̲N̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲B̲U̲S̲^B
+            **V̲I̲.̲ ̲S̲P̲E̲E̲D̲ ̲L̲I̲M̲I̲T̲A̲T̲I̲O̲N̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲B̲U̲S̲**
 
      The IEEE-488 specification sets a maximum data rate over the 
 GPIB of 1 megabyte per second.  Already, my results show that the 
@@ -812,7 +812,7 @@ Insert Data Timings I here ..
 ---
 Insert Data Timings II and III here ..
 ---
-        ^BV̲I̲I̲.̲ ̲C̲O̲N̲T̲E̲N̲T̲S̲ ̲O̲F̲ ̲T̲H̲E̲ ̲A̲C̲O̲R̲N̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲I̲N̲T̲E̲R̲F̲A̲C̲E̲ ̲B̲O̲X̲^B
+        **V̲I̲I̲.̲ ̲C̲O̲N̲T̲E̲N̲T̲S̲ ̲O̲F̲ ̲T̲H̲E̲ ̲A̲C̲O̲R̲N̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲I̲N̲T̲E̲R̲F̲A̲C̲E̲ ̲B̲O̲X̲**
 
      The Acorn IEEE-488 interface unit connects to the 1 MHz  bus 
 of  the BBC Computer via a short length of ribbon  cable.   While 
@@ -887,7 +887,7 @@ expensive D to A converter.
 ---
 Insert Circuit Diagram of Acorn Board here ..
 ---
-              ^BV̲I̲I̲I̲.̲ ̲C̲H̲E̲C̲K̲I̲N̲G̲ ̲T̲H̲E̲ ̲V̲O̲L̲T̲A̲G̲E̲ ̲C̲A̲L̲I̲B̲R̲A̲T̲O̲R̲^B
+              **V̲I̲I̲I̲.̲ ̲C̲H̲E̲C̲K̲I̲N̲G̲ ̲T̲H̲E̲ ̲V̲O̲L̲T̲A̲G̲E̲ ̲C̲A̲L̲I̲B̲R̲A̲T̲O̲R̲**
 
      At  the end of chapter V,  a hypothesis was formed that  the 
 Voltage Calibrator exhibits "jumps" in its output voltage when it 
@@ -901,23 +901,23 @@ Standards Laboratory.
 (i.e.  away from the IEEE-488 bus), and the following sequence of 
 operations were carried out:
 
-     (1) The 10 V standard was measured on the DMM (=V^VM10^V).
+     (1) The 10 V standard was measured on the DMM (=Vₘ₁₀).
 
      (2) The Calibrator and 10 V standard were connected in 
          opposition  and  the output voltage  was  adjusted 
          until  zero  volts was measured on the  DMM.   The 
-         Calibrator setting (=V^VC10^V) was recorded.
+         Calibrator setting (=Vc₁₀) was recorded.
 
      (3) The Calibrator (on this setting) and 10 V standard 
          were  added together in series and the sum voltage 
-         was measured (=V^VM20^V).
+         was measured (=Vₘ₂₀).
 
      (4) The Calibrator and 10 V standard were connected in 
          opposition and the Calibrator voltage was adjusted 
-         until  the  DMM  measured  V^VM10^V.   The  Calibrator 
-         setting was recorded (=V^VC20^V).
+         until  the  DMM  measured  Vₘ₁₀.   The  Calibrator 
+         setting was recorded (=Vc₂₀).
 
-     (5) Steps  (3) and (4) were repeated  for  V^VM20^V,  V^VC30^V  
+     (5) Steps  (3) and (4) were repeated  for  Vₘ₂₀,  Vc₃₀  
          and so on, up to a maximum of 100 V.
 
      The readings are recorded in Appendix A.
@@ -950,7 +950,7 @@ in the latter range.
      Thus, instead of observing "jumps" in the Calibrator output, 
 we have observed them in the DMM readings.
 ---
-             ^BI̲X̲.̲ ̲T̲H̲E̲ ̲"̲Q̲U̲I̲Z̲B̲O̲A̲R̲D̲"̲ ̲S̲E̲Q̲U̲E̲N̲C̲E̲ ̲G̲E̲N̲E̲R̲A̲T̲O̲R̲^B
+             **I̲X̲.̲ ̲T̲H̲E̲ ̲"̲Q̲U̲I̲Z̲B̲O̲A̲R̲D̲"̲ ̲S̲E̲Q̲U̲E̲N̲C̲E̲ ̲G̲E̲N̲E̲R̲A̲T̲O̲R̲**
 
      The  last two weeks of this project were spent designing and 
 constructing  a "Quizboard" sequence generator for use in the  E1 

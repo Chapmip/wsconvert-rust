@@ -1,5 +1,5 @@
-$ cat data/PROJECT.WS | cargo run > data/PROJECT.TXT
-    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+$ cat data/PROJECT.WS | cargo run > data/PROJECT.MD
+   Finished dev [unoptimized + debuginfo] target(s) in 0.07s
      Running `target/debug/wsconvert`
 [src/asciify.rs:41] num_read = 16384
 [src/asciify.rs:46] num_conv = 16384
@@ -13,7 +13,7 @@ total input bytes: 55808
 total output bytes: 55779
 Original   : [02]=18, [08]=115, [13]=132, [14]=84, [16]=16
 No dot cmd : [02]=18, [08]=115, [13]=130, [14]=84, [16]=16
-Underline  : [02]=18, [08]=115, [14]=84, [16]=16
-Overline   : [02]=18, [08]=1, [14]=4, [16]=16
+Emphasis   : [08]=1, [14]=4, [16]=16
+Special    : None
 Final      : None
 $

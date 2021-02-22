@@ -144,7 +144,7 @@ fn transform_quarter(before: &str) -> Option<String> {
         static ref REGEX_QUARTER: Regex = {
             let mut re = String::with_capacity(19);  // Can't calculate statically
             re.push(ws_chars::SUPERSCRIPT);
-            re.push_str("(?P<n>[13])");
+            re.push_str(r"(?P<n>[13])");
             re.push(ws_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push(ws_chars::OVERPRINT);
@@ -212,10 +212,41 @@ fn get_subscripted(c: char) -> char {
     }
 }
 
-fn transform_subscript(_before: &str) -> Option<String> {
-    // DUMMY STUB FOR NOW
-    dbg!(get_subscripted('a'));
-    None
+/// Returns `Some(replacement)` if the given text slice contains one or more sequences
+/// of subscripted characters that have been converted to the closest possible Unicode
+/// symbols (or left alone if there is no close match), otherwise `None`
+///
+/// A subscripted sequence is indicated by a pair of `ws_chars::SUBSCRIPT` wrapper
+/// characters with zero or more other characters between them.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// let before = "ab\x1620\x16cd";
+/// assert_eq!(transform_subscript(before), Some("ab\u{2082}\u{2080}cd".to_string()));
+/// ```
+fn transform_subscript(before: &str) -> Option<String> {
+    lazy_static! {
+        static ref REGEX_SUBSCRIPT: Regex = {
+            let mut re = String::with_capacity(9);  // Can't calculate statically
+            re.push(ws_chars::SUBSCRIPT);
+            re.push_str(r"([^");
+            re.push(ws_chars::SUBSCRIPT);
+            re.push_str(r"]*)");
+            re.push(ws_chars::SUBSCRIPT);
+            Regex::new(&re).unwrap()
+        };
+    }
+    if let Cow::Owned(after) = REGEX_SUBSCRIPT.replace_all(before, |caps: &regex::Captures| {
+        caps[1].chars().map(get_subscripted).collect::<String>()
+    }) {
+        Some(after)
+    } else {
+        None
+    }
 }
 
 /// Returns the nearest equivalent Unicode superscripted version (if any) of the given
@@ -275,10 +306,41 @@ fn get_superscripted(c: char) -> char {
     }
 }
 
-fn transform_superscript(_before: &str) -> Option<String> {
-    // DUMMY STUB FOR NOW
-    dbg!(get_superscripted('a'));
-    None
+/// Returns `Some(replacement)` if the given text slice contains one or more sequences
+/// of superscripted characters that have been converted to the closest possible Unicode
+/// symbols (or left alone if there is no close match), otherwise `None`
+///
+/// A superscripted sequence is indicated by a pair of `ws_chars::SUPERSCRIPT` wrapper
+/// characters with zero or more other characters between them.
+///
+/// # Arguments
+///
+/// * `s` - Slice of text to be processed
+///
+/// # Examples
+/// ```
+/// let before = "ab\x1620\x16cd";
+/// assert_eq!(transform_superscript(before), Some("ab\u{00B2}\u{2070}cd".to_string()));
+/// ```
+fn transform_superscript(before: &str) -> Option<String> {
+    lazy_static! {
+        static ref REGEX_SUPERSCRIPT: Regex = {
+            let mut re = String::with_capacity(9);  // Can't calculate statically
+            re.push(ws_chars::SUPERSCRIPT);
+            re.push_str(r"([^");
+            re.push(ws_chars::SUPERSCRIPT);
+            re.push_str(r"]*)");
+            re.push(ws_chars::SUPERSCRIPT);
+            Regex::new(&re).unwrap()
+        };
+    }
+    if let Cow::Owned(after) = REGEX_SUPERSCRIPT.replace_all(before, |caps: &regex::Captures| {
+        caps[1].chars().map(get_superscripted).collect::<String>()
+    }) {
+        Some(after)
+    } else {
+        None
+    }
 }
 
 // EXTERNAL PUBLIC FUNCTION
@@ -371,7 +433,15 @@ mod tests {
 
     #[test]
     fn test_transform_subscript() {
-        // DUMMY STUB FOR NOW
+        assert_eq!(
+            transform_subscript("ab\x1620\x16cd"),
+            Some("ab\u{2082}\u{2080}cd".to_string())
+        );
+        assert_eq!(
+            transform_subscript("ab\x1620\x16"),
+            Some("ab\u{2082}\u{2080}".to_string())
+        );
+        assert_eq!(transform_subscript("ab\x1620cd"), None);
         assert_eq!(transform_subscript("abcd"), None);
         assert_eq!(transform_subscript(""), None);
     }
@@ -384,7 +454,15 @@ mod tests {
 
     #[test]
     fn test_transform_superscript() {
-        // DUMMY STUB FOR NOW
+        assert_eq!(
+            transform_superscript("ab\x1420\x14cd"),
+            Some("ab\u{00B2}\u{2070}cd".to_string())
+        );
+        assert_eq!(
+            transform_superscript("ab\x1420\x14"),
+            Some("ab\u{00B2}\u{2070}".to_string())
+        );
+        assert_eq!(transform_superscript("ab\x1420cd"), None);
         assert_eq!(transform_superscript("abcd"), None);
         assert_eq!(transform_superscript(""), None);
     }
@@ -402,6 +480,14 @@ mod tests {
         assert_eq!(
             process_special("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
+        );
+        assert_eq!(
+            process_special("ab\x1620\x16cd"),
+            Some("ab\u{2082}\u{2080}cd".to_string())
+        );
+        assert_eq!(
+            process_special("ab\x1420\x14cd"),
+            Some("ab\u{00B2}\u{2070}cd".to_string())
         );
         assert_eq!(process_special("abcd"), None);
         assert_eq!(process_special(""), None);
