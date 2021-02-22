@@ -3,6 +3,7 @@ mod control_count;
 mod ws_chars;
 mod ws_dot_cmd;
 mod ws_emphasis;
+mod ws_special;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
@@ -33,6 +34,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     let mut original_counts = ControlCount::new("Original   ".to_string());
     let mut no_dot_counts = ControlCount::new("No dot cmd ".to_string());
     let mut emphasis_counts = ControlCount::new("Emphasis   ".to_string());
+    let mut special_counts = ControlCount::new("Special    ".to_string());
     let mut final_counts = ControlCount::new("Final      ".to_string());
 
     let reader = BufReader::new(input);
@@ -55,6 +57,11 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         emphasis_counts.scan(&line);
 
+        if let Some(replacement) = ws_special::process_special(&line) {
+            line = replacement;
+        }
+        special_counts.scan(&line);
+
         line = transform_ctrl_chars(&line);
         final_counts.scan(&line);
 
@@ -65,6 +72,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     eprintln!("{}", original_counts);
     eprintln!("{}", no_dot_counts);
     eprintln!("{}", emphasis_counts);
+    eprintln!("{}", special_counts);
     eprintln!("{}", final_counts);
     Ok(())
 }
