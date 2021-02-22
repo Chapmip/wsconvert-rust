@@ -21,6 +21,8 @@ const UNI_HALF: &str = "\u{00BD}"; // 1/2 symbol
 const UNI_THREE_QUARTERS: &str = "\u{00BE}"; // 3/4 symbol
 const UNI_REPLACEMENT: &str = "\u{FFFD}"; // Invalid marker
 
+// PRIVATE HELPER FUNCTIONS
+
 fn transform_degrees(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_DEGREE: Regex = {
@@ -102,6 +104,8 @@ fn transform_superscript(_before: &str) -> Option<String> {
     None
 }
 
+// EXTERNAL PUBLIC FUNCTION
+
 /// Returns `Some(replacement)` if the given text slice contains any of the
 /// special sequences and therefore needs to be replaced, otherwise `None`
 ///
@@ -145,48 +149,51 @@ pub fn process_special(s: &str) -> Option<String> {
     changed.then(|| result)
 }
 
-/*
-fn main() {
-    println!("{}", '\u{FFFD}'.len_utf8());
+// Unit tests
 
-    let before = "-40\x14o\x14C is -40\x14o\x14F";
-    let after = transform_degrees(before);
-    if let Some(s) = after {
-        println!("Transformed to {}", s);
-    }
-    assert_eq!(
-        transform_degrees(before),
-        Some("-40°C is -40°F".to_string())
-    );
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let before = "6\x141\x14\x08\x162\x16 has \x141\x14\x08\x162\x16 in it!";
-    let after = transform_half(before);
-    if let Some(s) = after {
-        println!("Transformed to {}", s);
+    #[test]
+    fn test_transform_degrees() {
+        assert_eq!(
+            transform_degrees("-40\x14o\x14C is -40\x14o\x14F"),
+            Some("-40°C is -40°F".to_string())
+        );
     }
-    assert_eq!(
-        transform_half(before),
-        Some("6\u{00BD} has \u{00BD} in it!".to_string())
-    );
 
-    let before = "6\x141\x14\x08\x164\x16 or 6\x143\x14\x08\x164\x16";
-    let after = transform_quarter(before);
-    if let Some(s) = after {
-        println!("Transformed to {}", s);
+    #[test]
+    fn test_transform_half() {
+        assert_eq!(
+            transform_half("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
+            Some("6\u{00BD} has \u{00BD}!".to_string())
+        );
     }
-    assert_eq!(
-        transform_quarter(before),
-        Some("6\u{00BC} or 6\u{00BE}".to_string())
-    );
 
-    let before = "6\x141\x14\x08\x164\x16 or 6\x143\x14\x08\x164\x16";
-    let after = process_special(before);
-    if let Some(s) = after {
-        println!("Transformed to {}", s);
+    #[test]
+    fn test_transform_quarter() {
+        assert_eq!(
+            transform_quarter("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
+            Some("6\u{00BC} or 6\u{00BE}".to_string())
+        );
     }
-    assert_eq!(
-        process_special(before),
-        Some("6\u{00BC} or 6\u{00BE}".to_string())
-    );
+
+    #[test]
+    fn test_transform_subscript() {
+        // DUMMY STUB FOR NOW
+    }
+
+    #[test]
+    fn test_transform_superscript() {
+        // DUMMY STUB FOR NOW
+    }
+
+    #[test]
+    fn test_process_special() {
+        assert_eq!(
+            process_special("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
+            Some("6\u{00BC} or 6\u{00BE}".to_string())
+        );
+    }
 }
-*/
