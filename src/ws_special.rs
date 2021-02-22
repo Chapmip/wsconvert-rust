@@ -63,6 +63,11 @@ fn transform_degrees(before: &str) -> Option<String> {
 /// then a pair of `ws_chars::SUBSCRIPT` wrapper characters surrounding a '2'.  This
 /// sequence is converted to the corresponding Unicode "half" symbol.
 ///
+/// Note: Each special sequence can only be detected correctly if the input text has
+/// previously been processed using `ws_emphasis::process_underlines()` (possibly
+/// called via `ws_emphasis::process_emphasis()`) to render the underline below the
+/// numerator of the fraction using the Unicode underline combiner character.
+///
 /// # Arguments
 ///
 /// * `s` - Slice of text to be processed
@@ -119,6 +124,11 @@ fn get_quarters(caps: &regex::Captures) -> &'static str {
 /// by a `ws_chars::OVERPRINT` characters and then a pair of `ws_chars::SUBSCRIPT`
 /// wrapper characters surrounding a '4'.  This sequence is converted to the
 /// corresponding Unicode "one quarter" or "three quarters" symbol.
+///
+/// Note: Each special sequence can only be detected correctly if the input text has
+/// previously been processed using `ws_emphasis::process_underlines()` (possibly
+/// called via `ws_emphasis::process_emphasis()`) to render the underline below the
+/// numerator of the fraction using the Unicode underline combiner character.
 ///
 /// # Arguments
 ///
