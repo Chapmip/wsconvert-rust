@@ -16,9 +16,9 @@ use std::borrow::Cow;
 // Unicode strings for substitution (actually all single characters)
 
 const UNI_DEGREE: &str = "\u{00B0}"; // Degree symbol
-static UNI_ONE_QUARTER: &str = "\u{00BC}"; // 1/4 symbol
+const UNI_ONE_QUARTER: &str = "\u{00BC}"; // 1/4 symbol
 const UNI_HALF: &str = "\u{00BD}"; // 1/2 symbol
-static UNI_THREE_QUARTERS: &str = "\u{00BE}"; // 3/4 symbol
+const UNI_THREE_QUARTERS: &str = "\u{00BE}"; // 3/4 symbol
 const UNI_REPLACEMENT: &str = "\u{FFFD}"; // Invalid marker
 
 fn transform_degrees(before: &str) -> Option<String> {
