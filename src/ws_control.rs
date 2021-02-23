@@ -24,19 +24,16 @@ fn get_mapping(c: char) -> Option<&'static str> {
     }
 }
 
-fn get_escaped(c: char) -> String {
+fn get_escaped(c: char) -> Option<String> {
+    let second = match c as u32 {
+        u @ 0..=0x1F => char::from_u32(u + '@' as u32),
+        0x7F => Some('#'),
+        _ => None,
+    }?;
     let mut escaped = String::with_capacity(2);
-    if c.is_ascii_control() {
-        escaped.push('^');
-        escaped.push(match c as u32 {
-            u @ 0..=0x1F => char::from_u32(u + '@' as u32).unwrap_or('*'),
-            0x7F => '#',
-            _ => '?',
-        });
-    } else {
-        escaped.push(c);
-    }
-    escaped
+    escaped.push('^');
+    escaped.push(second);
+    Some(escaped)
 }
 
 // EXTERNAL PUBLIC FUNCTION
@@ -50,14 +47,17 @@ pub fn process_control(input: &str, escape: bool) -> Option<String> {
                 result.push_str(substitute);
                 changed = true;
             } else if escape {
-                let substitute = get_escaped(c);
-                result.push_str(&substitute);
-                changed = true;
+                if let Some(substitute) = get_escaped(c) {
+                    result.push_str(&substitute);
+                    changed = true;
+                } else {
+                    result.push(c); // No escape sequence
+                }
             } else {
-                result.push(c);
+                result.push(c); // Not escaping unmatched chars
             }
         } else {
-            result.push(c);
+            result.push(c); // Not a control character
         }
     }
     changed.then(|| result)
@@ -76,12 +76,12 @@ mod tests {
 
     #[test]
     fn test_get_escaped() {
-        assert_eq!(get_escaped('\x00'), "^@".to_string());
-        assert_eq!(get_escaped('\x03'), "^C".to_string());
-        assert_eq!(get_escaped('\x13'), "^S".to_string());
-        assert_eq!(get_escaped('\x1F'), "^_".to_string());
-        assert_eq!(get_escaped('\x7F'), "^#".to_string());
-        assert_eq!(get_escaped('a'), "a".to_string());
+        assert_eq!(get_escaped('\x00'), Some("^@".to_string()));
+        assert_eq!(get_escaped('\x03'), Some("^C".to_string()));
+        assert_eq!(get_escaped('\x13'), Some("^S".to_string()));
+        assert_eq!(get_escaped('\x1F'), Some("^_".to_string()));
+        assert_eq!(get_escaped('\x7F'), Some("^#".to_string()));
+        assert_eq!(get_escaped('a'), None);
     }
 
     #[test]
