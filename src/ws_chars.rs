@@ -14,16 +14,17 @@ pub const UNDERSCORE: char = '_';
 
 // Used in ws_special module
 pub const SUBSCRIPT: char = '\x16';
+
 // Wrappers to be aligned (i.e. leading and trailing spaces moved outside wrapper)
 pub const WRAPPERS: [char; 5] = [BOLD, DOUBLE, UNDERLINE, STRIKETHROUGH, ITALIC];
 
 // Others (currently unimplemented)
-pub const PHANTOM_SPACE: char = '\x06'; // maps to ???
-pub const PHANTOM_RUBOUT: char = '\x07'; // maps to ???
+pub const PHANTOM_SPACE: char = '\x06'; // %% maps to ??? %%
+pub const PHANTOM_RUBOUT: char = '\x07'; // %% maps to ??? %%
 pub const NON_BREAKING_SPACE: char = '\x0F'; // maps to '\u{00A0}'
 pub const INACTIVE_SOFT_HYPHEN: char = '\x1E'; // maps to '\u{2010}'
 pub const ACTIVE_SOFT_HYPHEN: char = '\x1F'; // maps to '\u{2010}'
-pub const DELETE: char = '\x7F'; // maps to ???
+pub const DELETE: char = '\x7F'; // %% maps to ??? %%
 
 // Unicode modifiers (added after relevant printable character)
 
