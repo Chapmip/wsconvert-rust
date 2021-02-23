@@ -14,11 +14,11 @@ use std::io::{self, Seek, SeekFrom};
 use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
 
 fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
-    let mut original_counts = ControlCount::new("Original   ".to_string());
-    let mut no_dot_counts = ControlCount::new("No dot cmd ".to_string());
-    let mut emphasis_counts = ControlCount::new("Emphasis   ".to_string());
-    let mut special_counts = ControlCount::new("Special    ".to_string());
-    let mut final_counts = ControlCount::new("Final      ".to_string());
+    let mut original_counts = ControlCount::new("Original".to_string());
+    let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
+    let mut emphasis_counts = ControlCount::new("Emphasis".to_string());
+    let mut special_counts = ControlCount::new("Specials".to_string());
+    let mut de_ctrl_counts = ControlCount::new("Controls".to_string());
 
     let reader = BufReader::new(input);
     let mut writer = BufWriter::new(output);
@@ -33,7 +33,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
                 _ => line = replacement,
             }
         }
-        no_dot_counts.scan(&line);
+        post_dot_counts.scan(&line);
 
         if let Some(replacement) = ws_emphasis::process_emphasis(&line) {
             line = replacement;
@@ -48,17 +48,17 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         if let Some(replacement) = ws_control::process_control(&line, true) {
             line = replacement;
         }
-        final_counts.scan(&line);
+        de_ctrl_counts.scan(&line);
 
         writeln!(writer, "{}", line)?;
     }
     writer.flush()?;
 
     eprintln!("{}", original_counts);
-    eprintln!("{}", no_dot_counts);
+    eprintln!("{}", post_dot_counts);
     eprintln!("{}", emphasis_counts);
     eprintln!("{}", special_counts);
-    eprintln!("{}", final_counts);
+    eprintln!("{}", de_ctrl_counts);
     Ok(())
 }
 
