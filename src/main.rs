@@ -45,7 +45,9 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         special_counts.scan(&line);
 
-        line = ws_control::process_control(&line, true);
+        if let Some(replacement) = ws_control::process_control(&line, true) {
+            line = replacement;
+        }
         final_counts.scan(&line);
 
         writeln!(writer, "{}", line)?;

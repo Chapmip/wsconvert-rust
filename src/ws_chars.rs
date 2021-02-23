@@ -1,7 +1,5 @@
 //! Module containing WordStar control characters and associated Unicode modifiers
 
-#![allow(dead_code)]
-
 // Used in ws_emphasis and ws_special modules
 pub const BOLD: char = '\x02';
 pub const DOUBLE: char = '\x04';
@@ -19,8 +17,8 @@ pub const SUBSCRIPT: char = '\x16';
 pub const WRAPPERS: [char; 5] = [BOLD, DOUBLE, UNDERLINE, STRIKETHROUGH, ITALIC];
 
 // Used in ws_control module
-pub const PHANTOM_SPACE: char = '\x06';
-pub const PHANTOM_RUBOUT: char = '\x07';
+pub const PHANTOM_SPACE: char = '\x06'; // Daisywheel printer spare slot!
+pub const PHANTOM_RUBOUT: char = '\x07'; // Daisywheel printer spare slot!
 pub const FORM_FEED: char = '\x0C';
 pub const NON_BREAKING_SPACE: char = '\x0F';
 pub const INACTIVE_SOFT_HYPHEN: char = '\x1E';
