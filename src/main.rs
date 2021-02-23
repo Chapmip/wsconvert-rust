@@ -1,6 +1,7 @@
 mod asciify;
 mod control_count;
 mod ws_chars;
+mod ws_control;
 mod ws_dot_cmd;
 mod ws_emphasis;
 mod ws_special;
@@ -8,43 +9,9 @@ mod ws_special;
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
 
-use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
-
 // TESTING CODE HERE FOR NOW...
 
-use std::char;
-
-fn process_control(input: &str, escape: bool) -> String {
-    let mut output = String::with_capacity(input.len() * 2);
-    for c in input.chars() {
-        if c.is_ascii_control() {
-            let substitute = match c {
-                ws_chars::PHANTOM_SPACE => "???",  // %% TO BE ADDED %%
-                ws_chars::PHANTOM_RUBOUT => "???", // %% TO BE ADDED %%
-                ws_chars::NON_BREAKING_SPACE => "\u{00A0}",
-                ws_chars::INACTIVE_SOFT_HYPHEN => "\u{2010}",
-                ws_chars::ACTIVE_SOFT_HYPHEN => "\u{2010}",
-                ws_chars::DELETE => "???", // %% TO BE ADDED %%
-                _ => "",
-            };
-            if !substitute.is_empty() {
-                output.push_str(substitute);
-            } else if escape {
-                output.push('^');
-                output.push(match c as u32 {
-                    u @ 0..=0x1F => char::from_u32(u + '@' as u32).unwrap_or('*'),
-                    0x7F => '#',
-                    _ => '?',
-                });
-            } else {
-                output.push(c);
-            }
-        } else {
-            output.push(c);
-        }
-    }
-    output
-}
+use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
 
 fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
     let mut original_counts = ControlCount::new("Original   ".to_string());
@@ -78,7 +45,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         special_counts.scan(&line);
 
-        line = process_control(&line, true);
+        line = ws_control::process_control(&line, true);
         final_counts.scan(&line);
 
         writeln!(writer, "{}", line)?;
