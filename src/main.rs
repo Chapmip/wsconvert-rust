@@ -4,6 +4,7 @@ mod ws_chars;
 mod ws_control;
 mod ws_dot_cmd;
 mod ws_emphasis;
+mod ws_mappings;
 mod ws_special;
 mod ws_string;
 mod ws_wrappers;
