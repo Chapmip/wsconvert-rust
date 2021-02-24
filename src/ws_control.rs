@@ -1,13 +1,8 @@
 //! Module to process standalone WordStar control characters
 
+use crate::uni_chars;
 use crate::ws_chars;
 use std::char;
-
-// Unicode strings for substitution (actually all single characters)
-
-const UNI_NB_SPACE: &str = "\u{00A0}"; // Non-breaking space
-const UNI_HYPHEN: &str = "\u{2010}"; // Hyphen (as opposed to dash)
-const UNI_BLOCK: &str = "\u{2588}"; // Block character
 
 // PRIVATE HELPER FUNCTIONS
 
@@ -29,12 +24,12 @@ const UNI_BLOCK: &str = "\u{2588}"; // Block character
 /// ```
 fn get_mapping(c: char) -> Option<&'static str> {
     match c {
-        ws_chars::PHANTOM_SPACE => Some(UNI_BLOCK),
-        ws_chars::PHANTOM_RUBOUT => Some(UNI_BLOCK),
+        ws_chars::PHANTOM_SPACE => Some(uni_chars::BLOCK),
+        ws_chars::PHANTOM_RUBOUT => Some(uni_chars::BLOCK),
         ws_chars::FORM_FEED => Some("\n---\n"),
-        ws_chars::NON_BREAKING_SPACE => Some(UNI_NB_SPACE),
-        ws_chars::INACTIVE_SOFT_HYPHEN => Some(UNI_HYPHEN),
-        ws_chars::ACTIVE_SOFT_HYPHEN => Some(UNI_HYPHEN),
+        ws_chars::NON_BREAKING_SPACE => Some(uni_chars::NB_SPACE),
+        ws_chars::INACTIVE_SOFT_HYPHEN => Some(uni_chars::HYPHEN),
+        ws_chars::ACTIVE_SOFT_HYPHEN => Some(uni_chars::HYPHEN),
         ws_chars::DELETE => Some(""), //Just remove it
         _ => None,
     }
@@ -121,8 +116,8 @@ mod tests {
     #[test]
     fn test_get_mapping() {
         assert_eq!(get_mapping('\x0C'), Some("\n---\n"));
-        assert_eq!(get_mapping('\x0F'), Some(UNI_NB_SPACE));
-        assert_eq!(get_mapping('\x1E'), Some(UNI_HYPHEN));
+        assert_eq!(get_mapping('\x0F'), Some(uni_chars::NB_SPACE));
+        assert_eq!(get_mapping('\x1E'), Some(uni_chars::HYPHEN));
         assert_eq!(get_mapping('\x7F'), Some(""));
         assert_eq!(get_mapping('a'), None);
     }

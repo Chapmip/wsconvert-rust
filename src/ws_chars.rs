@@ -1,4 +1,4 @@
-//! Module containing WordStar control characters and associated Unicode modifiers
+//! Module containing WordStar control characters
 
 // Used in ws_emphasis and ws_special modules
 pub const BOLD: char = '\x02';
@@ -21,8 +21,3 @@ pub const NON_BREAKING_SPACE: char = '\x0F';
 pub const INACTIVE_SOFT_HYPHEN: char = '\x1E';
 pub const ACTIVE_SOFT_HYPHEN: char = '\x1F';
 pub const DELETE: char = '\x7F';
-
-// Unicode modifiers (added after relevant printable character)
-
-pub const COMB_OVERLINE: char = '\u{0305}'; // Combining overline
-pub const COMB_UNDERLINE: char = '\u{0332}'; // Combining underline

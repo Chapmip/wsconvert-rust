@@ -8,19 +8,12 @@
 // expressions (so `concat!` is not an option).  This activity is constrained
 // to occur only once (first time round) by using the `lazy_static!` macro.
 
+use crate::uni_chars;
 use crate::ws_chars;
 use crate::ws_mappings;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::borrow::Cow;
-
-// Unicode strings for substitution (actually all single characters)
-
-const UNI_DEGREE: &str = "\u{00B0}"; // Degree symbol
-const UNI_ONE_QUARTER: &str = "\u{00BC}"; // 1/4 symbol
-const UNI_HALF: &str = "\u{00BD}"; // 1/2 symbol
-const UNI_THREE_QUARTERS: &str = "\u{00BE}"; // 3/4 symbol
-const UNI_REPLACEMENT: &str = "\u{FFFD}"; // Invalid marker
 
 // PRIVATE HELPER FUNCTIONS
 
@@ -49,7 +42,7 @@ fn transform_degrees(before: &str) -> Option<String> {
             Regex::new(&re).unwrap()
         };
     }
-    if let Cow::Owned(after) = REGEX_DEGREE.replace_all(before, UNI_DEGREE) {
+    if let Cow::Owned(after) = REGEX_DEGREE.replace_all(before, uni_chars::DEGREE) {
         Some(after)
     } else {
         None
@@ -84,7 +77,7 @@ fn transform_half(before: &str) -> Option<String> {
             let mut re = String::with_capacity(9);  // Can't calculate statically
             re.push(ws_chars::SUPERSCRIPT);
             re.push('1');
-            re.push(ws_chars::COMB_UNDERLINE);
+            re.push(uni_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);
@@ -93,7 +86,7 @@ fn transform_half(before: &str) -> Option<String> {
             Regex::new(&re).unwrap()
         };
     }
-    if let Cow::Owned(after) = REGEX_HALF.replace_all(before, UNI_HALF) {
+    if let Cow::Owned(after) = REGEX_HALF.replace_all(before, uni_chars::HALF) {
         Some(after)
     } else {
         None
@@ -110,9 +103,9 @@ fn transform_half(before: &str) -> Option<String> {
 ///
 fn get_quarters(caps: &regex::Captures) -> &'static str {
     match &caps["n"] {
-        "1" => UNI_ONE_QUARTER,
-        "3" => UNI_THREE_QUARTERS,
-        _ => UNI_REPLACEMENT,
+        "1" => uni_chars::ONE_QUARTER,
+        "3" => uni_chars::THREE_QUARTERS,
+        _ => uni_chars::REPLACEMENT,
     }
 }
 
@@ -146,7 +139,7 @@ fn transform_quarter(before: &str) -> Option<String> {
             let mut re = String::with_capacity(19);  // Can't calculate statically
             re.push(ws_chars::SUPERSCRIPT);
             re.push_str(r"(?P<n>[13])");
-            re.push(ws_chars::COMB_UNDERLINE);
+            re.push(uni_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);

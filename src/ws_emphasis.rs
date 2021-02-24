@@ -9,6 +9,7 @@
 //     (condition).then(|| ())
 //  -> if (condition) { Some( () ) } else { None }
 
+use crate::uni_chars;
 use crate::ws_chars;
 use crate::ws_string;
 
@@ -111,7 +112,7 @@ pub fn process_underlines(s: &str) -> Option<String> {
     let mut rest = s;
     while let Some((left, text, right)) = ws_string::split_first_three(rest, ws_chars::UNDERLINE) {
         result.push_str(left);
-        let combined = add_combiner(text, ws_chars::COMB_UNDERLINE);
+        let combined = add_combiner(text, uni_chars::COMB_UNDERLINE);
         result.push_str(&combined);
         rest = right;
         changed = true;
@@ -159,7 +160,7 @@ pub fn process_overlines(s: &str) -> Option<String> {
                     && ws_string::contains_only_print(text)
                 {
                     result.push_str(prefix);
-                    result.push_str(&add_combiner(text, ws_chars::COMB_OVERLINE));
+                    result.push_str(&add_combiner(text, uni_chars::COMB_OVERLINE));
                     rest = right;
                     changed = true;
                     continue;

@@ -1,5 +1,6 @@
 mod asciify;
 mod control_count;
+mod uni_chars;
 mod ws_chars;
 mod ws_control;
 mod ws_dot_cmd;
