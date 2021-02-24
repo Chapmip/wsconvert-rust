@@ -6,6 +6,7 @@ mod ws_dot_cmd;
 mod ws_emphasis;
 mod ws_special;
 mod ws_string;
+mod ws_wrappers;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
@@ -17,6 +18,7 @@ use std::io::{BufRead, BufReader, BufWriter, Read, Write}; // + self
 fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
     let mut original_counts = ControlCount::new("Original".to_string());
     let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
+    let mut alignment_counts = ControlCount::new("Re-align".to_string());
     let mut emphasis_counts = ControlCount::new("Emphasis".to_string());
     let mut special_counts = ControlCount::new("Specials".to_string());
     let mut de_ctrl_counts = ControlCount::new("Controls".to_string());
@@ -35,6 +37,11 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
             }
         }
         post_dot_counts.scan(&line);
+
+        if let Some(replacement) = ws_wrappers::process_alignment(&line) {
+            line = replacement;
+        }
+        alignment_counts.scan(&line);
 
         if let Some(replacement) = ws_emphasis::process_emphasis(&line) {
             line = replacement;
@@ -57,6 +64,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
 
     eprintln!("{}", original_counts);
     eprintln!("{}", post_dot_counts);
+    eprintln!("{}", alignment_counts);
     eprintln!("{}", emphasis_counts);
     eprintln!("{}", special_counts);
     eprintln!("{}", de_ctrl_counts);

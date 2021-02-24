@@ -13,9 +13,6 @@ pub const UNDERSCORE: char = '_';
 // Used in ws_special module
 pub const SUBSCRIPT: char = '\x16';
 
-// Wrappers to be aligned (i.e. leading and trailing spaces moved outside wrapper)
-pub const WRAPPERS: [char; 5] = [BOLD, DOUBLE, UNDERLINE, STRIKETHROUGH, ITALIC];
-
 // Used in ws_control module
 pub const PHANTOM_SPACE: char = '\x06'; // Daisywheel printer spare slot!
 pub const PHANTOM_RUBOUT: char = '\x07'; // Daisywheel printer spare slot!

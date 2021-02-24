@@ -23,84 +23,6 @@ const CONVERSIONS: [(char, &str); 4] = [
 
 // PRIVATE HELPER FUNCTIONS
 
-/// Returns `Some(replacement)` if the given text slice has whitespace characters
-/// immediately inside a pair of the given "wrapper" characters, otherwise `None`
-///
-/// The text slice is scanned from left to right for a pair of wrapper characters.
-/// If a pair is found and the text between them contains whitespace characters at
-/// either end, then the text is re-written with the whitespace characters moved
-/// outside the pair of wrapper characters, and this new String is returned.
-///
-/// Note that whitespace characters may still appear within the text between the
-/// pair of wrapper characters -- just not at either end.
-///
-/// # Arguments
-///
-/// * `s` - Slice of text to be scanned
-///
-/// # Examples
-/// ```
-/// assert_eq!(fix_wrapper("a* bc *d", '*'), Some("a *bc* d".to_string()));
-/// ```
-fn fix_wrapper(s: &str, wrapper: char) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::with_capacity(s.len());
-    let mut rest = s;
-    while let Some((left, text, right)) = ws_string::split_first_three(rest, wrapper) {
-        result.push_str(left);
-        let (spc_left, text, spc_right) = ws_string::split_space_at_ends(text);
-        result.push_str(spc_left);
-        result.push(wrapper);
-        result.push_str(text);
-        result.push(wrapper);
-        result.push_str(spc_right);
-        rest = right;
-        if !spc_left.is_empty() || !spc_right.is_empty() {
-            changed = true;
-        }
-    }
-    if changed {
-        result.push_str(rest);
-        Some(result)
-    } else {
-        None
-    }
-}
-
-/// Returns `Some(replacement)` if the given text slice has whitespace characters
-/// immediately inside a pair of any defined wrapper characters, otherwise `None`
-///
-/// The text slice is scanned from left to right for a pair of each of the defined
-/// set of wrapper characters (in `ws_chars::WRAPPERS`).  If a pair is found and the
-/// text between them contains whitespace characters at either end, then the text
-/// is re-written with the whitespace characters moved outside the pair of wrapper
-/// characters, and this new String is returned.
-///
-/// Note that whitespace characters may still appear within the text between pairs
-/// of wrapper characters -- just not at either end.
-///
-/// # Arguments
-///
-/// * `s` - Slice of text to be scanned
-///
-/// # Examples
-/// ```
-/// assert_eq!(fix_all_wrappers("\x13 abc \x13"), Some(" \x13abc\x13 ".to_string()));
-/// ```
-fn fix_all_wrappers(s: &str) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::new(); // Always gets replaced if needed
-    let mut line = s;
-    for wrapper in &ws_chars::WRAPPERS {
-        if let Some(fixed) = fix_wrapper(line, *wrapper) {
-            result = fixed;
-            line = &result;
-            changed = true;
-        }
-    }
-    changed.then(|| result)
-}
-
 /// Returns `Some(replacement)` if the given text slice contains at least one pair
 /// of the given "wrapper" character to be replaced, otherwise `None`
 ///
@@ -162,33 +84,6 @@ fn add_combiner(s: &str, combiner: char) -> String {
 }
 
 // EXTERNAL PUBLIC FUNCTIONS
-
-/// Returns `Some(replacement)` if the given text slice has whitespace characters
-/// immediately inside a pair of any defined wrapper characters, otherwise `None`
-///
-/// This function calls `fix_all_wrappers()` repeatedly until no further changes
-/// can be made, to handle the possibility that whitespace needs to be moved outside
-/// multiple layers of "wrapper" characters in stages.
-///
-/// # Arguments
-///
-/// * `s` - Slice of text to be processed
-///
-/// # Examples
-/// ```
-/// assert_eq!(align_wrappers("\x02\x13 a \x13\x02"), Some(" \x02\x13a\x13\x02 ".to_string()));
-/// ```
-pub fn align_wrappers(s: &str) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::new(); // Always gets replaced if needed
-    let mut line = s;
-    while let Some(fixed) = fix_all_wrappers(line) {
-        result = fixed;
-        line = &result;
-        changed = true;
-    }
-    changed.then(|| result)
-}
 
 /// Returns `Some(replacement)` if the given text slice contains one or more
 /// underlined sections to be converted, otherwise `None`
@@ -335,11 +230,6 @@ pub fn process_emphasis(s: &str) -> Option<String> {
     let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
 
-    if let Some(replacement) = align_wrappers(line) {
-        result = replacement;
-        line = &result;
-        changed = true;
-    }
     if let Some(replacement) = process_underlines(line) {
         result = replacement;
         line = &result;
@@ -362,40 +252,6 @@ pub fn process_emphasis(s: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_fix_wrapper() {
-        assert_eq!(
-            fix_wrapper("a*  bc  *d", '*'),
-            Some("a  *bc*  d".to_string())
-        );
-        assert_eq!(fix_wrapper("a*  bc  d", '*'), None);
-        assert_eq!(fix_wrapper("a  bc  d", '*'), None);
-        assert_eq!(
-            fix_wrapper("*a * bc * *d", '*'),
-            Some("*a*  bc ** d".to_string())
-        );
-        assert_eq!(
-            fix_wrapper("*a * bc * *d", '*'),
-            Some("*a*  bc ** d".to_string())
-        );
-        assert_eq!(fix_wrapper("abcd", '*'), None);
-        assert_eq!(fix_wrapper("", '*'), None);
-    }
-
-    #[test]
-    fn test_fix_all_wrappers() {
-        assert_eq!(
-            fix_all_wrappers("\x13  abc  \x13"),
-            Some("  \x13abc\x13  ".to_string())
-        );
-        assert_eq!(
-            fix_all_wrappers(" \x02 abc \x02 "),
-            Some("  \x02abc\x02  ".to_string())
-        );
-        assert_eq!(fix_all_wrappers("abcd"), None);
-        assert_eq!(fix_all_wrappers(""), None);
-    }
 
     #[test]
     fn test_replace_wrapper() {
@@ -425,20 +281,6 @@ mod tests {
     }
 
     #[test]
-    fn test_align_wrappers() {
-        assert_eq!(
-            align_wrappers("\x02\x13  abc  \x13\x02"),
-            Some("  \x02\x13abc\x13\x02  ".to_string())
-        );
-        assert_eq!(
-            align_wrappers(" \x02  \x13 abc \x19 def \x13 \x19\x02"),
-            Some("    \x02\x13abc  \x19def\x13\x19\x02  ".to_string())
-        );
-        assert_eq!(align_wrappers("abcd"), None);
-        assert_eq!(align_wrappers(""), None);
-    }
-
-    #[test]
     fn test_process_underline() {
         assert_eq!(
             process_underlines("\x13under\x13"),
@@ -460,18 +302,18 @@ mod tests {
             process_underlines("\x13\x02\x13\x02"),
             Some("\x02\x02".to_string())
         );
-        let text = "\x13\x02  I. INTRO & AIMS\x13\x02";
+        let text = "  \x13\x02I. INTRO & AIMS\x13\x02";
         assert_eq!(
-            process_underlines(&align_wrappers(text).unwrap_or(text.to_string())),
+            process_underlines(text),
             Some(
                 "  \x02I\u{332}.\u{332} \u{332}I\u{332}N\u{332}T\u{332}R\u{332}O\u{332} \
                 \u{332}&\u{332} \u{332}A\u{332}I\u{332}M\u{332}S\u{332}\x02"
                     .to_string()
             )
         );
-        let text = " \x02  \x13 abc \x19 def \x13 \x19\x02";
+        let text = "    \x02\x13abc  \x19def\x13\x19\x02  ";
         assert_eq!(
-            process_underlines(&align_wrappers(text).unwrap_or(text.to_string())),
+            process_underlines(text),
             Some(
                 "    \x02a\u{332}b\u{332}c\u{332} \u{332} \u{332}\x19\
                 d\u{332}e\u{332}f\u{332}\x19\x02  "
@@ -521,15 +363,7 @@ mod tests {
     #[test]
     fn test_process_emphasis() {
         assert_eq!(
-            process_emphasis("\x13 \x02Bold\x02 title  \x13"),
-            Some(
-                " **B\u{332}o\u{332}l\u{332}d\u{332}** \u{332}t\u{332}i\u{332}t\u{332}\
-            l\u{332}e\u{332}  "
-                    .to_string()
-            )
-        );
-        assert_eq!(
-            process_emphasis("\x13 \x02Bold\x02 title  \x13"),
+            process_emphasis(" \x13\x02Bold\x02 title\x13  "),
             Some(
                 " **B\u{332}o\u{332}l\u{332}d\u{332}** \u{332}t\u{332}i\u{332}t\u{332}\
             l\u{332}e\u{332}  "
