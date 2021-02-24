@@ -5,6 +5,7 @@ mod ws_control;
 mod ws_dot_cmd;
 mod ws_emphasis;
 mod ws_special;
+mod ws_string;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
