@@ -3,6 +3,11 @@
 // Written as an exercise in Rust string processing, without resorting to the `regex`
 // crate for regular expression parsing (for which the code would probably be simpler)
 
+// It may be more efficient for the public functions to return `Cow<'_, T>` instead
+// of `Option<T>`, but I'm still figuring that out!  One advantage of returning
+// `Option<T>` is that it enables the code to use Rust `?` operator as a terse
+// way to exit immediately from a function with a `None` result.
+
 // EXTERNAL PUBLIC FUNCTIONS
 
 /// Returns length of text slice in characters (not bytes) by iterating though it

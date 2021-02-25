@@ -5,8 +5,8 @@ mod ws_align;
 mod ws_chars;
 mod ws_control;
 mod ws_dot_cmd;
-mod ws_emphasis;
 mod ws_mappings;
+mod ws_overline;
 mod ws_special;
 mod ws_string;
 mod ws_wrappers;
@@ -23,7 +23,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
     let mut alignment_counts = ControlCount::new("Re-align".to_string());
     let mut special_counts = ControlCount::new("Specials".to_string());
-    let mut emphasis_counts = ControlCount::new("Emphasis".to_string());
+    let mut overline_counts = ControlCount::new("Overline".to_string());
     let mut wrappers_counts = ControlCount::new("Wrappers".to_string());
     let mut de_ctrl_counts = ControlCount::new("Controls".to_string());
 
@@ -53,10 +53,10 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         special_counts.scan(&line);
 
-        if let Some(replacement) = ws_emphasis::process(&line) {
+        if let Some(replacement) = ws_overline::process(&line) {
             line = replacement;
         }
-        emphasis_counts.scan(&line);
+        overline_counts.scan(&line);
 
         if let Some(replacement) = wrappers.process(&line) {
             line = replacement;
@@ -76,7 +76,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     eprintln!("{}", post_dot_counts);
     eprintln!("{}", alignment_counts);
     eprintln!("{}", special_counts);
-    eprintln!("{}", emphasis_counts);
+    eprintln!("{}", overline_counts);
     eprintln!("{}", wrappers_counts);
     eprintln!("{}", de_ctrl_counts);
     Ok(())
