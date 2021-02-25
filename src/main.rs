@@ -9,6 +9,7 @@ mod ws_emphasis;
 mod ws_mappings;
 mod ws_special;
 mod ws_string;
+mod ws_wrappers;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};

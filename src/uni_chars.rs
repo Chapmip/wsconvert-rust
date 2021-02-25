@@ -5,6 +5,7 @@
 // are inappropriate and too numerous to define individually here.
 
 /// Starts of Unicode ranges for emphasised alphanumeric characters
+/// (used in ws_mappings module)
 pub const BOLD_UPPER_A: char = '\u{1D400}';
 pub const BOLD_LOWER_A: char = '\u{1D41A}';
 pub const BOLD_ZERO: char = '\u{1D7CE}';

@@ -13,7 +13,7 @@
 ///
 /// # Examples
 /// ```
-/// assert_eq!(ws_emphasis::len_in_chars("a£¬d"), 4);
+/// assert_eq!(len_in_chars("a£¬d"), 4);
 /// ```
 pub fn len_in_chars(s: &str) -> usize {
     s.chars().count()
@@ -30,7 +30,7 @@ pub fn len_in_chars(s: &str) -> usize {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(ws_emphasis::contains_only_char("aaaa", 'a'), true);
+/// assert_eq!(contains_only_char("aaaa", 'a'), true);
 /// ```
 pub fn contains_only_char(s: &str, only: char) -> bool {
     s.chars().all(|ch| ch == only)
@@ -46,7 +46,7 @@ pub fn contains_only_char(s: &str, only: char) -> bool {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(ws_emphasis::contains_only_print("abc 123"), true);
+/// assert_eq!(contains_only_print("abc 123"), true);
 /// ```
 pub fn contains_only_print(s: &str) -> bool {
     s.chars().all(|ch| !char::is_ascii_control(&ch))
@@ -68,7 +68,7 @@ pub fn contains_only_print(s: &str) -> bool {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(ws_emphasis::split_first_three("ab/cd/ef", '/'), Some(("ab", "cd", "ef")));
+/// assert_eq!(split_first_three("ab/cd/ef", '/'), Some(("ab", "cd", "ef")));
 /// ```
 pub fn split_first_three(s: &str, ch: char) -> Option<(&str, &str, &str)> {
     let mut iter = s.splitn(3, ch);
