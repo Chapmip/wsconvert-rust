@@ -1,5 +1,8 @@
 //! Module to process WordStar dot commands
 
+use crate::uni_chars;
+use crate::ws_chars;
+
 // PRIVATE HELPER FUNCTIONS
 
 /// Returns `Some(tuple)` if text slice contains a dot followed by a two character
@@ -54,30 +57,33 @@ fn strip_control_chars(s: &str) -> String {
         .collect::<String>()
 }
 
-/// Returns `Some(replacement)` with a concatenation of the given prefix and the optional
-/// text with control characters removed if the optional text is present, otherwise `None`
+/// Returns `Some(replacement)` if the optional text is present, with a replacement
+/// string as the given wrapper text slice as a prefix and suffix to the optional
+/// text with control characters removed, otherwise `None`
 ///
 /// # Arguments
 ///
-/// * `prefix` - Slice of text containing prefix to the optional following text
+/// * `wrapper` - Slice of text containing prefix/suffix to the optional text content
 /// * `opt_text` - Must contain `Some(text)` in order to make a new header
 ///
 /// # Examples
 /// ```
-/// assert_eq!(make_header("# ", Some("hello")), Some("# hello".to_string()));
+/// assert_eq!(make_header("#", Some("hello")), Some("#hello#".to_string()));
 /// ```
-fn make_header(prefix: &str, opt_text: Option<&str>) -> Option<String> {
+fn make_header(wrapper: &str, opt_text: Option<&str>) -> Option<String> {
     let text = opt_text?;
-    let mut result = String::from(prefix);
+    let mut result = String::new();
+    result.push_str(wrapper);
     let conv_text = strip_control_chars(text);
     result.push_str(conv_text.trim());
+    result.push_str(wrapper);
     Some(result)
 }
 
 // EXTERNAL PUBLIC FUNCTION
 
-/// Returns `Some(replacement)` wrapping text to be substituted if a valid dot command is
-/// detected, otherwise `None`
+/// Returns `Some(replacement)` wrapping text to be substituted if a valid dot command
+/// is detected, otherwise `None`
 ///
 /// The replacement text may be "", indicating that the line containing the dot command
 /// needs to be eliminated entirely, rather than just replaced with a blank line.
@@ -88,17 +94,17 @@ fn make_header(prefix: &str, opt_text: Option<&str>) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process(".he abc"), Some("## abc".to_string()));
+/// assert_eq!(process(".he abc"), Some("\x13abc\x13".to_string()));
 /// ```
 pub fn process(s: &str) -> Option<String> {
     let (cmd, opt_text) = check_dot_cmd(s)?;
     let lower_cmd = cmd.to_ascii_lowercase();
     match &lower_cmd[..] {
-        "he" | "fo" => make_header("## ", opt_text),
+        "he" | "fo" => make_header(&ws_chars::UNDERLINE.to_string(), opt_text),
         "h1" | "h2" | "h3" | "h4" | "h5" | "f1" | "f2" | "f3" | "f4" | "f5" => {
-            make_header("### ", opt_text)
+            make_header(&ws_chars::UNDERLINE.to_string(), opt_text)
         }
-        "pa" | "xl" => Some("---".to_string()),
+        "pa" | "xl" => Some(uni_chars::HORIZONTAL_BAR.to_string().repeat(39)),
         _ => Some("".to_string()),
     }
 }
@@ -131,24 +137,21 @@ mod tests {
 
     #[test]
     fn test_make_header() {
+        assert_eq!(make_header("#", Some("hello")), Some("#hello#".to_string()));
         assert_eq!(
-            make_header("# ", Some("hello")),
-            Some("# hello".to_string())
+            make_header("#", Some("he\x03llo")),
+            Some("#hello#".to_string())
         );
-        assert_eq!(
-            make_header("# ", Some("he\x03llo")),
-            Some("# hello".to_string())
-        );
-        assert_eq!(make_header("# ", None), None);
+        assert_eq!(make_header("#", None), None);
     }
 
     #[test]
     fn test_process() {
-        let text = ".He \x03 jd \x04 jhhfjf*¬£   \x05  ";
-        assert_eq!(process(text), Some("## jd  jhhfjf*¬£".to_string()));
+        let text = ".He \x03 the \x04 words *¬£   \x05  ";
+        assert_eq!(process(text), Some("\x13the  words *¬£\x13".to_string()));
         assert_eq!(
             process(".f3 \x13\x14TEST\x13\x14"),
-            Some("### TEST".to_string())
+            Some("\x13TEST\x13".to_string())
         );
         assert_eq!(process(".op"), Some("".to_string()));
         assert_eq!(process("abc"), None);

@@ -1,5 +1,5 @@
-## I.D.CHAPMAN       E1 PROJECT - THE IEEE-488 BUS
-                    **I̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲**
+I̲.̲D̲.̲C̲H̲A̲P̲M̲A̲N̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲E̲1̲ ̲P̲R̲O̲J̲E̲C̲T̲ ̲-̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲B̲U̲S̲
+                    I̲.̲ ̲I̲N̲T̲R̲O̲D̲U̲C̲T̲I̲O̲N̲ ̲A̲N̲D̲ ̲A̲I̲M̲S̲
                         (̲"̲I̲n̲v̲e̲s̲t̲i̲g̲a̲t̲e̲!̲"̲)̲
 
      This project took shape from a challenging, open assignment: 
@@ -28,8 +28,8 @@ project proved very stimulating.
 project  at each stage.   I hope that I have opened up some areas 
 of  interest  for later  students.   Wherever  possible,  I  have 
 suggested some further investigations which could be made.
----
-               **I̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+               I̲I̲.̲ ̲G̲E̲T̲T̲I̲N̲G̲ ̲T̲O̲ ̲G̲R̲I̲P̲S̲ ̲W̲I̲T̲H̲ ̲T̲H̲E̲ ̲S̲Y̲S̲T̲E̲M̲
 
      The aim of this chapter is to describe the equipment used in 
 this  project,  pointing out the short cuts and difficulties that 
@@ -102,7 +102,7 @@ clocking off the POSITIVE edge of DAV (as preset by a link on the
 LC-03 board) is preferable.  See Tables 2a/2b for these settings.
 
 Insert Tables 1-3 here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      One limitation of the LA-160 is the maximum period of  400us 
 for  its internal clock.  In some cases,  this can be overcome by 
 connecting the clock enable inputs appropriately.   When this  is 
@@ -140,7 +140,7 @@ but  these were all set correctly for the LA-160 at the  time  of
 writing.   See  the  FX-80  manual in the Oatley  Laboratory  for 
 further details.
 Insert Figures 1 and 2 here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      On  connecting the FX-80 to the serial interface cable  from 
 the  LA-160   and switching the printer on,  a hard copy  of  the 
 oscilloscope display is obtained by using print mode 2 (see Table 
@@ -222,8 +222,8 @@ argument follows for other multiple and single device commands.
      The best way to become familiar with the control of the GPIB 
 from the BBC computer is to read through my example programs (see 
 listings in Appendix B) using the manual for reference.
----
-               **I̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+               I̲I̲I̲.̲ ̲S̲I̲M̲P̲L̲E̲ ̲P̲R̲O̲G̲R̲A̲M̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲
 
      To  prove that the BBC Master was able to access  the  Prema 
 DMM over the IEEE bus,  the simple program suggested in the Acorn 
@@ -355,8 +355,8 @@ programs  provided IEEE bus activity suitable for capture on  the
 logic  analyser.   Thus,  the GPIB protocol could be inspected in 
 depth,  and checks made to ensure that the control lines  conform 
 to the IEEE-488 standard.  Chapter IV describes these results.
----
-              **I̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+              I̲V̲.̲ ̲A̲N̲A̲L̲Y̲S̲I̲S̲ ̲O̲F̲ ̲I̲E̲E̲E̲ ̲B̲U̲S̲ ̲T̲R̲A̲N̲S̲A̲C̲T̲I̲O̲N̲S̲
 
      One  pitfall in discussing signals on the IEEE bus  is  that 
 the lines operate in negative logic.   To minimize confusion over 
@@ -393,7 +393,7 @@ presence of multiple talkers / listeners.
 
 
 Insert Figures 3-5 here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      I found that the logical significance of the three handshake 
 lines  was  not  clear  from their  names,  so  the  table  below 
 clarifies these:
@@ -467,7 +467,7 @@ controller  sends $52 hexadecimal.   When the device has finished
 sending data, the controller issues an 'UNTALK' code ($5F hex).
 
 Insert Tables 4.1 and 4.2 here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      Whilst only one device can talk on the bus at the same time, 
 it  is clearly possible for more than one device to be  listening 
 to  the controller at any one time.  The controller issues one or 
@@ -503,8 +503,8 @@ constraints to be met,  as defined by the IEEE-488 standard.  The
 document in Appendix F gives a detailed description of these, but 
 for  the  purposes of this project it is sufficient to know  that 
 the standard is met.
----
-                   **V̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+                   V̲.̲ ̲D̲A̲T̲A̲ ̲L̲O̲G̲G̲I̲N̲G̲ ̲E̲X̲P̲E̲R̲I̲M̲E̲N̲T̲S̲
 
      The  aim of the data logging experiments in this section  of 
 the  project  was for the BBC Master computer to collect as  many 
@@ -699,8 +699,8 @@ out on the Voltage Calibrator to follow up the above hypothesis.
 using the data logging software.  There are many other tests that 
 could be performed, as well as many experimental applications.  I 
 leave these to the imagination of later students !
----
-            **V̲I̲.̲ ̲S̲P̲E̲E̲D̲ ̲L̲I̲M̲I̲T̲A̲T̲I̲O̲N̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲B̲U̲S̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+            V̲I̲.̲ ̲S̲P̲E̲E̲D̲ ̲L̲I̲M̲I̲T̲A̲T̲I̲O̲N̲S̲ ̲O̲N̲ ̲T̲H̲E̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲B̲U̲S̲
 
      The IEEE-488 specification sets a maximum data rate over the 
 GPIB of 1 megabyte per second.  Already, my results show that the 
@@ -807,12 +807,12 @@ left  :  that the hardware within the IEEE interface box  imposes
 the constraint ;  or that the Acorn subroutines (which reside  in 
 EPROM) are slow.  To determine the cause, it is necessary to open 
 the Acorn box and investigate the contents.
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Insert Data Timings I here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Insert Data Timings II and III here ..
----
-        **V̲I̲I̲.̲ ̲C̲O̲N̲T̲E̲N̲T̲S̲ ̲O̲F̲ ̲T̲H̲E̲ ̲A̲C̲O̲R̲N̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲I̲N̲T̲E̲R̲F̲A̲C̲E̲ ̲B̲O̲X̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+        V̲I̲I̲.̲ ̲C̲O̲N̲T̲E̲N̲T̲S̲ ̲O̲F̲ ̲T̲H̲E̲ ̲A̲C̲O̲R̲N̲ ̲I̲E̲E̲E̲-̲4̲8̲8̲ ̲I̲N̲T̲E̲R̲F̲A̲C̲E̲ ̲B̲O̲X̲
 
      The Acorn IEEE-488 interface unit connects to the 1 MHz  bus 
 of  the BBC Computer via a short length of ribbon  cable.   While 
@@ -849,7 +849,7 @@ in  the  Acorn  box),  bus accesses can be  completed  in  4  us,
 provided that the remote unit is ready.
 
 Insert Acorn Connector details here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      The important parts of the Acorn circuit board were  deduced 
 by  tracing  out PCB tracks.   The address decoding  and  control 
 logic was left out of this analysis, as the port locations of the 
@@ -884,10 +884,10 @@ up  - for example:  a program could set up a sine wave output  to
 check the accuracy of r.m.s.  readings on the Prema DMM ;  or one 
 could generate pseudo-random "noise",  with the unit acting as an 
 expensive D to A converter.
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Insert Circuit Diagram of Acorn Board here ..
----
-              **V̲I̲I̲I̲.̲ ̲C̲H̲E̲C̲K̲I̲N̲G̲ ̲T̲H̲E̲ ̲V̲O̲L̲T̲A̲G̲E̲ ̲C̲A̲L̲I̲B̲R̲A̲T̲O̲R̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+              V̲I̲I̲I̲.̲ ̲C̲H̲E̲C̲K̲I̲N̲G̲ ̲T̲H̲E̲ ̲V̲O̲L̲T̲A̲G̲E̲ ̲C̲A̲L̲I̲B̲R̲A̲T̲O̲R̲
 
      At  the end of chapter V,  a hypothesis was formed that  the 
 Voltage Calibrator exhibits "jumps" in its output voltage when it 
@@ -901,23 +901,23 @@ Standards Laboratory.
 (i.e.  away from the IEEE-488 bus), and the following sequence of 
 operations were carried out:
 
-     (1) The 10 V standard was measured on the DMM (=Vₘ₁₀).
+     (1) The 10 V standard was measured on the DMM (=VM₁₀).
 
      (2) The Calibrator and 10 V standard were connected in 
          opposition  and  the output voltage  was  adjusted 
          until  zero  volts was measured on the  DMM.   The 
-         Calibrator setting (=Vc₁₀) was recorded.
+         Calibrator setting (=VC₁₀) was recorded.
 
      (3) The Calibrator (on this setting) and 10 V standard 
          were  added together in series and the sum voltage 
-         was measured (=Vₘ₂₀).
+         was measured (=VM₂₀).
 
      (4) The Calibrator and 10 V standard were connected in 
          opposition and the Calibrator voltage was adjusted 
-         until  the  DMM  measured  Vₘ₁₀.   The  Calibrator 
-         setting was recorded (=Vc₂₀).
+         until  the  DMM  measured  VM₁₀.   The  Calibrator 
+         setting was recorded (=VC₂₀).
 
-     (5) Steps  (3) and (4) were repeated  for  Vₘ₂₀,  Vc₃₀  
+     (5) Steps  (3) and (4) were repeated  for  VM₂₀,  VC₃₀  
          and so on, up to a maximum of 100 V.
 
      The readings are recorded in Appendix A.
@@ -949,8 +949,8 @@ in the latter range.
 
      Thus, instead of observing "jumps" in the Calibrator output, 
 we have observed them in the DMM readings.
----
-             **I̲X̲.̲ ̲T̲H̲E̲ ̲"̲Q̲U̲I̲Z̲B̲O̲A̲R̲D̲"̲ ̲S̲E̲Q̲U̲E̲N̲C̲E̲ ̲G̲E̲N̲E̲R̲A̲T̲O̲R̲**
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+             I̲X̲.̲ ̲T̲H̲E̲ ̲"̲Q̲U̲I̲Z̲B̲O̲A̲R̲D̲"̲ ̲S̲E̲Q̲U̲E̲N̲C̲E̲ ̲G̲E̲N̲E̲R̲A̲T̲O̲R̲
 
      The  last two weeks of this project were spent designing and 
 constructing  a "Quizboard" sequence generator for use in the  E1 
@@ -1023,7 +1023,7 @@ Schmitt  triggers of IC 1,  as shown.   An RC network provides  a
 power-on-reset  pulse to the logic sequencer,  ensuring that  the 
 output sequence starts in a defined state.
 Insert Quizboard Circuit Diagram here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      A  PCB was designed for the "Quizboard" (see PCB  prints  in 
 Appendix H). As the circuitry is relatively simple, a small (3.5" 
 x 2.0") single-sided board was easy to achieve.   Two boards were 
@@ -1061,7 +1061,7 @@ on reset,  then rises high.   Each inverted output is, therefore,
 forced low on power-up by ORing it with P̅O̅R̅.
 
 Insert Karnaugh Maps here ..
----
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
      The Johnson count in (b) is simple to provide.  The function 
 of circulating shift register is achieved by setting:
 

@@ -26,7 +26,7 @@ fn get_mapping(c: char) -> Option<&'static str> {
     match c {
         ws_chars::PHANTOM_SPACE => Some(uni_chars::BLOCK),
         ws_chars::PHANTOM_RUBOUT => Some(uni_chars::BLOCK),
-        ws_chars::FORM_FEED => Some("\n---\n"),
+        ws_chars::FORM_FEED => None, // Placeholder - leave alone for now
         ws_chars::NON_BREAKING_SPACE => Some(uni_chars::NB_SPACE),
         ws_chars::INACTIVE_SOFT_HYPHEN => Some(uni_chars::HYPHEN),
         ws_chars::ACTIVE_SOFT_HYPHEN => Some(uni_chars::HYPHEN),
@@ -115,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_get_mapping() {
-        assert_eq!(get_mapping('\x0C'), Some("\n---\n"));
+        assert_eq!(get_mapping('\x06'), Some(uni_chars::BLOCK));
         assert_eq!(get_mapping('\x0F'), Some(uni_chars::NB_SPACE));
         assert_eq!(get_mapping('\x1E'), Some(uni_chars::HYPHEN));
         assert_eq!(get_mapping('\x7F'), Some(""));
@@ -148,8 +148,8 @@ mod tests {
         );
         assert_eq!(process("\x14abcde\x01", false), None);
         assert_eq!(
-            process("abc\x0Cdef", true),
-            Some("abc\n---\ndef".to_string())
+            process("abc\x06def", true),
+            Some("abc\u{2588}def".to_string())
         );
         assert_eq!(process("abcd", true), None);
         assert_eq!(process("", true), None);
