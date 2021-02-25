@@ -1,4 +1,4 @@
-//! Module to re-align spaces outside pairs of certain WordStar "wrappers"
+//! Module to re-align spaces outside pairs of WordStar "wrapper" control characters
 
 // Note: utilises new "bool then" feature in Rust 1.50 to simplify Option return
 //     (condition).then(|| ())
@@ -8,13 +8,15 @@ use crate::ws_chars;
 use crate::ws_string;
 
 // Wrappers to be aligned (i.e. leading and trailing spaces moved outside wrapper)
-pub const WRAPPERS_TO_ALIGN: [char; 5] = [
-    ws_chars::BOLD,   // %% TO REMOVE SOON %%
-    ws_chars::DOUBLE, // %% TO REMOVE SOON %%
-    //  ws_chars::OVERLINE,     // %% TO ADD SOON %%
+pub const WRAPPERS_TO_ALIGN: [char; 8] = [
+    ws_chars::OVERLINE,
+    ws_chars::BOLD,
+    ws_chars::DOUBLE,
     ws_chars::UNDERLINE,
+    ws_chars::SUPERSCRIPT,
+    ws_chars::SUBSCRIPT,
     ws_chars::STRIKETHROUGH,
-    ws_chars::ITALIC, // %% TO REMOVE SOON %%
+    ws_chars::ITALIC,
 ];
 
 // PRIVATE HELPER FUNCTIONS
@@ -174,8 +176,8 @@ mod tests {
             Some("  \x18\x13abc\x13\x18  ".to_string())
         );
         assert_eq!(
-            process(" \x18  \x13 abc \x19 def \x13 \x19\x18"),
-            Some("    \x18\x13abc  \x19def\x13\x19\x18  ".to_string())
+            process(" \x18  \x13 abc \x01 def \x13 \x01\x18"),
+            Some("    \x18\x13abc  \x01def\x13\x01\x18  ".to_string())
         );
         assert_eq!(process("abcd"), None);
         assert_eq!(process(""), None);
