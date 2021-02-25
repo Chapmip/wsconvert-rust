@@ -11,9 +11,9 @@
 ///
 /// # Examples
 /// ```
-/// assert_eq!(get_subscripted('m'), '\u{2098}');
+/// assert_eq!(get_subscript('m'), '\u{2098}');
 /// ```
-pub fn get_subscripted(c: char) -> char {
+pub fn get_subscript(c: char) -> char {
     match c.to_ascii_lowercase() {
         '0' => '\u{2080}',
         '1' => '\u{2081}',
@@ -60,9 +60,9 @@ pub fn get_subscripted(c: char) -> char {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(get_superscripted('m'), '\u{1D50}');
+/// assert_eq!(get_superscript('m'), '\u{1D50}');
 /// ```
-pub fn get_superscripted(c: char) -> char {
+pub fn get_superscript(c: char) -> char {
     match c.to_ascii_lowercase() {
         '0' => '\u{2070}',
         '1' => '\u{00B9}',
@@ -115,14 +115,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_subscripted() {
-        assert_eq!(get_subscripted('m'), '\u{2098}');
-        assert_eq!(get_subscripted('&'), '&');
+    fn test_get_subscript() {
+        assert_eq!(get_subscript('m'), '\u{2098}');
+        assert_eq!(get_subscript('&'), '&');
     }
 
     #[test]
     fn test_get_superscripted() {
-        assert_eq!(get_superscripted('m'), '\u{1D50}');
-        assert_eq!(get_superscripted('&'), '&');
+        assert_eq!(get_superscript('m'), '\u{1D50}');
+        assert_eq!(get_superscript('&'), '&');
     }
 }
