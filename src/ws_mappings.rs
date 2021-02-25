@@ -14,7 +14,7 @@
 /// assert_eq!(get_subscript('m'), Some('\u{2098}'));
 /// ```
 pub fn get_subscript(c: char) -> Option<char> {
-    let mapped = match c.to_ascii_lowercase() {
+    let mapped = match c {
         '0' => '\u{2080}',
         '1' => '\u{2081}',
         '2' => '\u{2082}',
@@ -64,7 +64,7 @@ pub fn get_subscript(c: char) -> Option<char> {
 /// assert_eq!(get_superscript('m'), Some('\u{1D50}'));
 /// ```
 pub fn get_superscript(c: char) -> Option<char> {
-    let mapped = match c.to_ascii_lowercase() {
+    let mapped = match c {
         '0' => '\u{2070}',
         '1' => '\u{00B9}',
         '2' => '\u{00B2}',
@@ -105,6 +105,25 @@ pub fn get_superscript(c: char) -> Option<char> {
         'x' => '\u{02E3}',
         'y' => '\u{02B8}',
         'z' => '\u{1DBB}',
+        'A' => '\u{1D2C}',
+        'B' => '\u{1D2E}',
+        'D' => '\u{1D30}',
+        'E' => '\u{1D31}',
+        'G' => '\u{1D33}',
+        'H' => '\u{1D34}',
+        'I' => '\u{1D35}',
+        'J' => '\u{1D36}',
+        'K' => '\u{1D37}',
+        'L' => '\u{1D38}',
+        'M' => '\u{1D39}',
+        'N' => '\u{1D3A}',
+        'O' => '\u{1D3C}',
+        'P' => '\u{1D3E}',
+        'R' => '\u{1D3F}',
+        'T' => '\u{1D40}',
+        'U' => '\u{1D41}',
+        'V' => '\u{2C7D}',
+        'W' => '\u{1D42}',
         _ => return None,
     };
     Some(mapped)
