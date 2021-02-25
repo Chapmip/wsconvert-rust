@@ -113,7 +113,7 @@ fn align_all_wrappers(s: &str) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process("\x02\x13 a \x13\x02"), Some(" \x02\x13a\x13\x02 ".to_string()));
+/// assert_eq!(process("\x18\x13 a \x13\x18"), Some(" \x18\x13a\x13\x18 ".to_string()));
 /// ```
 pub fn process(s: &str) -> Option<String> {
     let mut changed = false;
