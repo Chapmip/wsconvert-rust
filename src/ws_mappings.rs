@@ -1,6 +1,69 @@
-//! Module to map ASCII characters to Unicode characters in a given context
+//! Module to map ASCII characters to Unicode characters with added attributes
+
+use crate::uni_chars;
+use std::char;
 
 // EXTERNAL PUBLIC FUNCTIONS
+
+/// Returns `Some(replacement)` if the given character can be mapped to a Unicode
+/// bold version, or `None` if no conversion is available
+///
+/// # Arguments
+///
+/// * `c` - Character to be transformed into its bold equivalent (if any)
+///
+/// # Examples
+/// ```
+/// assert_eq!(get_bold('m'), Some('\u{1D426}'));
+/// ```
+pub fn get_bold(c: char) -> Option<char> {
+    match c {
+        'A'..='Z' => char::from_u32(c as u32 - 'A' as u32 + uni_chars::BOLD_UPPER_A as u32),
+        'a'..='z' => char::from_u32(c as u32 - 'a' as u32 + uni_chars::BOLD_LOWER_A as u32),
+        '0'..='9' => char::from_u32(c as u32 - '0' as u32 + uni_chars::BOLD_ZERO as u32),
+        _ => None,
+    }
+}
+
+/// Returns `Some(replacement)` if the given character can be mapped to a Unicode
+/// italic version, or `None` if no conversion is available
+///
+/// # Arguments
+///
+/// * `c` - Character to be transformed into its italic equivalent (if any)
+///
+/// # Examples
+/// ```
+/// assert_eq!(get_italic('m'), Some('\u{1D45A}'));
+/// ```
+pub fn get_italic(c: char) -> Option<char> {
+    match c {
+        'A'..='Z' => char::from_u32(c as u32 - 'A' as u32 + uni_chars::ITALIC_UPPER_A as u32),
+        'h' => Some(uni_chars::ITALIC_LOWER_H),
+        'a'..='z' => char::from_u32(c as u32 - 'a' as u32 + uni_chars::ITALIC_LOWER_A as u32),
+        _ => None,
+    }
+}
+
+/// Returns `Some(replacement)` if the given character can be mapped to a Unicode
+/// bold italic version, or `None` if no conversion is available
+///
+/// # Arguments
+///
+/// * `c` - Character to be transformed into its bold italic equivalent (if any)
+///
+/// # Examples
+/// ```
+/// assert_eq!(get_bold_italic('m'), Some('\u{1D48E}'));
+/// ```
+pub fn get_bold_italic(c: char) -> Option<char> {
+    match c {
+        'A'..='Z' => char::from_u32(c as u32 - 'A' as u32 + uni_chars::BOLD_ITALIC_UPPER_A as u32),
+        'a'..='z' => char::from_u32(c as u32 - 'a' as u32 + uni_chars::BOLD_ITALIC_LOWER_A as u32),
+        '0'..='9' => char::from_u32(c as u32 - '0' as u32 + uni_chars::BOLD_ZERO as u32),
+        _ => None,
+    }
+}
 
 /// Returns `Some(replacement)` if the given character can be mapped to a Unicode
 /// subscripted version, or `None` if no conversion is available
@@ -136,14 +199,37 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_get_bold() {
+        assert_eq!(get_bold('m'), Some('\u{1D426}'));
+        assert_eq!(get_bold('H'), Some('\u{1D407}'));
+        assert_eq!(get_bold('&'), None);
+    }
+
+    #[test]
+    fn test_get_italic() {
+        assert_eq!(get_italic('m'), Some('\u{1D45A}'));
+        assert_eq!(get_italic('H'), Some('\u{1D43B}'));
+        assert_eq!(get_italic('&'), None);
+    }
+
+    #[test]
+    fn test_get_bold_italic() {
+        assert_eq!(get_bold_italic('m'), Some('\u{1D48E}'));
+        assert_eq!(get_bold_italic('H'), Some('\u{1D46F}'));
+        assert_eq!(get_bold_italic('&'), None);
+    }
+
+    #[test]
     fn test_get_subscript() {
         assert_eq!(get_subscript('m'), Some('\u{2098}'));
+        assert_eq!(get_subscript('7'), Some('\u{2087}'));
         assert_eq!(get_subscript('&'), None);
     }
 
     #[test]
-    fn test_get_superscripted() {
+    fn test_get_superscript() {
         assert_eq!(get_superscript('m'), Some('\u{1D50}'));
+        assert_eq!(get_superscript('7'), Some('\u{2077}'));
         assert_eq!(get_superscript('&'), None);
     }
 }
