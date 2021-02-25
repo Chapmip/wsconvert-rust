@@ -231,18 +231,18 @@ pub fn process(s: &str) -> Option<String> {
     let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
 
-    if let Some(replacement) = process_underlines(line) {
+    /*    if let Some(replacement) = process_underlines(line) {
         result = replacement;
         line = &result;
         changed = true;
-    }
+    } */
     if let Some(replacement) = process_overlines(line) {
         result = replacement;
-        line = &result;
-        changed = true;
-    }
-    if let Some(replacement) = process_others(line) {
-        result = replacement;
+        /*        line = &result;
+            changed = true;
+        }
+        if let Some(replacement) = process_others(line) {
+            result = replacement; */
         changed = true;
     }
     changed.then(|| result)

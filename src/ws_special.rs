@@ -51,15 +51,16 @@ fn transform_degrees(before: &str) -> Option<String> {
 /// Returns `Some(replacement)` if the given text slice contains one or more special
 /// sequences that have been converted to 1/2 (half) symbols, otherwise `None`
 ///
-/// A half symbol is indicated a pair of `ws_chars::SUPERSCRIPT` wrapper characters
-/// surrounding an underlined '1' followed by a `ws_chars::OVERPRINT` characters and
-/// then a pair of `ws_chars::SUBSCRIPT` wrapper characters surrounding a '2'.  This
-/// sequence is converted to the corresponding Unicode "half" symbol.
+/// A half symbol is indicated a pair of `ws_chars::UNDERLINE` wrapper characters
+/// surrounding a pair of `ws_chars::SUPERSCRIPT` wrapper characters surrounding in
+/// turn a '1', followed by a `ws_chars::OVERPRINT` character and then a pair of
+/// `ws_chars::SUBSCRIPT` wrapper characters surrounding a '2'.  This sequence is
+/// converted to the corresponding Unicode "half" symbol.
 ///
-/// Note: Each special sequence can only be detected correctly if the input text has
-/// previously been processed using `ws_emphasis::process_underlines()` (possibly
-/// called via `ws_emphasis::process_emphasis()`) to render the underline below the
-/// numerator of the fraction using the Unicode underline combiner character.
+/// Note: This special sequence can only be detected correctly if the input text has
+/// not previously been processed with the `ws_wrappers` module, as otherwise the
+/// underlined numerator of the fraction will be unrecognisable as it has been
+/// converted to a new sequence using the Unicode underline combiner character.
 ///
 /// # Arguments
 ///
@@ -67,17 +68,18 @@ fn transform_degrees(before: &str) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// let before = "\x141\u{0332}\x14\x08\x162\x16";
+/// let before = "\x13\x141\x14\x13\x08\x162\x16";
 /// assert_eq!(transform_half(before), Some("\u{00BD}".to_string()));
 /// ```
 fn transform_half(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_HALF: Regex = {
             let mut re = String::with_capacity(9);  // Can't calculate statically
+            re.push(ws_chars::UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
             re.push('1');
-            re.push(uni_chars::COMB_UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
+            re.push(ws_chars::UNDERLINE);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);
             re.push('2');
@@ -101,7 +103,7 @@ fn transform_half(before: &str) -> Option<String> {
 /// * `caps` - Reference to group of captured strings for a regular expression match
 ///
 fn get_quarters(caps: &regex::Captures) -> &'static str {
-    match &caps["n"] {
+    match &caps[1] {
         "1" => uni_chars::ONE_QUARTER,
         "3" => uni_chars::THREE_QUARTERS,
         _ => uni_chars::REPLACEMENT,
@@ -112,16 +114,17 @@ fn get_quarters(caps: &regex::Captures) -> &'static str {
 /// sequences that have been converted to 1/4 (one quarter) or 3/4 (three quarters)
 /// symbols, otherwise `None`
 ///
-/// A one or three quarter symbol is indicated a pair of `ws_chars::SUPERSCRIPT`
-/// wrapper characters surrounding an underlined '1' or '3' (as appropriate)followed
-/// by a `ws_chars::OVERPRINT` characters and then a pair of `ws_chars::SUBSCRIPT`
-/// wrapper characters surrounding a '4'.  This sequence is converted to the
-/// corresponding Unicode "one quarter" or "three quarters" symbol.
+/// A one or three quarter symbol is indicated a pair of `ws_chars::UNDERLINE`
+/// wrapper characters surrounding a pair of `ws_chars::SUPERSCRIPT` wrapper
+/// characters surrounding in turn a '1' or '3' (as appropriate), followed by a
+/// `ws_chars::OVERPRINT` character and then a pair of `ws_chars::SUBSCRIPT` wrapper
+/// characters surrounding a '4'.  This sequence is converted to the corresponding
+/// Unicode "one quarter" or "three quarters" symbol.
 ///
 /// Note: Each special sequence can only be detected correctly if the input text has
-/// previously been processed using `ws_emphasis::process_underlines()` (possibly
-/// called via `ws_emphasis::process_emphasis()`) to render the underline below the
-/// numerator of the fraction using the Unicode underline combiner character.
+/// not previously been processed with the `ws_wrappers` module, as otherwise the
+/// underlined numerator of the fraction will be unrecognisable as it has been
+/// converted to a new sequence using the Unicode underline combiner character.
 ///
 /// # Arguments
 ///
@@ -129,17 +132,18 @@ fn get_quarters(caps: &regex::Captures) -> &'static str {
 ///
 /// # Examples
 /// ```
-/// let before = "\x143\u{0332}\x14\x08\x164\x16";
+/// let before = "\x13\x141\x14\x13\x08\x164\x16";
 /// assert_eq!(transform_quarter(before), Some("\u{00BE}".to_string()));
 /// ```
 fn transform_quarter(before: &str) -> Option<String> {
     lazy_static! {
         static ref REGEX_QUARTER: Regex = {
             let mut re = String::with_capacity(19);  // Can't calculate statically
+            re.push(ws_chars::UNDERLINE);
             re.push(ws_chars::SUPERSCRIPT);
-            re.push_str(r"(?P<n>[13])");
-            re.push(uni_chars::COMB_UNDERLINE);
+            re.push_str(r"([13])");
             re.push(ws_chars::SUPERSCRIPT);
+            re.push(ws_chars::UNDERLINE);
             re.push(ws_chars::OVERPRINT);
             re.push(ws_chars::SUBSCRIPT);
             re.push('4');
@@ -211,7 +215,7 @@ mod tests {
     #[test]
     fn test_transform_half() {
         assert_eq!(
-            transform_half("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
+            transform_half("6\x13\x141\x14\x13\x08\x162\x16 has \x13\x141\x14\x13\x08\x162\x16!"),
             Some("6\u{00BD} has \u{00BD}!".to_string())
         );
         assert_eq!(transform_half("abcd"), None);
@@ -221,7 +225,7 @@ mod tests {
     #[test]
     fn test_transform_quarter() {
         assert_eq!(
-            transform_quarter("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
+            transform_quarter("6\x13\x141\x14\x13\x08\x164\x16 or 6\x13\x143\x14\x13\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
         );
         assert_eq!(transform_quarter("abcd"), None);
@@ -235,11 +239,11 @@ mod tests {
             Some("-40°C is -40°F".to_string())
         );
         assert_eq!(
-            process("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
+            process("6\x13\x141\x14\x13\x08\x162\x16 has \x13\x141\x14\x13\x08\x162\x16!"),
             Some("6\u{00BD} has \u{00BD}!".to_string())
         );
         assert_eq!(
-            process("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
+            process("6\x13\x141\x14\x13\x08\x164\x16 or 6\x13\x143\x14\x13\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
         );
         assert_eq!(process("abcd"), None);
