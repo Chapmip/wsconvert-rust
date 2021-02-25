@@ -249,9 +249,9 @@ fn transform_superscript(before: &str) -> Option<String> {
 /// # Examples
 /// ```
 /// let before = "6\x141\x14\x08\x162\x16";
-/// assert_eq!(process_special(before), Some("6\u{00BD}".to_string()));
+/// assert_eq!(process(before), Some("6\u{00BD}".to_string()));
 /// ```
-pub fn process_special(s: &str) -> Option<String> {
+pub fn process(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
@@ -350,28 +350,28 @@ mod tests {
     }
 
     #[test]
-    fn test_process_special() {
+    fn test_process() {
         assert_eq!(
-            process_special("-40\x14o\x14C is -40\x14o\x14F"),
+            process("-40\x14o\x14C is -40\x14o\x14F"),
             Some("-40°C is -40°F".to_string())
         );
         assert_eq!(
-            process_special("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
+            process("6\x141\u{0332}\x14\x08\x162\x16 has \x141\u{0332}\x14\x08\x162\x16!"),
             Some("6\u{00BD} has \u{00BD}!".to_string())
         );
         assert_eq!(
-            process_special("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
+            process("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
         );
         assert_eq!(
-            process_special("ab\x1620\x16cd"),
+            process("ab\x1620\x16cd"),
             Some("ab\u{2082}\u{2080}cd".to_string())
         );
         assert_eq!(
-            process_special("ab\x1420\x14cd"),
+            process("ab\x1420\x14cd"),
             Some("ab\u{00B2}\u{2070}cd".to_string())
         );
-        assert_eq!(process_special("abcd"), None);
-        assert_eq!(process_special(""), None);
+        assert_eq!(process("abcd"), None);
+        assert_eq!(process(""), None);
     }
 }

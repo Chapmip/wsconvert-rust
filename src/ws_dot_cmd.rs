@@ -88,9 +88,9 @@ fn make_header(prefix: &str, opt_text: Option<&str>) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process_dot_cmd(".he abc"), Some("## abc".to_string()));
+/// assert_eq!(process(".he abc"), Some("## abc".to_string()));
 /// ```
-pub fn process_dot_cmd(s: &str) -> Option<String> {
+pub fn process(s: &str) -> Option<String> {
     let (cmd, opt_text) = check_dot_cmd(s)?;
     let lower_cmd = cmd.to_ascii_lowercase();
     match &lower_cmd[..] {
@@ -143,15 +143,15 @@ mod tests {
     }
 
     #[test]
-    fn test_process_dot_cmd() {
+    fn test_process() {
         let text = ".He \x03 jd \x04 jhhfjf*¬£   \x05  ";
-        assert_eq!(process_dot_cmd(text), Some("## jd  jhhfjf*¬£".to_string()));
+        assert_eq!(process(text), Some("## jd  jhhfjf*¬£".to_string()));
         assert_eq!(
-            process_dot_cmd(".f3 \x13\x14TEST\x13\x14"),
+            process(".f3 \x13\x14TEST\x13\x14"),
             Some("### TEST".to_string())
         );
-        assert_eq!(process_dot_cmd(".op"), Some("".to_string()));
-        assert_eq!(process_dot_cmd("abc"), None);
-        assert_eq!(process_dot_cmd(""), None);
+        assert_eq!(process(".op"), Some("".to_string()));
+        assert_eq!(process("abc"), None);
+        assert_eq!(process(""), None);
     }
 }

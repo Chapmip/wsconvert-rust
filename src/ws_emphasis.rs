@@ -224,9 +224,9 @@ pub fn process_others(s: &str) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process_emphasis("\x13\x02B\x02\x13"), Some("**B\u{332}**".to_string()));
+/// assert_eq!(process("\x13\x02B\x02\x13"), Some("**B\u{332}**".to_string()));
 /// ```
-pub fn process_emphasis(s: &str) -> Option<String> {
+pub fn process(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
@@ -362,9 +362,9 @@ mod tests {
     }
 
     #[test]
-    fn test_process_emphasis() {
+    fn test_process() {
         assert_eq!(
-            process_emphasis(" \x13\x02Bold\x02 title\x13  "),
+            process(" \x13\x02Bold\x02 title\x13  "),
             Some(
                 " **B\u{332}o\u{332}l\u{332}d\u{332}** \u{332}t\u{332}i\u{332}t\u{332}\
             l\u{332}e\u{332}  "
@@ -372,10 +372,10 @@ mod tests {
             )
         );
         assert_eq!(
-            process_emphasis(" \x02DAC\x08\x08\x08\x14___\x14 and\x02 \x18strike\x18"),
+            process(" \x02DAC\x08\x08\x08\x14___\x14 and\x02 \x18strike\x18"),
             Some(" **D\u{305}A\u{305}C\u{305} and** ~~strike~~".to_string())
         );
-        assert_eq!(process_emphasis("abcd"), None);
-        assert_eq!(process_emphasis(""), None);
+        assert_eq!(process("abcd"), None);
+        assert_eq!(process(""), None);
     }
 }

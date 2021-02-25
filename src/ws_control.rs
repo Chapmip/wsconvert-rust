@@ -80,9 +80,9 @@ fn get_escaped(c: char) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process_control("a\x0Fb", true), Some("a\u{00A0}b".to_string()));
+/// assert_eq!(process("a\x0Fb", true), Some("a\u{00A0}b".to_string()));
 /// ```
-pub fn process_control(s: &str, escape: bool) -> Option<String> {
+pub fn process(s: &str, escape: bool) -> Option<String> {
     let mut changed = false;
     let mut result = String::with_capacity(s.len() * 2);
     for c in s.chars() {
@@ -133,25 +133,25 @@ mod tests {
     }
 
     #[test]
-    fn test_process_control() {
+    fn test_process() {
         assert_eq!(
-            process_control("ab\x0Fcd\x1Eef\x1Fgh", true),
+            process("ab\x0Fcd\x1Eef\x1Fgh", true),
             Some("ab\u{00A0}cd\u{2010}ef\u{2010}gh".to_string())
         );
         assert_eq!(
-            process_control("\x14ab\x06cd\x1Eef\x01", true),
+            process("\x14ab\x06cd\x1Eef\x01", true),
             Some("^Tab\u{2588}cd\u{2010}ef^A".to_string())
         );
         assert_eq!(
-            process_control("\x14ab\x06cd\x1Eef\x01", false),
+            process("\x14ab\x06cd\x1Eef\x01", false),
             Some("\x14ab\u{2588}cd\u{2010}ef\x01".to_string())
         );
-        assert_eq!(process_control("\x14abcde\x01", false), None);
+        assert_eq!(process("\x14abcde\x01", false), None);
         assert_eq!(
-            process_control("abc\x0Cdef", true),
+            process("abc\x0Cdef", true),
             Some("abc\n---\ndef".to_string())
         );
-        assert_eq!(process_control("abcd", true), None);
-        assert_eq!(process_control("", true), None);
+        assert_eq!(process("abcd", true), None);
+        assert_eq!(process("", true), None);
     }
 }

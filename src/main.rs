@@ -1,6 +1,7 @@
 mod asciify;
 mod control_count;
 mod uni_chars;
+mod ws_align;
 mod ws_chars;
 mod ws_control;
 mod ws_dot_cmd;
@@ -8,7 +9,6 @@ mod ws_emphasis;
 mod ws_mappings;
 mod ws_special;
 mod ws_string;
-mod ws_wrappers;
 
 use control_count::ControlCount;
 use std::io::{self, Seek, SeekFrom};
@@ -32,7 +32,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         let mut line = line?;
         original_counts.scan(&line);
 
-        if let Some(replacement) = ws_dot_cmd::process_dot_cmd(&line) {
+        if let Some(replacement) = ws_dot_cmd::process(&line) {
             match &replacement[..] {
                 "" => continue,
                 _ => line = replacement,
@@ -40,22 +40,22 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         post_dot_counts.scan(&line);
 
-        if let Some(replacement) = ws_wrappers::process_alignment(&line) {
+        if let Some(replacement) = ws_align::process(&line) {
             line = replacement;
         }
         alignment_counts.scan(&line);
 
-        if let Some(replacement) = ws_emphasis::process_emphasis(&line) {
+        if let Some(replacement) = ws_emphasis::process(&line) {
             line = replacement;
         }
         emphasis_counts.scan(&line);
 
-        if let Some(replacement) = ws_special::process_special(&line) {
+        if let Some(replacement) = ws_special::process(&line) {
             line = replacement;
         }
         special_counts.scan(&line);
 
-        if let Some(replacement) = ws_control::process_control(&line, true) {
+        if let Some(replacement) = ws_control::process(&line, true) {
             line = replacement;
         }
         de_ctrl_counts.scan(&line);

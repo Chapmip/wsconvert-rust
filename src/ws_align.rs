@@ -1,4 +1,4 @@
-//! Module to process WordStar "wrapper" control characters (e.g. bold, underline)
+//! Module to re-align spaces outside pairs of certain WordStar "wrappers"
 
 // Note: utilises new "bool then" feature in Rust 1.50 to simplify Option return
 //     (condition).then(|| ())
@@ -9,11 +9,12 @@ use crate::ws_string;
 
 // Wrappers to be aligned (i.e. leading and trailing spaces moved outside wrapper)
 pub const WRAPPERS_TO_ALIGN: [char; 5] = [
-    ws_chars::BOLD,
-    ws_chars::DOUBLE,
+    ws_chars::BOLD,   // %% TO REMOVE SOON %%
+    ws_chars::DOUBLE, // %% TO REMOVE SOON %%
+    //  ws_chars::OVERLINE,     // %% TO ADD SOON %%
     ws_chars::UNDERLINE,
     ws_chars::STRIKETHROUGH,
-    ws_chars::ITALIC,
+    ws_chars::ITALIC, // %% TO REMOVE SOON %%
 ];
 
 // PRIVATE HELPER FUNCTIONS
@@ -62,8 +63,8 @@ fn align_wrapper(s: &str, wrapper: char) -> Option<String> {
     }
 }
 
-/// Returns `Some(replacement)` if the given text slice has whitespace characters
-/// immediately inside a pair of any defined wrapper characters, otherwise `None`
+/// Returns `Some(replacement)` if the given text slice contains whitespace characters
+/// that have been re-aligned outside a pair of wrapper characters, otherwise `None`
 ///
 /// The text slice is scanned from left to right for a pair of each of the defined
 /// set of wrapper characters (in `WRAPPERS_TO_ALIGN`).  If a pair is found and the
@@ -98,8 +99,9 @@ fn align_all_wrappers(s: &str) -> Option<String> {
 
 // EXTERNAL PUBLIC FUNCTIONS
 
-/// Returns `Some(replacement)` if the given text slice has whitespace characters
-/// immediately inside a pair of any defined wrapper characters, otherwise `None`
+/// Returns `Some(replacement)` if the given text slice contains whitespace characters
+/// that have been re-aligned outside a pair of wrapper characters, after scanning
+/// repeatedly until no further re-alignments are possible, otherwise `None`
 ///
 /// This function calls `align_all_wrappers()` repeatedly until no further changes
 /// can be made, to handle the possibility that whitespace needs to be moved outside
@@ -111,9 +113,9 @@ fn align_all_wrappers(s: &str) -> Option<String> {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(process_alignment("\x02\x13 a \x13\x02"), Some(" \x02\x13a\x13\x02 ".to_string()));
+/// assert_eq!(process("\x02\x13 a \x13\x02"), Some(" \x02\x13a\x13\x02 ".to_string()));
 /// ```
-pub fn process_alignment(s: &str) -> Option<String> {
+pub fn process(s: &str) -> Option<String> {
     let mut changed = false;
     let mut result = String::new(); // Always gets replaced if needed
     let mut line = s;
@@ -158,24 +160,24 @@ mod tests {
             Some("  \x13abc\x13  ".to_string())
         );
         assert_eq!(
-            align_all_wrappers(" \x02 abc \x02 "),
-            Some("  \x02abc\x02  ".to_string())
+            align_all_wrappers(" \x18 abc \x18 "),
+            Some("  \x18abc\x18  ".to_string())
         );
         assert_eq!(align_all_wrappers("abcd"), None);
         assert_eq!(align_all_wrappers(""), None);
     }
 
     #[test]
-    fn test_process_alignment() {
+    fn test_process() {
         assert_eq!(
-            process_alignment("\x02\x13  abc  \x13\x02"),
-            Some("  \x02\x13abc\x13\x02  ".to_string())
+            process("\x18\x13  abc  \x13\x18"),
+            Some("  \x18\x13abc\x13\x18  ".to_string())
         );
         assert_eq!(
-            process_alignment(" \x02  \x13 abc \x19 def \x13 \x19\x02"),
-            Some("    \x02\x13abc  \x19def\x13\x19\x02  ".to_string())
+            process(" \x18  \x13 abc \x19 def \x13 \x19\x18"),
+            Some("    \x18\x13abc  \x19def\x13\x19\x18  ".to_string())
         );
-        assert_eq!(process_alignment("abcd"), None);
-        assert_eq!(process_alignment(""), None);
+        assert_eq!(process("abcd"), None);
+        assert_eq!(process(""), None);
     }
 }
