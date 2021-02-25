@@ -188,7 +188,7 @@ fn transform_subscript(before: &str) -> Option<String> {
     if let Cow::Owned(after) = REGEX_SUBSCRIPT.replace_all(before, |caps: &regex::Captures| {
         caps[1]
             .chars()
-            .map(ws_mappings::get_subscript)
+            .map(|c| ws_mappings::get_subscript(c).unwrap_or(c))
             .collect::<String>()
     }) {
         Some(after)
@@ -228,7 +228,7 @@ fn transform_superscript(before: &str) -> Option<String> {
     if let Cow::Owned(after) = REGEX_SUPERSCRIPT.replace_all(before, |caps: &regex::Captures| {
         caps[1]
             .chars()
-            .map(ws_mappings::get_superscript)
+            .map(|c| ws_mappings::get_superscript(c).unwrap_or(c))
             .collect::<String>()
     }) {
         Some(after)

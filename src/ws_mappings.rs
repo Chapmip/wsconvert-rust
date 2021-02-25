@@ -2,8 +2,8 @@
 
 // EXTERNAL PUBLIC FUNCTIONS
 
-/// Returns the nearest equivalent Unicode subscripted version (if any) of the given
-/// character, or just the original given character if no conversion is available
+/// Returns `Some(replacement)` if the given character can be mapped to a Unicode
+/// subscripted version, or `None` if no conversion is available
 ///
 /// # Arguments
 ///
@@ -11,10 +11,10 @@
 ///
 /// # Examples
 /// ```
-/// assert_eq!(get_subscript('m'), '\u{2098}');
+/// assert_eq!(get_subscript('m'), Some('\u{2098}'));
 /// ```
-pub fn get_subscript(c: char) -> char {
-    match c.to_ascii_lowercase() {
+pub fn get_subscript(c: char) -> Option<char> {
+    let mapped = match c.to_ascii_lowercase() {
         '0' => '\u{2080}',
         '1' => '\u{2081}',
         '2' => '\u{2082}',
@@ -47,12 +47,13 @@ pub fn get_subscript(c: char) -> char {
         'u' => '\u{1D64}',
         'v' => '\u{1D65}',
         'x' => '\u{2093}',
-        c => c,
-    }
+        _ => return None,
+    };
+    Some(mapped)
 }
 
-/// Returns the nearest equivalent Unicode superscripted version (if any) of the given
-/// character, or just the original given character if no conversion is available
+/// Returns `Some(replacement)` if the given character can be mapped to a Unicode
+/// superscripted version, or `None` if no conversion is available
 ///
 /// # Arguments
 ///
@@ -60,10 +61,10 @@ pub fn get_subscript(c: char) -> char {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(get_superscript('m'), '\u{1D50}');
+/// assert_eq!(get_superscript('m'), Some('\u{1D50}'));
 /// ```
-pub fn get_superscript(c: char) -> char {
-    match c.to_ascii_lowercase() {
+pub fn get_superscript(c: char) -> Option<char> {
+    let mapped = match c.to_ascii_lowercase() {
         '0' => '\u{2070}',
         '1' => '\u{00B9}',
         '2' => '\u{00B2}',
@@ -104,8 +105,9 @@ pub fn get_superscript(c: char) -> char {
         'x' => '\u{02E3}',
         'y' => '\u{02B8}',
         'z' => '\u{1DBB}',
-        c => c,
-    }
+        _ => return None,
+    };
+    Some(mapped)
 }
 
 // Unit tests
@@ -116,13 +118,13 @@ mod tests {
 
     #[test]
     fn test_get_subscript() {
-        assert_eq!(get_subscript('m'), '\u{2098}');
-        assert_eq!(get_subscript('&'), '&');
+        assert_eq!(get_subscript('m'), Some('\u{2098}'));
+        assert_eq!(get_subscript('&'), None);
     }
 
     #[test]
     fn test_get_superscripted() {
-        assert_eq!(get_superscript('m'), '\u{1D50}');
-        assert_eq!(get_superscript('&'), '&');
+        assert_eq!(get_superscript('m'), Some('\u{1D50}'));
+        assert_eq!(get_superscript('&'), None);
     }
 }
