@@ -149,6 +149,14 @@ mod tests {
         // sub/superscript
         assert_eq!(w.process("r\x16s\x16t"), Some("r\u{209B}t".to_string()));
         assert_eq!(w.process("r\x14s\x14t"), Some("r\u{02E2}t".to_string()));
+        assert_eq!(
+            w.process("ab\x1620\x16cd"),
+            Some("ab\u{2082}\u{2080}cd".to_string())
+        );
+        assert_eq!(
+            w.process("ab\x1420\x14cd"),
+            Some("ab\u{00B2}\u{2070}cd".to_string())
+        );
     }
 
     #[test]

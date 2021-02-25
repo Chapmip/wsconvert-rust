@@ -10,7 +10,6 @@
 
 use crate::uni_chars;
 use crate::ws_chars;
-use crate::ws_mappings;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::borrow::Cow;
@@ -157,86 +156,6 @@ fn transform_quarter(before: &str) -> Option<String> {
     }
 }
 
-/// Returns `Some(replacement)` if the given text slice contains one or more sequences
-/// of subscripted characters that have been converted to the closest possible Unicode
-/// symbols (or left alone if there is no close match), otherwise `None`
-///
-/// A subscripted sequence is indicated by a pair of `ws_chars::SUBSCRIPT` wrapper
-/// characters with zero or more other characters between them.
-///
-/// # Arguments
-///
-/// * `s` - Slice of text to be processed
-///
-/// # Examples
-/// ```
-/// let before = "ab\x1620\x16cd";
-/// assert_eq!(transform_subscript(before), Some("ab\u{2082}\u{2080}cd".to_string()));
-/// ```
-fn transform_subscript(before: &str) -> Option<String> {
-    lazy_static! {
-        static ref REGEX_SUBSCRIPT: Regex = {
-            let mut re = String::with_capacity(9);  // Can't calculate statically
-            re.push(ws_chars::SUBSCRIPT);
-            re.push_str(r"([^");
-            re.push(ws_chars::SUBSCRIPT);
-            re.push_str(r"]*)");
-            re.push(ws_chars::SUBSCRIPT);
-            Regex::new(&re).unwrap()
-        };
-    }
-    if let Cow::Owned(after) = REGEX_SUBSCRIPT.replace_all(before, |caps: &regex::Captures| {
-        caps[1]
-            .chars()
-            .map(|c| ws_mappings::get_subscript(c).unwrap_or(c))
-            .collect::<String>()
-    }) {
-        Some(after)
-    } else {
-        None
-    }
-}
-
-/// Returns `Some(replacement)` if the given text slice contains one or more sequences
-/// of superscripted characters that have been converted to the closest possible Unicode
-/// symbols (or left alone if there is no close match), otherwise `None`
-///
-/// A superscripted sequence is indicated by a pair of `ws_chars::SUPERSCRIPT` wrapper
-/// characters with zero or more other characters between them.
-///
-/// # Arguments
-///
-/// * `s` - Slice of text to be processed
-///
-/// # Examples
-/// ```
-/// let before = "ab\x1620\x16cd";
-/// assert_eq!(transform_superscript(before), Some("ab\u{00B2}\u{2070}cd".to_string()));
-/// ```
-fn transform_superscript(before: &str) -> Option<String> {
-    lazy_static! {
-        static ref REGEX_SUPERSCRIPT: Regex = {
-            let mut re = String::with_capacity(9);  // Can't calculate statically
-            re.push(ws_chars::SUPERSCRIPT);
-            re.push_str(r"([^");
-            re.push(ws_chars::SUPERSCRIPT);
-            re.push_str(r"]*)");
-            re.push(ws_chars::SUPERSCRIPT);
-            Regex::new(&re).unwrap()
-        };
-    }
-    if let Cow::Owned(after) = REGEX_SUPERSCRIPT.replace_all(before, |caps: &regex::Captures| {
-        caps[1]
-            .chars()
-            .map(|c| ws_mappings::get_superscript(c).unwrap_or(c))
-            .collect::<String>()
-    }) {
-        Some(after)
-    } else {
-        None
-    }
-}
-
 // EXTERNAL PUBLIC FUNCTION
 
 /// Returns `Some(replacement)` if the given text slice contains any of the
@@ -267,16 +186,6 @@ pub fn process(s: &str) -> Option<String> {
         changed = true;
     }
     if let Some(replacement) = transform_quarter(line) {
-        result = replacement;
-        line = &result;
-        changed = true;
-    }
-    if let Some(replacement) = transform_subscript(line) {
-        result = replacement;
-        line = &result;
-        changed = true;
-    }
-    if let Some(replacement) = transform_superscript(line) {
         result = replacement;
         changed = true;
     }
@@ -320,36 +229,6 @@ mod tests {
     }
 
     #[test]
-    fn test_transform_subscript() {
-        assert_eq!(
-            transform_subscript("ab\x1620\x16cd"),
-            Some("ab\u{2082}\u{2080}cd".to_string())
-        );
-        assert_eq!(
-            transform_subscript("ab\x1620\x16"),
-            Some("ab\u{2082}\u{2080}".to_string())
-        );
-        assert_eq!(transform_subscript("ab\x1620cd"), None);
-        assert_eq!(transform_subscript("abcd"), None);
-        assert_eq!(transform_subscript(""), None);
-    }
-
-    #[test]
-    fn test_transform_superscript() {
-        assert_eq!(
-            transform_superscript("ab\x1420\x14cd"),
-            Some("ab\u{00B2}\u{2070}cd".to_string())
-        );
-        assert_eq!(
-            transform_superscript("ab\x1420\x14"),
-            Some("ab\u{00B2}\u{2070}".to_string())
-        );
-        assert_eq!(transform_superscript("ab\x1420cd"), None);
-        assert_eq!(transform_superscript("abcd"), None);
-        assert_eq!(transform_superscript(""), None);
-    }
-
-    #[test]
     fn test_process() {
         assert_eq!(
             process("-40\x14o\x14C is -40\x14o\x14F"),
@@ -362,14 +241,6 @@ mod tests {
         assert_eq!(
             process("6\x141\u{0332}\x14\x08\x164\x16 or 6\x143\u{0332}\x14\x08\x164\x16"),
             Some("6\u{00BC} or 6\u{00BE}".to_string())
-        );
-        assert_eq!(
-            process("ab\x1620\x16cd"),
-            Some("ab\u{2082}\u{2080}cd".to_string())
-        );
-        assert_eq!(
-            process("ab\x1420\x14cd"),
-            Some("ab\u{00B2}\u{2070}cd".to_string())
         );
         assert_eq!(process("abcd"), None);
         assert_eq!(process(""), None);

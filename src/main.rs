@@ -24,10 +24,12 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     let mut alignment_counts = ControlCount::new("Re-align".to_string());
     let mut emphasis_counts = ControlCount::new("Emphasis".to_string());
     let mut special_counts = ControlCount::new("Specials".to_string());
+    let mut wrappers_counts = ControlCount::new("Wrappers".to_string());
     let mut de_ctrl_counts = ControlCount::new("Controls".to_string());
 
     let reader = BufReader::new(input);
     let mut writer = BufWriter::new(output);
+    let mut wrappers = ws_wrappers::Wrappers::new();
 
     for line in reader.lines() {
         let mut line = line?;
@@ -56,6 +58,11 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
         }
         special_counts.scan(&line);
 
+        if let Some(replacement) = wrappers.process(&line) {
+            line = replacement;
+        }
+        wrappers_counts.scan(&line);
+
         if let Some(replacement) = ws_control::process(&line, true) {
             line = replacement;
         }
@@ -70,6 +77,7 @@ fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<
     eprintln!("{}", alignment_counts);
     eprintln!("{}", emphasis_counts);
     eprintln!("{}", special_counts);
+    eprintln!("{}", wrappers_counts);
     eprintln!("{}", de_ctrl_counts);
     Ok(())
 }
