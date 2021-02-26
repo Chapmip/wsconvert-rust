@@ -38,6 +38,5 @@ The following items are my "wish list" for potential further development of the 
 *	Re-visit the possible use of `Cow<'_, str>` as an alternative to `Option<String>` as the output type from some functions:
 	- I investigated this once as it seemed like an elegant approach but I couldn't figure out how to do it without *increasing* the amount of code needed!
 ---
-*Ian Chapman*
-26th February 2021
+Ian Chapman — 26th February 2021
 
