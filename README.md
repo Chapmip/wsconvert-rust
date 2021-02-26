@@ -8,7 +8,7 @@ I created the `wsconvert` application as a way of putting into practice my learn
 
 Although the concept of this project seemed simple, the execution proved a worthy challenge for me and a great opportunity to embed my theoretical knowledge into practical design patterns.  I spent many hours iterating around, researching better approaches, revisiting and refactoring chunks of code and testing out alternatives as I strove for a clean and readable modular design.
 
-I've reached the point now where I'm happy with my implementation as a demonstration of my Rust skills.  It's not yet quite a finished product (see my ["to do" list](https://github.com/Chapmip/wsconvert-rust#to-do-list) but it works well enough within its current limitations to be useful. 
+I've reached the point now where I'm happy with my implementation as a demonstration of my Rust skills.  It's not yet quite a finished product (see my ["to do" list](https://github.com/Chapmip/wsconvert-rust#to-do-list)) but it works well enough within its current limitations to be useful. 
 
 # Example
 
