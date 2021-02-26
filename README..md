@@ -1,4 +1,4 @@
-﻿# wsconvert-rust
+﻿# wsconvert
 
 Command line utility written in Rust to convert old WordStar files into readable format
 
