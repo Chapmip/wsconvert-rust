@@ -1,9 +1,5 @@
 //! Module to re-align spaces outside pairs of WordStar "wrapper" control characters
 
-// Note: utilises new "bool then" feature in Rust 1.50 to simplify Option return
-//     (condition).then(|| ())
-//  -> if (condition) { Some( () ) } else { None }
-
 use crate::ws_chars;
 use crate::ws_string;
 
@@ -86,17 +82,13 @@ fn align_wrapper(s: &str, wrapper: char) -> Option<String> {
 /// assert_eq!(align_all_wrappers("\x13 abc \x13"), Some(" \x13abc\x13 ".to_string()));
 /// ```
 fn align_all_wrappers(s: &str) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::new(); // Always gets replaced if needed
+    let mut result: Option<String> = None;
     let mut line = s;
     for wrapper in &WRAPPERS_TO_ALIGN {
-        if let Some(fixed) = align_wrapper(line, *wrapper) {
-            result = fixed;
-            line = &result;
-            changed = true;
-        }
+        result = align_wrapper(line, *wrapper).or(result);
+        line = result.as_deref().unwrap_or(s);
     }
-    changed.then(|| result)
+    result
 }
 
 // EXTERNAL PUBLIC FUNCTIONS
@@ -118,15 +110,13 @@ fn align_all_wrappers(s: &str) -> Option<String> {
 /// assert_eq!(process("\x18\x13 a \x13\x18"), Some(" \x18\x13a\x13\x18 ".to_string()));
 /// ```
 pub fn process(s: &str) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::new(); // Always gets replaced if needed
+    let mut result: Option<String> = None;
     let mut line = s;
     while let Some(fixed) = align_all_wrappers(line) {
-        result = fixed;
-        line = &result;
-        changed = true;
+        result = Some(fixed);
+        line = result.as_deref().unwrap_or(s);
     }
-    changed.then(|| result)
+    result
 }
 
 // Unit tests
