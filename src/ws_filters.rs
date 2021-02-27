@@ -55,35 +55,25 @@ pub fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Res
 
         if let Some(replacement) = ws_dot_cmd::process(&line) {
             match &replacement[..] {
-                "" => continue,
+                "" => continue, // Remove line from output
                 _ => line = replacement,
             }
         }
         post_dot_counts.scan(&line);
 
-        if let Some(replacement) = ws_align::process(&line) {
-            line = replacement;
-        }
+        line = ws_align::process(&line).unwrap_or(line);
         alignment_counts.scan(&line);
 
-        if let Some(replacement) = ws_special::process(&line) {
-            line = replacement;
-        }
+        line = ws_special::process(&line).unwrap_or(line);
         special_counts.scan(&line);
 
-        if let Some(replacement) = ws_overline::process(&line) {
-            line = replacement;
-        }
+        line = ws_overline::process(&line).unwrap_or(line);
         overline_counts.scan(&line);
 
-        if let Some(replacement) = wrappers.process(&line) {
-            line = replacement;
-        }
+        line = wrappers.process(&line).unwrap_or(line);
         wrappers_counts.scan(&line);
 
-        if let Some(replacement) = ws_control::process(&line, true) {
-            line = replacement;
-        }
+        line = ws_control::process(&line, true).unwrap_or(line);
         de_ctrl_counts.scan(&line);
 
         writeln!(writer, "{}", line)?;
