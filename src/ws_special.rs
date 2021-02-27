@@ -133,20 +133,15 @@ fn transform_fraction(before: &str) -> Option<String> {
 /// assert_eq!(process(before), Some("6\u{00BD}".to_string()));
 /// ```
 pub fn process(s: &str) -> Option<String> {
-    let mut changed = false;
-    let mut result = String::new(); // Always gets replaced if needed
+    let mut result: Option<String> = None;
     let mut line = s;
 
-    if let Some(replacement) = transform_degrees(line) {
-        result = replacement;
-        line = &result;
-        changed = true;
-    }
-    if let Some(replacement) = transform_fraction(line) {
-        result = replacement;
-        changed = true;
-    }
-    changed.then(|| result)
+    result = transform_degrees(line).or(result);
+    line = result.as_deref().unwrap_or(s);
+
+    result = transform_fraction(line).or(result);
+
+    result
 }
 
 // Unit tests
