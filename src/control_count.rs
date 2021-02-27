@@ -24,7 +24,9 @@ impl fmt::Display for ControlCount {
             write!(f, "[{:02X}]={}", *key as u32, *value)?;
             previous = true;
         }
-        if !previous {
+        if previous {
+            write!(f, " => {} chars, {} types", self.total(), self.bins())?;
+        } else {
             write!(f, "None")?;
         }
         Ok(())
@@ -109,6 +111,30 @@ impl ControlCount {
             self.up(ch);
         }
     }
+
+    /// Returns number of different bins that have been created
+    ///
+    /// # Examples
+    /// ```
+    /// let mut counts = ControlCount::new("name".to_string());
+    /// counts.scan("A\x14BC\x14DE\x15F");
+    /// assert_eq!(counts.bins(), 2);
+    /// ```
+    pub fn bins(&self) -> usize {
+        self.counts.iter().count()
+    }
+
+    /// Returns total count from all bins
+    ///
+    /// # Examples
+    /// ```
+    /// let mut counts = ControlCount::new("name".to_string());
+    /// counts.scan("A\x14BC\x14DE\x15F");
+    /// assert_eq!(counts.total(), 3);
+    /// ```
+    pub fn total(&self) -> i32 {
+        self.counts.values().sum()
+    }
 }
 
 // Unit tests
@@ -143,11 +169,10 @@ mod tests {
         counts.up('\x19');
         counts.up('\x7F');
         counts.up('\x7F');
-        counts.up('\x05');
         counts.up('\x07');
         assert_eq!(
             format!("{}", counts),
-            "Counts: [03]=1, [05]=1, [07]=1, [08]=1, [19]=1, [7F]=2"
+            "Counts: [03]=1, [07]=1, [08]=1, [19]=1, [7F]=2 => 6 chars, 5 types"
         );
     }
 
@@ -157,5 +182,19 @@ mod tests {
         counts.scan("a'\x07bc\x14de'\x07f");
         assert_eq!(counts.get('\x07'), Some(2));
         assert_eq!(counts.get('\x14'), Some(1));
+    }
+
+    #[test]
+    fn test_bins() {
+        let mut counts = ControlCount::new("name".to_string());
+        counts.scan("A\x14BC\x14DE\x15F");
+        assert_eq!(counts.bins(), 2);
+    }
+
+    #[test]
+    fn test_total() {
+        let mut counts = ControlCount::new("name".to_string());
+        counts.scan("A\x14BC\x14DE\x15F");
+        assert_eq!(counts.total(), 3);
     }
 }

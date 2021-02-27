@@ -1,5 +1,11 @@
 //! Module to invoke WordStar format filters from input to output stream
 
+// It may be more efficient for the various "process" filter functions
+// to return `Cow<'_, str>` instead of `Option<String>`, but I'm still
+// figuring that out!  One advantage of returning `Option<String>` is
+// that the filter functions can use the Rust `?` operator as a terse
+// way to exit immediately with a `None` result.
+
 use crate::control_count::ControlCount;
 use crate::ws_align;
 use crate::ws_control;
@@ -31,7 +37,7 @@ use std::io::{self, BufRead, BufReader, BufWriter, Read, Write};
 /// transform_file(&mut input, &mut output).unwrap();
 /// ```
 pub fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
-    let mut original_counts = ControlCount::new("Original".to_string());
+    let mut original_counts = ControlCount::new("To ASCII".to_string());
     let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
     let mut alignment_counts = ControlCount::new("Re-align".to_string());
     let mut special_counts = ControlCount::new("Specials".to_string());
@@ -84,6 +90,7 @@ pub fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Res
     }
     writer.flush()?;
 
+    eprintln!("Control characters after processing:");
     eprintln!("{}", original_counts);
     eprintln!("{}", post_dot_counts);
     eprintln!("{}", alignment_counts);
