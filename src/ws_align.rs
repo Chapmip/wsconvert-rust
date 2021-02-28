@@ -1,5 +1,9 @@
 //! Module to re-align spaces outside pairs of WordStar "wrapper" control characters
 
+// Note: utilises new "bool then" feature in Rust 1.50 to simplify Option return
+//     (condition).then(|| ())
+//  -> if (condition) { Some( () ) } else { None }
+
 use crate::ws_chars;
 
 // Wrappers to be aligned (i.e. leading and trailing spaces moved outside wrapper)
