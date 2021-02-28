@@ -125,6 +125,7 @@ pub fn split_last_three(s: &str, len: usize) -> Option<(&str, &str, &str)> {
     Some((left, middle, right))
 }
 
+#[allow(dead_code)]
 /// Returns tuple that splits off whitespace characters (if any) at each end of
 /// a text slice from the text contained within.
 ///
