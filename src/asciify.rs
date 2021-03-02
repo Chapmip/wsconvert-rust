@@ -38,12 +38,12 @@ pub fn convert_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Result<
             break; // No further input
         }
         total_input += num_read;
-        dbg!(num_read);
+        log::info!("Read {} bytes", num_read);
 
         let conv = convert_chunk(&mut buffer[..num_read]);
         let num_conv = conv.len();
         total_output += num_conv;
-        dbg!(num_conv);
+        log::info!("Converted {} bytes", num_conv);
 
         output.write_all(&buffer[..num_conv])?;
 
@@ -51,8 +51,8 @@ pub fn convert_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Result<
             break; // EOF encountered
         }
     }
-    eprintln!("total input bytes: {}", total_input);
-    eprintln!("total output bytes: {}", total_output);
+    log::info!("Total input bytes: {}", total_input);
+    log::info!("Total output bytes: {}", total_output);
     Ok(())
 }
 

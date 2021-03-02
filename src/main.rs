@@ -20,6 +20,8 @@ use std::io;
 /// Sets up parameters and then calls `process()` in `ws_file` module
 ///
 fn main() -> io::Result<()> {
+    env_logger::builder().format_timestamp(None).init();
+
     let infile = String::from("");
     let outfile = String::from("");
     ws_file::process(&infile, &outfile)
