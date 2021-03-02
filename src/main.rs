@@ -19,7 +19,8 @@ mod ws_wrappers;
 use crate::args::Args;
 use std::io;
 
-/// Sets up parameters and then calls `process()` in `ws_file` module
+/// Reads command line parameters, sets up logging and then calls
+/// `ws_file::process()` with any supplied parameters
 ///
 fn main() -> io::Result<()> {
     let args = Args::parse();
@@ -29,5 +30,5 @@ fn main() -> io::Result<()> {
         .filter_level(args.log_level)
         .init();
 
-    ws_file::process(&args.infile, &args.outfile)
+    ws_file::process(&args.infile, &args.outfile, &args.excludes)
 }

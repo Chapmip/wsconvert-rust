@@ -29,7 +29,7 @@ impl fmt::Display for ControlCount {
                 previous = true;
             }
             if previous {
-                write!(f, " => {} chars, {} types", self.total(), self.bins())?;
+                write!(f, " => {} char(s), {} type(s)", self.total(), self.bins())?;
             } else {
                 write!(f, "None")?;
             }
@@ -180,7 +180,7 @@ mod tests {
         counts.up('\x07');
         assert_eq!(
             format!("{}", counts),
-            "Counts: [03]=1, [07]=1, [08]=1, [19]=1, [7F]=2 => 6 chars, 5 types"
+            "Counts: [03]=1, [07]=1, [08]=1, [19]=1, [7F]=2 => 6 char(s), 5 type(s)"
         );
     }
 

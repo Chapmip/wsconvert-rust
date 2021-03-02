@@ -21,9 +21,10 @@ use std::io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 ///
 /// # Examples
 /// ```
-/// ws_file::process("input.ws", "output.txt").unwrap();
+/// let excludes: ws_filters::Excludes = {...};
+/// ws_file::process("input.ws", "output.txt", &excludes).unwrap();
 /// ```
-pub fn process(infile: &str, outfile: &str) -> io::Result<()> {
+pub fn process(infile: &str, outfile: &str, excludes: &ws_filters::Excludes) -> io::Result<()> {
     let mut reader: Box<dyn Read> = if !infile.is_empty() {
         Box::new(BufReader::new(File::open(infile)?))
     } else {
@@ -45,6 +46,6 @@ pub fn process(infile: &str, outfile: &str) -> io::Result<()> {
 
     asciify::convert_file(&mut reader, &mut intermediate)?;
     intermediate.seek(SeekFrom::Start(0))?;
-    ws_filters::transform_file(&mut intermediate, &mut writer)?;
+    ws_filters::transform_file(&mut intermediate, &mut writer, &excludes)?;
     Ok(())
 }
