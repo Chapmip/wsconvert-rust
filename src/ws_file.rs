@@ -2,14 +2,17 @@
 
 use crate::asciify;
 use crate::ws_filters;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 
 /// Attempts to convert a WordStar file from the input filename
-/// (or `stdin` if empty) to a Unicode based text file at the output
-/// filename (or `stdout` if empty) via a temporary file
+/// (or `stdin` if empty) to a new Unicode based text file at the
+/// output filename (or `stdout` if empty) via a temporary file
 ///
 /// Returns `()` on success or a `std::io::Error` type on failure
+///
+/// Note: If an output filename is specified then an error will be
+/// returned and no further action taken if the file already exists
 ///
 /// # Arguments
 ///
@@ -28,7 +31,12 @@ pub fn process(infile: &str, outfile: &str) -> io::Result<()> {
     };
 
     let mut writer: Box<dyn Write> = if !outfile.is_empty() {
-        Box::new(BufWriter::new(File::create(outfile)?))
+        Box::new(BufWriter::new(
+            OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .open(outfile)?,
+        ))
     } else {
         Box::new(BufWriter::new(io::stdout()))
     };
