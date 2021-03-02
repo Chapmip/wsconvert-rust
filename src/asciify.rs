@@ -27,7 +27,7 @@ const CHUNK_SIZE: usize = 16 * 1024; // Moderate sized buffer
 /// let mut output = io::stdout();
 /// convert_file(&mut input, &mut output).unwrap();
 /// ```
-pub fn convert_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
+pub fn convert_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Result<()> {
     let mut buffer = [0; CHUNK_SIZE];
     let mut total_input = 0;
     let mut total_output = 0;

@@ -36,7 +36,7 @@ use std::io::{self, BufRead, BufReader, BufWriter, Read, Write};
 /// let mut output = io::stdout();
 /// transform_file(&mut input, &mut output).unwrap();
 /// ```
-pub fn transform_file(input: &mut impl Read, output: &mut impl Write) -> io::Result<()> {
+pub fn transform_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Result<()> {
     let mut original_counts = ControlCount::new("To ASCII".to_string());
     let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
     let mut alignment_counts = ControlCount::new("Re-align".to_string());
