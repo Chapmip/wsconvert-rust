@@ -3,11 +3,12 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-/// Holds a name tag for a set of counters and a binary tree of counts for
-/// ASCII control characters (as defined by `char::is_ascii_control()`)
+/// Holds a name tag for a set of counters, a 'used' marker and a binary tree of
+/// counts for ASCII control characters (as defined by `char::is_ascii_control()`)
 #[derive(Debug)]
 pub struct ControlCount {
     tag: String,
+    used: bool,
     counts: BTreeMap<char, i32>,
 }
 
@@ -16,18 +17,22 @@ pub struct ControlCount {
 impl fmt::Display for ControlCount {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: ", self.tag)?;
-        let mut previous = false;
-        for (key, value) in &self.counts {
-            if previous {
-                write!(f, ", ")?;
-            }
-            write!(f, "[{:02X}]={}", *key as u32, *value)?;
-            previous = true;
-        }
-        if previous {
-            write!(f, " => {} chars, {} types", self.total(), self.bins())?;
+        if !self.used {
+            write!(f, "Skipped")?;
         } else {
-            write!(f, "None")?;
+            let mut previous = false;
+            for (key, value) in &self.counts {
+                if previous {
+                    write!(f, ", ")?;
+                }
+                write!(f, "[{:02X}]={}", *key as u32, *value)?;
+                previous = true;
+            }
+            if previous {
+                write!(f, " => {} chars, {} types", self.total(), self.bins())?;
+            } else {
+                write!(f, "None")?;
+            }
         }
         Ok(())
     }
@@ -47,6 +52,7 @@ impl ControlCount {
     pub fn new(tag: String) -> ControlCount {
         ControlCount {
             tag,
+            used: false,
             counts: BTreeMap::new(),
         }
     }
@@ -70,6 +76,7 @@ impl ControlCount {
             let counter = self.counts.entry(ch).or_insert(0);
             *counter += 1;
         }
+        self.used = true;
     }
 
     /// Attempts to return the current count for the given character
@@ -110,6 +117,7 @@ impl ControlCount {
         for ch in s.chars() {
             self.up(ch);
         }
+        self.used = true;
     }
 
     /// Returns number of different bins that have been created
