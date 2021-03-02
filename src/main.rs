@@ -26,7 +26,7 @@ fn main() -> io::Result<()> {
 
     env_logger::builder()
         .format_timestamp(None)
-        .filter_level(log::LevelFilter::Info)
+        .filter_level(args.log_level)
         .init();
 
     ws_file::process(&args.infile, &args.outfile)
