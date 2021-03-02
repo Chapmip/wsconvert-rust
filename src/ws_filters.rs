@@ -37,6 +37,8 @@ use std::io::{self, BufRead, BufReader, BufWriter, Read, Write};
 /// transform_file(&mut input, &mut output).unwrap();
 /// ```
 pub fn transform_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Result<()> {
+    let mut dot_cmds_replaced = 0u32;
+    let mut dot_cmds_removed = 0u32;
     let mut original_counts = ControlCount::new("To ASCII".to_string());
     let mut post_dot_counts = ControlCount::new("Dot cmds".to_string());
     let mut alignment_counts = ControlCount::new("Re-align".to_string());
@@ -55,8 +57,14 @@ pub fn transform_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Resul
 
         if let Some(replacement) = ws_dot_cmd::process(&line) {
             match &replacement[..] {
-                "" => continue, // Remove line from output
-                _ => line = replacement,
+                "" => {
+                    dot_cmds_removed += 1;
+                    continue; // Remove line from output
+                }
+                _ => {
+                    dot_cmds_replaced += 1;
+                    line = replacement;
+                }
             }
         }
         post_dot_counts.scan(&line);
@@ -79,6 +87,10 @@ pub fn transform_file(input: &mut dyn Read, output: &mut dyn Write) -> io::Resul
         writeln!(writer, "{}", line)?;
     }
     writer.flush()?;
+
+    eprintln!("Dot commands after processing:");
+    eprintln!("Replaced: {}", dot_cmds_replaced);
+    eprintln!("Removed:  {}", dot_cmds_removed);
 
     eprintln!("Control characters after processing:");
     eprintln!("{}", original_counts);
