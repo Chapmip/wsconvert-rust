@@ -1,22 +1,15 @@
-$ cat data/PROJECT.WS | cargo run >data/PROJECT.TXT
-    Finished dev [unoptimized + debuginfo] target(s) in 0.08s
-     Running `target/debug/wsconvert`
-[src/asciify.rs:41] num_read = 16384
-[src/asciify.rs:46] num_conv = 16384
-[src/asciify.rs:41] num_read = 16384
-[src/asciify.rs:46] num_conv = 16384
-[src/asciify.rs:41] num_read = 16384
-[src/asciify.rs:46] num_conv = 16384
-[src/asciify.rs:41] num_read = 6656
-[src/asciify.rs:46] num_conv = 6627
-total input bytes: 55808
-total output bytes: 55779
+$ cargo run -- -i data/PROJECT.WS -o data/PROJECT.TXT
+    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/wsconvert -i data/PROJECT.WS -o data/PROJECT.TXT`
+Dot commands after processing:
+Replaced: 19
+Removed:  7
 Control characters after processing:
-To ASCII: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 chars, 5 types
-Dot cmds: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 chars, 5 types
-Re-align: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 chars, 5 types
-Specials: [02]=18, [08]=114, [13]=130, [14]=80, [16]=14 => 356 chars, 5 types
-Overline: [01]=80, [02]=18, [13]=130, [16]=14 => 242 chars, 4 types
+To ASCII: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Dot-cmds: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Re-align: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Specials: [02]=18, [08]=114, [13]=130, [14]=80, [16]=14 => 356 char(s), 5 type(s)
+Overline: [01]=80, [02]=18, [13]=130, [16]=14 => 242 char(s), 4 type(s)
 Wrappers: None
 Controls: None
 $ 

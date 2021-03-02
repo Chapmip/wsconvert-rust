@@ -30,14 +30,13 @@ The following items are my "wish list" for potential further development of the 
 *	~~Implement CLI (command line interface) options:~~
 	-	~~Ability to specify source and destination filenames instead of consuming input from `stdin` and sending output to `stdout`~~
 	-	~~Ability to switch some filters on and off~~
-	-	~~Ability to control the level of logging output (see below)~~ *(All implemented on 2nd March 2021)*
+	-	~~Ability to control the level of logging output (see below)~~ **(All implemented on 2nd March 2021)**
 
 *	~~Implement multi-level logging output:~~
-	-	~~I'd probably use Rust `log` and associated crates~~ *(Implemented on 2nd March 2021)*
+	-	~~I'd probably use Rust `log` and associated crates~~ **(Implemented on 2nd March 2021)**
 	-	Add additional log outputs beyond basic info from asciify.rs module
 
 *	Re-visit the possible use of `Cow<'_, str>` as an alternative to `Option<String>` as the output type from some functions:
 	- I investigated this once as it seemed like an elegant approach but I couldn't figure out how to do it without *increasing* the amount of code needed!
 ---
 Ian Chapman — 26th February 2021
-
