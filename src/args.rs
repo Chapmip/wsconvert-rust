@@ -1,6 +1,6 @@
 //! Module to process any command line arguments supplied to `wsconvert`
 
-use clap::{App, Arg};
+use clap::{crate_version, App, Arg};
 
 /// Holds the values obtained by processing command line arguments
 #[derive(Debug)]
@@ -15,6 +15,8 @@ pub struct Args {
 impl Args {
     pub fn parse() -> Self {
         let matches = App::new("wsconvert")
+            .about("Converts old WordStar files into readable format")
+            .version(crate_version!())
             .arg(
                 Arg::with_name("infile")
                     .short("i")
