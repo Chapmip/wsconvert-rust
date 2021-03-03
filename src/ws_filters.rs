@@ -29,7 +29,8 @@ pub struct Excludes {
 /// Transforms a line-formatted stream of 7-bit ASCII input characters
 /// (e.g. from `asciify::convert_file`) into a line-formatted stream of
 /// Unicode output characters that implement conversions of WordStar dot
-/// commands, wrapper control characters and other special sequences
+/// commands, wrapper control characters and other special sequences,
+/// optionally excluding a set of `Excludes` filters
 ///
 /// Returns `()` on success or a `std::io::Error` type on failure
 ///
@@ -37,6 +38,7 @@ pub struct Excludes {
 ///
 /// * `input` - Source of bytes that implements `Read` trait
 /// * `output` - Destination for bytes that implements `Write` trait
+/// * `excludes` - Optional set of flags to specify filters to exclude
 ///
 /// # Examples
 /// ```
@@ -45,13 +47,12 @@ pub struct Excludes {
 ///
 /// let mut input = io::stdin();
 /// let mut output = io::stdout();
-/// let excludes: ws_filters::Excludes = {...};
-/// transform_file(&mut input, &mut output, &excludes).unwrap();
+/// transform_file(&mut input, &mut output, None).unwrap();
 /// ```
 pub fn transform_file(
     input: &mut dyn Read,
     output: &mut dyn Write,
-    excludes: &Excludes,
+    excludes: Option<Excludes>,
 ) -> io::Result<()> {
     let mut dot_cmds_replaced = 0u32;
     let mut dot_cmds_removed = 0u32;
@@ -65,6 +66,7 @@ pub fn transform_file(
 
     let reader = BufReader::new(input);
     let mut writer = BufWriter::new(output);
+    let excludes = excludes.unwrap_or_default();
     let mut wrappers = ws_wrappers::Wrappers::new();
 
     for line in reader.lines() {

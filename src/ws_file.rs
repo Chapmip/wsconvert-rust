@@ -7,7 +7,8 @@ use std::io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 
 /// Attempts to convert a WordStar file from the input filename
 /// (or `stdin` if empty) to a new Unicode based text file at the
-/// output filename (or `stdout` if empty) via a temporary file
+/// output filename (or `stdout` if empty) via a temporary file,
+/// optionally excluding a set of `ws_filters::Excludes` filters
 ///
 /// Returns `()` on success or a `std::io::Error` type on failure
 ///
@@ -18,13 +19,17 @@ use std::io::{self, BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 ///
 /// * `infile` - Path to input file (or "" to use `stdin`)
 /// * `outfile` - Path to output file (or "" to use `stdout`)
+/// * `excludes` - Optional set of flags to specify filters to exclude
 ///
 /// # Examples
 /// ```
-/// let excludes: ws_filters::Excludes = {...};
-/// ws_file::process("input.ws", "output.txt", &excludes).unwrap();
+/// ws_file::process("input.ws", "output.txt", None).unwrap();
 /// ```
-pub fn process(infile: &str, outfile: &str, excludes: &ws_filters::Excludes) -> io::Result<()> {
+pub fn process(
+    infile: &str,
+    outfile: &str,
+    excludes: Option<ws_filters::Excludes>,
+) -> io::Result<()> {
     let mut reader: Box<dyn Read> = if !infile.is_empty() {
         Box::new(BufReader::new(File::open(infile)?))
     } else {
@@ -46,6 +51,6 @@ pub fn process(infile: &str, outfile: &str, excludes: &ws_filters::Excludes) -> 
 
     asciify::convert_file(&mut reader, &mut intermediate)?;
     intermediate.seek(SeekFrom::Start(0))?;
-    ws_filters::transform_file(&mut intermediate, &mut writer, &excludes)?;
+    ws_filters::transform_file(&mut intermediate, &mut writer, excludes)?;
     Ok(())
 }

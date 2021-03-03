@@ -1,5 +1,65 @@
-$ cargo run -- -i data/PROJECT.WS -o data/PROJECT.TXT
+$ cargo run -- -h
+    Finished dev [unoptimized + debuginfo] target(s) in 0.12s
+     Running `target/debug/wsconvert -h`
+wsconvert 0.6.0
+Converts old WordStar files into readable format
+
+USAGE:
+    wsconvert [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -i, --infile <infile>          Read from a file instead of stdin
+    -l, --log-level <log-level>    Logging level [possible values: off, error, warn, info, debug, trace]
+    -o, --outfile <outfile>        Write to a file instead of stdout
+    -x, --exclude <x-names>...     Filters to exclude [possible values: dot-cmds, re-align, specials, overline,
+                                   wrappers, controls]
+                                   
+$ cargo run -- -i data/PROJECT.WS --log-level info >/dev/null
     Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/wsconvert -i data/PROJECT.WS --log-level info`
+[INFO  wsconvert::asciify] Read 16384 bytes
+[INFO  wsconvert::asciify] Converted 16384 bytes
+[INFO  wsconvert::asciify] Read 16384 bytes
+[INFO  wsconvert::asciify] Converted 16384 bytes
+[INFO  wsconvert::asciify] Read 16384 bytes
+[INFO  wsconvert::asciify] Converted 16384 bytes
+[INFO  wsconvert::asciify] Read 6656 bytes
+[INFO  wsconvert::asciify] Converted 6627 bytes
+[INFO  wsconvert::asciify] Total input bytes: 55808
+[INFO  wsconvert::asciify] Total output bytes: 55779
+Dot commands after processing:
+Replaced: 19
+Removed:  7
+Control characters after processing:
+To ASCII: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Dot-cmds: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Re-align: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Specials: [02]=18, [08]=114, [13]=130, [14]=80, [16]=14 => 356 char(s), 5 type(s)
+Overline: [01]=80, [02]=18, [13]=130, [16]=14 => 242 char(s), 4 type(s)
+Wrappers: None
+Controls: None
+
+$ cargo run -- -i data/PROJECT.WS -x re-align >/dev/null
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/wsconvert -i data/PROJECT.WS -x re-align`
+Dot commands after processing:
+Replaced: 19
+Removed:  7
+Control characters after processing:
+To ASCII: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Dot-cmds: [02]=18, [08]=115, [13]=132, [14]=84, [16]=16 => 365 char(s), 5 type(s)
+Re-align: Skipped
+Specials: [02]=18, [08]=114, [13]=130, [14]=80, [16]=14 => 356 char(s), 5 type(s)
+Overline: [01]=80, [02]=18, [13]=130, [16]=14 => 242 char(s), 4 type(s)
+Wrappers: None
+Controls: None
+
+$ cargo run -- -i data/PROJECT.WS -o data/PROJECT.TXT
+    Finished dev [unoptimized + debuginfo] target(s) in 0.12s
      Running `target/debug/wsconvert -i data/PROJECT.WS -o data/PROJECT.TXT`
 Dot commands after processing:
 Replaced: 19
@@ -12,4 +72,5 @@ Specials: [02]=18, [08]=114, [13]=130, [14]=80, [16]=14 => 356 char(s), 5 type(s
 Overline: [01]=80, [02]=18, [13]=130, [16]=14 => 242 char(s), 4 type(s)
 Wrappers: None
 Controls: None
-$ 
+
+$

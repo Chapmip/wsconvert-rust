@@ -64,16 +64,16 @@ impl Args {
                     .help("Write to a file instead of stdout"),
             )
             .arg(
-                Arg::with_name("log_level")
+                Arg::with_name("log-level")
                     .short("l")
-                    .long("log_level")
+                    .long("log-level")
                     .takes_value(true)
                     .possible_values(&LOG_VALUES)
                     .case_insensitive(true)
                     .help("Logging level"),
             )
             .arg(
-                Arg::with_name("x_names")
+                Arg::with_name("x-names")
                     .short("x")
                     .long("exclude")
                     .takes_value(true)
@@ -87,8 +87,8 @@ impl Args {
 
         let infile = matches.value_of("infile").unwrap_or_default().to_string();
         let outfile = matches.value_of("outfile").unwrap_or_default().to_string();
-        let log_str = matches.value_of("log_level").unwrap_or_default();
-        let exclude_vec: Vec<&str> = matches.values_of("x_names").unwrap_or_default().collect();
+        let log_str = matches.value_of("log-level").unwrap_or_default();
+        let exclude_vec: Vec<&str> = matches.values_of("x-names").unwrap_or_default().collect();
 
         let log_level = get_log_level(&log_str);
         let excludes = get_excludes(&exclude_vec);
