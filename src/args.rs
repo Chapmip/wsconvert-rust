@@ -1,6 +1,6 @@
 //! Module to process any command line arguments supplied to `wsconvert`
 
-use crate::ws_filters;
+use crate::ws_filters::Excludes;
 use clap::{crate_version, App, Arg};
 
 // Log output settings
@@ -38,7 +38,7 @@ pub struct Args {
     pub infile: String,
     pub outfile: String,
     pub log_level: log::LevelFilter,
-    pub excludes: ws_filters::Excludes,
+    pub excludes: Excludes,
 }
 
 /// Returns an `Args` structure containing the processed arguments (if any)
@@ -116,7 +116,6 @@ impl Args {
 /// ```
 /// assert_eq!(get_log_level("INFO"), log::LevelFilter::Info);
 /// ```
-
 fn get_log_level(log_str: &str) -> log::LevelFilter {
     match log_str.to_lowercase().as_str() {
         LOG_OFF => log::LevelFilter::Off,
@@ -129,9 +128,9 @@ fn get_log_level(log_str: &str) -> log::LevelFilter {
     }
 }
 
-/// Returns `ws_filters::Excludes` struct corresponding to one or
-/// more exclusions specified in command line, or default of no
-/// exclusions (all flags false) if none are specified
+/// Returns `Excludes` struct corresponding to one or more exclusions
+/// specified in command line, or default of no exclusions (no flags
+/// set) if none are specified
 ///
 /// # Arguments
 ///
@@ -139,18 +138,18 @@ fn get_log_level(log_str: &str) -> log::LevelFilter {
 ///
 /// # Examples
 /// ```
-/// assert_eq!(get_excludes(&vec!("specials")), ws_filters::Excludes {...});
+/// assert_eq!(get_excludes(&vec!("specials")), Excludes::SPECIALS);
 /// ```
-fn get_excludes(exclude_strs: &[&str]) -> ws_filters::Excludes {
-    let mut excludes: ws_filters::Excludes = Default::default();
+fn get_excludes(exclude_strs: &[&str]) -> Excludes {
+    let mut excludes = Excludes::NONE;
     for exclude_str in exclude_strs {
         match exclude_str.to_lowercase().as_str() {
-            EXCLUDE_DOT_CMDS => excludes.dot_cmds = true,
-            EXCLUDE_RE_ALIGN => excludes.re_align = true,
-            EXCLUDE_SPECIALS => excludes.specials = true,
-            EXCLUDE_OVERLINE => excludes.overline = true,
-            EXCLUDE_WRAPPERS => excludes.wrappers = true,
-            EXCLUDE_CONTROLS => excludes.controls = true,
+            EXCLUDE_DOT_CMDS => excludes.insert(Excludes::DOT_CMDS),
+            EXCLUDE_RE_ALIGN => excludes.insert(Excludes::RE_ALIGN),
+            EXCLUDE_SPECIALS => excludes.insert(Excludes::SPECIALS),
+            EXCLUDE_OVERLINE => excludes.insert(Excludes::OVERLINE),
+            EXCLUDE_WRAPPERS => excludes.insert(Excludes::WRAPPERS),
+            EXCLUDE_CONTROLS => excludes.insert(Excludes::CONTROLS),
             _ => {}
         }
     }
@@ -171,38 +170,11 @@ mod tests {
 
     #[test]
     fn test_get_excludes() {
-        assert_eq!(
-            get_excludes(&vec!("specials")),
-            ws_filters::Excludes {
-                dot_cmds: false,
-                re_align: false,
-                specials: true,
-                overline: false,
-                wrappers: false,
-                controls: false,
-            }
-        );
+        assert_eq!(get_excludes(&vec!("specials")), Excludes::SPECIALS);
         assert_eq!(
             get_excludes(&vec!("OverLINE", "WRAPPERS")),
-            ws_filters::Excludes {
-                dot_cmds: false,
-                re_align: false,
-                specials: false,
-                overline: true,
-                wrappers: true,
-                controls: false,
-            }
+            Excludes::OVERLINE | Excludes::WRAPPERS
         );
-        assert_eq!(
-            get_excludes(&vec!("")),
-            ws_filters::Excludes {
-                dot_cmds: false,
-                re_align: false,
-                specials: false,
-                overline: false,
-                wrappers: false,
-                controls: false,
-            }
-        );
+        assert_eq!(get_excludes(&vec!("")), Excludes::NONE);
     }
 }

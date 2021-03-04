@@ -13,17 +13,21 @@ use crate::ws_dot_cmd;
 use crate::ws_overline;
 use crate::ws_special;
 use crate::ws_wrappers;
+use bitflags::bitflags;
 use std::io::{self, BufRead, BufReader, BufWriter, Read, Write};
 
-/// Holds a set of flags to specify filters to be excluded
-#[derive(Debug, Default, PartialEq)]
-pub struct Excludes {
-    pub dot_cmds: bool,
-    pub re_align: bool,
-    pub specials: bool,
-    pub overline: bool,
-    pub wrappers: bool,
-    pub controls: bool,
+// Holds a set of flags to specify filters to be excluded
+bitflags! {
+    #[derive(Default)]
+    pub struct Excludes: u8 {
+        const NONE = 0;
+        const DOT_CMDS = (1 << 0);
+        const RE_ALIGN = (1 << 1);
+        const SPECIALS = (1 << 2);
+        const OVERLINE = (1 << 3);
+        const WRAPPERS = (1 << 4);
+        const CONTROLS = (1 << 5);
+    }
 }
 
 /// Transforms a line-formatted stream of 7-bit ASCII input characters
@@ -73,7 +77,7 @@ pub fn transform_file(
         let mut line = line?;
         original_counts.scan(&line);
 
-        if !excludes.dot_cmds {
+        if !excludes.contains(Excludes::DOT_CMDS) {
             if let Some(replacement) = ws_dot_cmd::process(&line) {
                 match &replacement[..] {
                     "" => {
@@ -89,27 +93,27 @@ pub fn transform_file(
             dot_cmds_counts.scan(&line);
         }
 
-        if !excludes.re_align {
+        if !excludes.contains(Excludes::RE_ALIGN) {
             line = ws_align::process(&line).unwrap_or(line);
             re_align_counts.scan(&line);
         }
 
-        if !excludes.specials {
+        if !excludes.contains(Excludes::SPECIALS) {
             line = ws_special::process(&line).unwrap_or(line);
             specials_counts.scan(&line);
         }
 
-        if !excludes.overline {
+        if !excludes.contains(Excludes::OVERLINE) {
             line = ws_overline::process(&line).unwrap_or(line);
             overline_counts.scan(&line);
         }
 
-        if !excludes.wrappers {
+        if !excludes.contains(Excludes::WRAPPERS) {
             line = wrappers.process(&line).unwrap_or(line);
             wrappers_counts.scan(&line);
         }
 
-        if !excludes.controls {
+        if !excludes.contains(Excludes::CONTROLS) {
             line = ws_control::process(&line, true).unwrap_or(line);
             controls_counts.scan(&line);
         }
